@@ -196,39 +196,43 @@
       <section id="singleView" class="space-y-3">
 
         <div class="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden">
-          <div class="bg-gradient-to-r from-stone-900 via-amber-950 to-stone-900 text-white p-3.5 sm:p-4 flex flex-wrap items-center justify-between gap-2">
+          <div class="bg-gradient-to-r from-stone-900 via-amber-950 to-stone-900 text-white p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div class="flex items-center gap-2.5 min-w-0 flex-1">
               <span id="epNumberBadge" class="w-8 h-8 rounded-xl bg-amber-500 text-stone-950 font-extrabold text-sm flex items-center justify-center shrink-0 shadow">
                 1
               </span>
               <div class="min-w-0 flex-1">
-                <h2 id="heroTitle" contenteditable="true" class="text-base sm:text-xl font-extrabold text-amber-100 focus:text-stone-900 tracking-tight truncate">
+                <h2 id="heroTitle" contenteditable="true" class="text-sm sm:text-lg font-extrabold text-amber-100 focus:text-stone-900 tracking-tight leading-snug break-words">
                   1. Turci - Hrdinská obrana Fiľakova
                 </h2>
-                <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-amber-200/80 mt-0.5">
+                <div class="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-amber-200/80 mt-0.5">
                   <span><i class="fa-regular fa-calendar mr-1"></i><span id="metaObdobie" contenteditable="true"></span></span>
                   <span><i class="fa-solid fa-location-dot mr-1"></i><span id="metaLokalita" contenteditable="true"></span></span>
                 </div>
               </div>
             </div>
 
-            <div class="flex flex-wrap items-center gap-1.5 shrink-0">
-              <button id="toggleProdPlanBtn" class="px-2.5 h-8 rounded-lg bg-emerald-700/90 hover:bg-emerald-600 text-white font-bold text-xs flex items-center gap-1.5 shrink-0 transition shadow-xs">
-                <i class="fa-solid fa-clapperboard"></i>
-                <span>Plán</span>
-                <i id="toggleProdPlanIcon" class="fa-solid fa-chevron-up transition-transform" style="transform: rotate(180deg);"></i>
-              </button>
-              <button id="toggleNarrativeBtn" class="px-2.5 h-8 rounded-lg bg-stone-800 hover:bg-stone-700 text-amber-200 font-bold text-xs flex items-center gap-1.5 shrink-0 border border-stone-700 transition">
-                <span id="toggleNarrativeText">Námet</span>
-                <i id="toggleNarrativeIcon" class="fa-solid fa-chevron-up transition-transform" style="transform: rotate(180deg);"></i>
-              </button>
-              
-              <button id="prevEpBtn" class="w-8 h-8 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-200 flex items-center justify-center text-xs border border-stone-700">
-                <i class="fa-solid fa-chevron-left"></i>
-              </button>
-              <button id="nextEpBtn" class="w-8 h-8 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-200 flex items-center justify-center text-xs border border-stone-700">
-                <i class="fa-solid fa-chevron-right"></i>
-              </button>
+            <div class="flex items-center justify-between sm:justify-end gap-1.5 shrink-0 pt-2 sm:pt-0 border-t border-stone-800 sm:border-t-0">
+              <div class="flex items-center gap-1.5">
+                <button id="toggleProdPlanBtn" class="px-2.5 h-8 rounded-lg bg-emerald-700/90 hover:bg-emerald-600 text-white font-bold text-xs flex items-center gap-1.5 shrink-0 transition shadow-xs">
+                  <i class="fa-solid fa-clapperboard"></i>
+                  <span>Plán</span>
+                  <i id="toggleProdPlanIcon" class="fa-solid fa-chevron-up transition-transform" style="transform: rotate(180deg);"></i>
+                </button>
+                <button id="toggleNarrativeBtn" class="px-2.5 h-8 rounded-lg bg-stone-800 hover:bg-stone-700 text-amber-200 font-bold text-xs flex items-center gap-1.5 shrink-0 border border-stone-700 transition">
+                  <span id="toggleNarrativeText">Námet</span>
+                  <i id="toggleNarrativeIcon" class="fa-solid fa-chevron-up transition-transform" style="transform: rotate(180deg);"></i>
+                </button>
+              </div>
+
+              <div class="flex items-center gap-1">
+                <button id="prevEpBtn" class="w-8 h-8 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-200 flex items-center justify-center text-xs border border-stone-700">
+                  <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <button id="nextEpBtn" class="w-8 h-8 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-200 flex items-center justify-center text-xs border border-stone-700">
+                  <i class="fa-solid fa-chevron-right"></i>
+                </button>
+              </div>
             </div>
           </div>
 
