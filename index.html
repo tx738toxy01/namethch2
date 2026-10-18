@@ -58,7 +58,7 @@
     }
   </style>
 </head>
-<body class="bg-[#f8f5f0] text-stone-800 antialiased min-h-screen flex flex-col">
+<body class="bg-[#f8f5f0] text-stone-800 antialiased min-h-screen lg:h-screen lg:overflow-hidden flex flex-col">
 
   <header class="bg-stone-900 text-amber-50 sticky top-0 z-30 shadow-md border-b border-stone-800">
     <div class="px-3 py-2.5 flex items-center justify-between gap-2 max-w-7xl mx-auto">
@@ -1673,11 +1673,13 @@
     function renderNavigation() {
       const nav = document.getElementById("episodeList");
       const quick = document.getElementById("mobileQuickNav");
+      const savedNavScroll = nav ? nav.scrollTop : 0;
+      const savedQuickScroll = quick ? quick.scrollLeft : 0;
       nav.innerHTML = "";
       quick.innerHTML = "";
 
       episodes.forEach(ep => {
-        const active = (ep.id === currentEpisodeId && !isTableView);
+        const active = (ep.id === currentEpisodeId);
 
         const btn = document.createElement("button");
         btn.className = `w-full text-left px-2.5 py-2 rounded-xl transition flex items-center justify-between ${
@@ -1707,12 +1709,42 @@
         qBtn.onclick = () => selectEpisode(ep.id);
         quick.appendChild(qBtn);
       });
+
+      if (nav) nav.scrollTop = savedNavScroll;
+      if (quick) quick.scrollLeft = savedQuickScroll;
     }
 
     function selectEpisode(id) {
       currentEpisodeId = id;
-      isTableView = false;
-      updateActiveView();
+      if (isTableView) {
+        renderNavigation();
+        const row = document.getElementById(`ep-row-${id}`);
+        const mainEl = document.querySelector('main');
+        if (row) {
+          const zoom = currentFontScale || 1;
+          if (mainEl && mainEl.scrollHeight > mainEl.clientHeight + 10) {
+            const mainRect = mainEl.getBoundingClientRect();
+            const rowRect = row.getBoundingClientRect();
+            const offset = (rowRect.top - mainRect.top) * zoom;
+            mainEl.scrollTo({
+              top: mainEl.scrollTop + offset - 48,
+              behavior: 'smooth'
+            });
+          } else {
+            const headerEl = document.querySelector('header');
+            const headerH = headerEl ? headerEl.getBoundingClientRect().height * zoom : 95;
+            const rowTop = row.getBoundingClientRect().top * zoom + window.pageYOffset;
+            window.scrollTo({
+              top: Math.max(0, rowTop - headerH - 12),
+              behavior: 'smooth'
+            });
+          }
+          row.classList.add('bg-amber-100/90');
+          setTimeout(() => row.classList.remove('bg-amber-100/90'), 1400);
+        }
+      } else {
+        updateActiveView();
+      }
     }
 
     function createPillElement(itemObj, category, index, epId) {
@@ -1900,7 +1932,8 @@
 
       filtered.forEach(ep => {
         const tr = document.createElement("tr");
-        tr.className = "hover:bg-stone-50/80 align-top border-b border-stone-200";
+        tr.id = `ep-row-${ep.id}`;
+        tr.className = "hover:bg-stone-50/80 align-top border-b border-stone-200 transition-colors duration-500";
 
         const tdCast = document.createElement("td");
         tdCast.className = "p-2.5 border-r border-stone-200";
