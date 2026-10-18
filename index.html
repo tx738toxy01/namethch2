@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
-<link rel="apple-touch-icon" href="./icon-192.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#0f172a">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>HCH2namet</title>
@@ -126,6 +126,10 @@
                 <i class="fa-regular fa-copy text-stone-400"></i>
                 <span>Kopírovať text celého prehľadu</span>
               </button>
+              <button id="resetDataBtn" class="w-full text-left px-3.5 py-2 hover:bg-rose-50 flex items-center gap-2.5 font-medium text-rose-600 transition">
+                <i class="fa-solid fa-rotate-left text-rose-500"></i>
+                <span>Obnoviť predvolené dáta</span>
+              </button>
             </div>
           </div>
         </div>
@@ -178,7 +182,21 @@
               </div>
             </div>
 
-            <div class="flex items-center gap-1 shrink-0">
+            <div class="flex flex-wrap items-center gap-1.5 shrink-0">
+              <button id="toggleProdPlanBtn" class="px-2.5 h-8 rounded-lg bg-emerald-700/90 hover:bg-emerald-600 text-white font-bold text-xs flex items-center gap-1.5 shrink-0 transition shadow-xs">
+                <i class="fa-solid fa-clapperboard"></i>
+                <span>Produkčný plán</span>
+                <i id="toggleProdPlanIcon" class="fa-solid fa-chevron-up transition-transform" style="transform: rotate(180deg);"></i>
+              </button>
+              <button id="toggleNarrativeBtn" class="px-2.5 h-8 rounded-lg bg-stone-800 hover:bg-stone-700 text-amber-200 font-bold text-xs flex items-center gap-1.5 shrink-0 border border-stone-700 transition">
+                <span id="toggleNarrativeText">Námet & Príbeh</span>
+                <i id="toggleNarrativeIcon" class="fa-solid fa-chevron-up transition-transform" style="transform: rotate(180deg);"></i>
+              </button>
+              <a id="epMapLink" href="https://tx738toxy01.github.io/hch2mp/#1" target="_blank" rel="noopener"
+                 class="px-2.5 h-8 rounded-lg bg-amber-600/90 hover:bg-amber-500 text-white flex items-center gap-1.5 text-xs font-bold shadow-xs transition">
+                <i class="fa-solid fa-map-location-dot"></i>
+                <span class="hidden sm:inline">Mapa</span>
+              </a>
               <button id="prevEpBtn" class="w-8 h-8 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-200 flex items-center justify-center text-xs border border-stone-700">
                 <i class="fa-solid fa-chevron-left"></i>
               </button>
@@ -188,18 +206,16 @@
             </div>
           </div>
 
-          <div class="px-3.5 py-2.5 bg-amber-50/70 border-b border-stone-200 flex items-start sm:items-center justify-between gap-2">
-            <div class="text-xs text-stone-800 flex-1">
-              <span class="font-bold text-amber-900 uppercase text-[10px] tracking-wider mr-1.5">Kľúčový prínos:</span>
-              <span id="metaPrinos" contenteditable="true" class="text-stone-700"></span>
-            </div>
-            <button id="toggleNarrativeBtn" class="px-2.5 py-1 rounded-lg bg-amber-200/70 hover:bg-amber-300/70 text-amber-950 font-bold text-[11px] flex items-center gap-1 shrink-0 transition">
-              <span id="toggleNarrativeText">Námet & Príbeh</span>
-              <i id="toggleNarrativeIcon" class="fa-solid fa-chevron-up transition-transform"></i>
-            </button>
+          <div id="prodPlanContainer" class="hidden p-3.5 bg-emerald-50/40 border-t border-stone-200 space-y-2.5 text-xs">
+            <div id="prodDaysGrid" class="grid grid-cols-1 md:grid-cols-3 gap-2.5"></div>
+            <div id="prodBarbaraBox" class="bg-white p-2.5 rounded-xl border border-emerald-200/90 flex flex-wrap items-center justify-between gap-2"></div>
           </div>
 
-          <div id="narrativeContainer" class="p-3.5 bg-stone-50/60 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs leading-relaxed border-b border-stone-100">
+          <div id="narrativeContainer" class="hidden p-3.5 bg-stone-50/60 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs leading-relaxed border-t border-stone-200">
+            <div class="md:col-span-3 bg-amber-50/90 p-3 rounded-xl border border-amber-200/80 shadow-2xs">
+              <span class="font-bold text-amber-900 uppercase text-[10px] tracking-wider mr-1.5">Kľúčový prínos:</span>
+              <span id="metaPrinos" contenteditable="true" class="text-stone-800 font-medium"></span>
+            </div>
             <div class="bg-white p-3 rounded-xl border border-stone-200/80 shadow-2xs">
               <div class="font-bold text-[11px] uppercase tracking-wider text-stone-600 mb-1 flex items-center gap-1.5">
                 <i class="fa-solid fa-landmark text-amber-600"></i> 1. Historický kontext
@@ -221,25 +237,24 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 sm:gap-3">
-
-          <div class="col-span-2 sm:col-span-2 lg:col-span-1 bg-white rounded-xl p-3 border border-stone-200 shadow-2xs flex flex-col">
-            <div class="pb-2 mb-2 border-b border-stone-100 flex items-center justify-between">
-              <h3 class="font-bold text-xs uppercase tracking-wider text-stone-700 flex items-center gap-1.5">
-                <i class="fa-solid fa-hashtag text-stone-400"></i> Časť
-              </h3>
-            </div>
-            <div id="cardColCast" class="flex-1 flex flex-col justify-center items-center text-center p-2 bg-stone-50 rounded-lg border border-stone-100"></div>
-          </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
 
           <div class="bg-white rounded-xl p-3 border border-stone-200 shadow-2xs flex flex-col">
-            <div class="pb-2 mb-2 border-b border-stone-100 flex items-center justify-between">
+            <div class="pb-2 mb-2 border-b border-stone-100 flex items-center justify-between gap-1">
               <h3 class="font-bold text-xs uppercase tracking-wider text-amber-900 flex items-center gap-1">
                 <i class="fa-solid fa-location-dot text-amber-500"></i> Lokácie
               </h3>
-              <button onclick="openItemModal('lokacie', -1)" class="w-6 h-6 rounded-md bg-amber-50 hover:bg-amber-100 text-amber-800 flex items-center justify-center text-xs font-bold">
-                <i class="fa-solid fa-plus"></i>
-              </button>
+              <div class="flex items-center gap-1">
+                <select id="locFilterSelect" onchange="setLocFilter(this.value)" class="text-[10px] font-bold bg-stone-100 border border-stone-200 rounded-md px-1.5 py-0.5 text-stone-700 focus:outline-none">
+                  <option value="all">Všetky</option>
+                  <option value="hlavna">📍 Hlavné</option>
+                  <option value="barbara">★ Barbara</option>
+                  <option value="alt">🔄 Alternatívy</option>
+                </select>
+                <button onclick="openItemModal('lokacie', -1)" class="w-6 h-6 rounded-md bg-amber-50 hover:bg-amber-100 text-amber-800 flex items-center justify-center text-xs font-bold">
+                  <i class="fa-solid fa-plus"></i>
+                </button>
+              </div>
             </div>
             <div id="cardColLokacie" class="flex-1 flex flex-wrap content-start gap-1.5 min-h-[70px]"></div>
           </div>
@@ -291,9 +306,19 @@
               <thead class="bg-stone-900 text-stone-100 font-bold uppercase tracking-wider text-[11px]">
                 <tr>
                   <th class="py-2.5 px-3 w-36 border-r border-stone-800">Časť</th>
-                  <th class="py-2.5 px-3 w-48 border-r border-stone-800">Lokácie</th>
-                  <th class="py-2.5 px-3 w-52 border-r border-stone-800">Akcie</th>
-                  <th class="py-2.5 px-3 w-48 border-r border-stone-800">Ľudia</th>
+                  <th class="py-2.5 px-3 w-64 border-r border-stone-800">
+                    <div class="flex items-center justify-between gap-2">
+                      <span>Lokácie</span>
+                      <select id="tableLocFilterSelect" onchange="setLocFilter(this.value)" class="text-[10px] font-bold bg-stone-800 border border-stone-700 rounded px-1.5 py-0.5 text-amber-300 focus:outline-none">
+                        <option value="all">Všetky</option>
+                        <option value="hlavna">📍 Hlavné</option>
+                        <option value="barbara">★ Barbara</option>
+                        <option value="alt">🔄 Alternatívy</option>
+                      </select>
+                    </div>
+                  </th>
+                  <th class="py-2.5 px-3 w-48 border-r border-stone-800">Akcie</th>
+                  <th class="py-2.5 px-3 w-44 border-r border-stone-800">Ľudia</th>
                   <th class="py-2.5 px-3">Jedlá</th>
                 </tr>
               </thead>
@@ -327,6 +352,14 @@
         </label>
         <input type="text" id="itemModalInput" placeholder="napr. Fiľakovský hrad"
                class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-sm font-semibold focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20" />
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-bold uppercase tracking-wider text-stone-600 mb-1">
+          Kontakt / Produkčná poznámka
+        </label>
+        <textarea id="itemModalNote" rows="2" placeholder="Kontakt, telefón, e-mail alebo akcia na pľaci..."
+                  class="w-full bg-white border border-stone-300 rounded-xl px-3 py-1.5 text-xs text-stone-700 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"></textarea>
       </div>
 
       <div>
@@ -387,6 +420,15 @@
             <li><strong>4. Súčasný presah:</strong> ako tento vplyv žije dnes (kuchári, remeselníci, regióny).</li>
           </ul>
         </div>
+        <div class="bg-emerald-50 p-3.5 rounded-xl border border-emerald-200">
+          <h4 class="font-bold text-emerald-950 uppercase mb-1">Farebné značenie lokácií z produkčného plánu</h4>
+          <div class="flex flex-wrap gap-2 mt-1.5">
+            <span class="item-pill" style="background:#fef3c7;color:#78350f">📍 D1–D3: Hlavná lokácia dňa</span>
+            <span class="item-pill" style="background:#d1fae5;color:#064e3b">★ Barbara: Zelená (vybraná)</span>
+            <span class="item-pill" style="background:#ecfccb;color:#365314">B: Barbara doplnková</span>
+            <span class="item-pill" style="background:#e0f2fe;color:#0c4a6e">🔄 D1–D3 Alt: Alternatívy (1–3)</span>
+          </div>
+        </div>
         <div>
           <h4 class="font-bold text-stone-900 uppercase mb-2">Slovníček chutí a pojmov</h4>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -414,17 +456,21 @@
 
   <script>
     const VIOLET_BG = '#ede9fe';
+    const BG_HLAVNA = '#fef3c7';
+    const BG_BARBARA_GREEN = '#d1fae5';
+    const BG_BARBARA_OTHER = '#ecfccb';
+    const BG_ALT = '#e0f2fe';
 
     const COLOR_PALETTE = [
-      { id: 'violet',  name: 'Fialová',   bg: '#ede9fe', text: '#4c1d95', border: '#c4b5fd' },
-      { id: 'amber',   name: 'Jantárová', bg: '#fef3c7', text: '#78350f', border: '#fcd34d' },
-      { id: 'orange',  name: 'Oranžová',  bg: '#ffedd5', text: '#7c2d12', border: '#fdba74' },
-      { id: 'rose',    name: 'Ružová',    bg: '#ffe4e6', text: '#881337', border: '#fda4af' },
-      { id: 'emerald', name: 'Zelená',    bg: '#d1fae5', text: '#064e3b', border: '#6ee7b7' },
-      { id: 'sky',     name: 'Modrá',     bg: '#e0f2fe', text: '#0c4a6e', border: '#7dd3fc' },
-      { id: 'lime',    name: 'Limetková', bg: '#ecfccb', text: '#365314', border: '#bef264' },
-      { id: 'yellow',  name: 'Žltá',      bg: '#fef9c3', text: '#713f12', border: '#fde047' },
-      { id: 'stone',   name: 'Sivá',      bg: '#e7e5e4', text: '#1c1917', border: '#a8a29e' }
+      { id: 'violet',  name: 'Fialová (Nová)',      bg: '#ede9fe', text: '#4c1d95', border: '#c4b5fd' },
+      { id: 'amber',   name: 'Jantárová (Hlavná)',  bg: '#fef3c7', text: '#78350f', border: '#fcd34d' },
+      { id: 'emerald', name: 'Zelená (Barbara ★)',  bg: '#d1fae5', text: '#064e3b', border: '#6ee7b7' },
+      { id: 'lime',    name: 'Limetková (Barbara)', bg: '#ecfccb', text: '#365314', border: '#bef264' },
+      { id: 'sky',     name: 'Modrá (Alternatíva)', bg: '#e0f2fe', text: '#0c4a6e', border: '#7dd3fc' },
+      { id: 'orange',  name: 'Oranžová',            bg: '#ffedd5', text: '#7c2d12', border: '#fdba74' },
+      { id: 'rose',    name: 'Ružová',              bg: '#ffe4e6', text: '#881337', border: '#fda4af' },
+      { id: 'yellow',  name: 'Žltá',                bg: '#fef9c3', text: '#713f12', border: '#fde047' },
+      { id: 'stone',   name: 'Sivá',                bg: '#e7e5e4', text: '#1c1917', border: '#a8a29e' }
     ];
 
     const DEFAULT_CAT_COLOR = {
@@ -440,14 +486,64 @@
         cast: "1. Turci",
         podtitul: "Hrdinská obrana Fiľakova",
         obdobie: "1526 – 1699 (16. – 17. stor.)",
-        lokalita: "Južné Slovensko, Fiľakovo",
-        prinos: "Paprika, ryža, káva, mleté mäso, kebab, mercimek a orientálne sladkosti (práca s tenkým cestom).",
+        lokalita: "Okolie Fiľakova, Južné Slovensko",
+        mapaUrl: "https://tx738toxy01.github.io/hch2mp/#1",
+        prinos: "Vojenská strava, paprika, ryža, káva, mleté mäso, kebab, mercimek a orientálne sladkosti.",
         historia: "1526 – 1699: Približne 170 rokov osmanskej prítomnosti, pričom najtvrdšia okupácia južného Slovenska trvala asi 130 rokov (1552 – 1686). Hranica po páde Budína (1541) nebola múr, ale obchodný pás (dobytok, obilie, víno, soľ, šafrán).",
         pribeh: "Štefan II. Koháry – významný uhorský šľachtic a bojovník proti Turkom, ktorému v bojoch zabili otca. V roku 1664 vynaliezavo bránil Fiľakovský hrad, po urputných bojoch a zrade padol do osmanského zajatia v Turecku. Po návrate v r. 1685 dal vo Fiľakove postaviť kostol s kláštorom františkánov.",
         jedlo: "Paprika prišla cez Balkán ako náhrada čierneho korenia. Káva a ryža cez Osmanov. Dusenie mäsa s cibuľou a paprikou položilo základ guláša. Tradičné jedlá: döner, Adana a şiş kebab, köfte, meze (hummus, dolma, haydari), pide, lahmacun, gözleme, simit, imam bayildi, güvec, mercimek, baklava, lokum a ayran.",
-        lokacie: ["Južné Slovensko", "Fiľakovský hrad", "Osmanská hranica"],
-        akcie: ["Obrana hradu", "Osmanská okupácia", "Pohraničný obchod", "Väzenie zajatie"],
-        ludia: ["Štefan Koháry", "Františkánski mnísi", "Osmanskí vojaci"],
+        prodPlan: [
+          {
+            den: "DEŇ 1 (Ráno – Poobedie)",
+            akcia: "Obrana hradu, vojna, zrod „kebabového princípu“. Varenie pod hradbami.",
+            hlavna: "Fiľakovský hrad",
+            kontakt: "info@hradfilakovo.sk | 047/43 82 017",
+            alternativy: [
+              "1. Hrad Šomoška (047/449 11 54)",
+              "2. Hrad Modrý Kameň (hradmodrykamen@snm.sk | +421 47 2454 100)",
+              "3. Hrad Čabraď (tomasik.r86@gmail.com – Združenie RONDEL)"
+            ]
+          },
+          {
+            den: "DEŇ 2 (Ráno – Poobedie)",
+            akcia: "Príbeh po zajatí. Varenie kávy v piesku, baklava, lokum na nádvorí.",
+            hlavna: "Františkánsky kláštor Fiľakovo (Rajský dvor)",
+            kontakt: "klastorfil@frantiskani.sk | +421 47 438 10 16",
+            alternativy: [
+              "1. Kláštor Bzovík (045 55 19 397 | obecnyuradbzovik@gmail.com)",
+              "2. Kláštor Hronský Beňadik (Farnosť Hronský Beňadik)",
+              "3. Zámok Halič (recepcia@hotelgalicianueva.sk | +421 47 285 22 00)"
+            ]
+          },
+          {
+            den: "DEŇ 3 (Poldeň)",
+            akcia: "Šľachtická premena jedla, práca s ryžou a mletým mäsom (dolma).",
+            hlavna: "Zámok Halič (Galicia Nueva)",
+            kontakt: "recepcia@hotelgalicianueva.sk | +421 47 285 22 00",
+            alternativy: [
+              "1. Kaštieľ Divín (kultura@divin.sk | +421 948 440 428)",
+              "2. Kaštieľ Svätý Anton (info@msa.sk | +421 45 691 39 32)",
+              "3. Zvolenský zámok (zvolen@sng.sk | 045 53 21 903)"
+            ]
+          }
+        ],
+        barbaraInfo: "★ Koháryho kúria vo Fiľakove – kontakt Marian Mesiarik: 0908 633 935, mmesiarik@gmail.com | Odborný garant: Hradné múzeum vo Fiľakove (muzeum@hradfilakovo.sk)",
+        lokacie: [
+          { text: "📍 D1: Fiľakovský hrad", bg: BG_HLAVNA, note: "DEŇ 1 Hlavná | Akcia: Obrana hradu, varenie pod hradbami | Kontakt: info@hradfilakovo.sk | 047/43 82 017" },
+          { text: "📍 D2: Františkánsky kláštor Fiľakovo", bg: BG_HLAVNA, note: "DEŇ 2 Hlavná (Rajský dvor) | Akcia: Varenie kávy v piesku, baklava, lokum | Kontakt: +421 47 438 10 16 | klastorfil@frantiskani.sk" },
+          { text: "📍 D3: Zámok Halič (Galicia Nueva)", bg: BG_HLAVNA, note: "DEŇ 3 Hlavná | Akcia: Šľachtická premena jedla, dolma | Kontakt: recepcia@hotelgalicianueva.sk | +421 47 285 22 00" },
+          { text: "★ Koháryho kúria Fiľakovo", bg: BG_BARBARA_GREEN, note: "Barbara lokácia (Zelená) | Kontakt: Marian Mesiarik 0908 633 935, mmesiarik@gmail.com | Garant: muzeum@hradfilakovo.sk" },
+          { text: "🔄 D1 Alt 1: Hrad Šomoška", bg: BG_ALT, note: "DEŇ 1 Alternatíva 1 | Kontakt: 047/449 11 54 (Šiatorská Bukovinka)" },
+          { text: "🔄 D1 Alt 2: Hrad Modrý Kameň", bg: BG_ALT, note: "DEŇ 1 Alternatíva 2 | Kontakt: hradmodrykamen@snm.sk | +421 47 2454 100" },
+          { text: "🔄 D1 Alt 3: Hrad Čabraď", bg: BG_ALT, note: "DEŇ 1 Alternatíva 3 | Kontakt: tomasik.r86@gmail.com (Združenie RONDEL)" },
+          { text: "🔄 D2 Alt 1: Kláštor Bzovík", bg: BG_ALT, note: "DEŇ 2 Alternatíva 1 | Kontakt: 045 55 19 397 | obecnyuradbzovik@gmail.com" },
+          { text: "🔄 D2 Alt 2: Kláštor Hronský Beňadik", bg: BG_ALT, note: "DEŇ 2 Alternatíva 2 | Kontakt: Farnosť Hronský Beňadik" },
+          { text: "🔄 D3 Alt 1: Kaštieľ Divín", bg: BG_ALT, note: "DEŇ 3 Alternatíva 1 | Kontakt: kultura@divin.sk | +421 948 440 428" },
+          { text: "🔄 D3 Alt 2: Kaštieľ Svätý Anton", bg: BG_ALT, note: "DEŇ 3 Alternatíva 2 | Kontakt: info@msa.sk | +421 45 691 39 32" },
+          { text: "🔄 D3 Alt 3: Zvolenský zámok", bg: BG_ALT, note: "DEŇ 3 Alternatíva 3 | Kontakt: zvolen@sng.sk | 045 53 21 903" }
+        ],
+        akcie: ["Obrana hradu", "Varenie pod hradbami", "Káva v piesku", "Šľachtická dolma"],
+        ludia: ["Štefan II. Koháry", "Františkánski mnísi", "Osmanskí vojaci", "Marian Mesiarik"],
         jedla: ["Mleté mäso", "Čierna káva", "Kotlíkový guláš", "Polievka mercimek", "Sladká baklava", "Döner kebab", "Plnená dolma", "Turecký lokum"]
       },
       {
@@ -455,14 +551,60 @@
         cast: "2. Valasi",
         podtitul: "Chuť slobody a hôr",
         obdobie: "14. – 17. storočie",
-        lokalita: "Terchová, Detva, Karpaty",
-        prinos: "Salašníctvo, bryndza, žinčica, oštiepok, parenica a halušky. Pastierska mobilita ako kultúrny fenomén.",
+        lokalita: "Detva a Podpoľanie, Karpaty",
+        mapaUrl: "https://tx738toxy01.github.io/hch2mp/#2",
+        prinos: "Ovčie syry, prvá bryndza, žinčica, oštiepok, halušky, salaše a valašská kultúra pod Poľanou.",
         historia: "Stáročná migrácia pastierskych skupín cez Karpaty z juhovýchodu (Rumunsko, Ukrajina). Usádzali sa na Kysuciach, Orave, Liptove, Gemeri a Zemplíne. „Valašské právo“ im dávalo nižšie dane a slobodu pohybu so stádom výmenou za stráženie hraníc, čo vyvolávalo napätie s roľníkmi.",
-        pribeh: "Juraj Jánošík (1688 – 1713). Jeho prostredie je typicky valašské. Valasi stáli medzi šľachtou a poddanými – mali istú mieru slobody, no žili tvrdo a na okraji, z čoho sa rodilo zbojníctvo.",
-        jedlo: "Syrárstvo a bryndziarstvo: fermentovaná bryndza (prvá bryndziareň v Detve koncom 18. stor.), žinčica, oštiepok, parenica, halušky. Ovčie a kozľacie mäso, kaše z jačmeňa a prosa, kyslé mlieko, cesnak a cibuľa, valašské frgále, kyselica, podlesníky, pohánkový kontrabáš a trnková omáčka.",
-        lokacie: ["Terchová Detva", "Horské Karpaty", "Kysuce Orava", "Liptov Gemer"],
-        akcie: ["Horská kolonizácia", "Pasenie oviec", "Valašské právo", "Zbojnícke družiny"],
-        ludia: ["Juraj Jánošík", "Valašskí bačovia", "Horskí pastieri"],
+        pribeh: "Juraj Jánošík (1688 – 1713) a rodina Vagačovcov, ktorá v Detve koncom 18. storočia založila prvú bryndziareň. Valasi stáli medzi šľachtou a poddanými – mali istú mieru slobody, no žili tvrdo a na okraji.",
+        jedlo: "Syrárstvo a bryndziarstvo: fermentovaná bryndza (prvá bryndziareň v Detve), žinčica, oštiepok, parenica, halušky. Ovčie a kozľacie mäso, kaše z jačmeňa a prosa, kyslé mlieko, cesnak a cibuľa, valašské frgále, kyselica, podlesníky, pohánkový kontrabáš a trnková omáčka.",
+        prodPlan: [
+          {
+            den: "DEŇ 1 (Ráno – Poobedie)",
+            akcia: "História bryndze, príbeh rodiny Vagačovcov. Varenie, výroba (žinčica, halušky) a ochutnávka.",
+            hlavna: "Vagačov dom (Detva)",
+            kontakt: "0911 033 646 | office@vagacovdom.sk",
+            alternativy: [
+              "1. Historické lazy Podpoľania – Detva / Hriňová (info@regionpodpolanie.sk | +421 948 874 635)",
+              "2. Salaš Zbojská – Horehronie (zbojska@zbojska.sk | +421 910 418 788)"
+            ]
+          },
+          {
+            den: "DEŇ 2 (Ráno – Poobedie)",
+            akcia: "Kultúra a tradície Detvanov, kroje, fujary, drevené vyrezávané kríže a zbojnícka história.",
+            hlavna: "Podpolianske múzeum v Detve",
+            kontakt: "045/5455 502",
+            alternativy: [
+              "1. Terchová – osada u Jánošov (0904 098 285)",
+              "2. Skanzen Čičmany – Radenov dom (0918 187 683 | cicmany@pmza.sk)",
+              "3. Skanzen Rožnov pod Radhoštěm (+420 571 757 111 | muzeum@nmvp.cz)"
+            ]
+          },
+          {
+            den: "DEŇ 3 (Poldeň)",
+            akcia: "Súčasná výroba, kulinária na lazoch, presuny stád a výhľady na masív Poľany.",
+            hlavna: "Zvolenská Slatina (funkčná bryndziareň) a vrchy Poľany",
+            kontakt: "Produkcia dohľadá kontakt na prevádzku",
+            alternativy: [
+              "1. Príroda Karpát – Klenovský Vepor (ŠOP SR: +421 48 433 18 11)",
+              "2. Kráľova hoľa (podatelna@napant.sk)"
+            ]
+          }
+        ],
+        barbaraInfo: "★ Vagačov dom (0911 033 646) | ★ Podpolianske múzeum v Detve (045/5455 502) | ★ Zvolenská Slatina (bryndziareň) | Rožnov pod Radhoštěm | Čičmany | Terchová (u Jánošov)",
+        lokacie: [
+          { text: "📍 D1 ★ Vagačov dom (Detva)", bg: BG_BARBARA_GREEN, note: "DEŇ 1 Hlavná + Barbara ★ | Akcia: Prvá bryndziareň, žinčica, halušky | Kontakt: 0911 033 646 | office@vagacovdom.sk" },
+          { text: "📍 D2 ★ Podpolianske múzeum Detva", bg: BG_BARBARA_GREEN, note: "DEŇ 2 Hlavná + Barbara ★ | Akcia: Tradície Detvanov, kroje, fujary, kríže | Kontakt: 045/5455 502" },
+          { text: "📍 D3 ★ Zvolenská Slatina & Poľana", bg: BG_BARBARA_GREEN, note: "DEŇ 3 Hlavná + Barbara ★ | Akcia: Funkčná bryndziareň, presuny stád a masív Poľany" },
+          { text: "🔄 D1 Alt 1: Lazy Podpoľania (Hriňová)", bg: BG_ALT, note: "DEŇ 1 Alternatíva 1 | Kontakt: info@regionpodpolanie.sk | +421 948 874 635" },
+          { text: "🔄 D1 Alt 2: Salaš Zbojská", bg: BG_ALT, note: "DEŇ 1 Alternatíva 2 | Kontakt: zbojska@zbojska.sk | +421 910 418 788" },
+          { text: "🔄 D2 Alt 1: Terchová (u Jánošov)", bg: BG_ALT, note: "DEŇ 2 Alternatíva 1 + Barbara | Kontakt na dom: 0904 098 285" },
+          { text: "🔄 D2 Alt 2: Skanzen Čičmany (Radenov dom)", bg: BG_ALT, note: "DEŇ 2 Alternatíva 2 + Barbara | Kontakt: 0918 187 683 | cicmany@pmza.sk" },
+          { text: "🔄 D2 Alt 3: Skanzen Rožnov p. Radhoštěm", bg: BG_ALT, note: "DEŇ 2 Alternatíva 3 + Barbara | Kontakt: +420 571 757 111 | muzeum@nmvp.cz" },
+          { text: "🔄 D3 Alt 1: Klenovský Vepor", bg: BG_ALT, note: "DEŇ 3 Alternatíva 1 | Kontakt: ŠOP SR +421 48 433 18 11" },
+          { text: "🔄 D3 Alt 2: Kráľova hoľa", bg: BG_ALT, note: "DEŇ 3 Alternatíva 2 | Kontakt: podatelna@napant.sk (Správa NAPANT)" }
+        ],
+        akcie: ["História bryndze", "Tradície Detvanov", "Kulinária na lazoch", "Presuny stád"],
+        ludia: ["Rodina Vagačovcov", "Juraj Jánošík", "Valašskí bačovia", "Detvianski pastieri"],
         jedla: ["Ovčia bryndza", "Kyslá žinčica", "Údený oštiepok", "Zemiakové halušky", "Polievka kyselica", "Valašské frgále", "Pohánkový kontrabáš", "Trnková omáčka"]
       },
       {
@@ -471,12 +613,60 @@
         podtitul: "Remeslo má zlaté dno",
         obdobie: "12. – 13. storočie",
         lokalita: "Kremnica, Banská Štiavnica, Spiš",
-        prinos: "Mestská kuchyňa, údeniny, praclíky, cechové spracovanie mäsa, pekárstvo a rozvoj baníctva.",
+        mapaUrl: "https://tx738toxy01.github.io/hch2mp/#3",
+        prinos: "Mestská kuchyňa, údeniny, praclíky, mäsiarske cechy, banské a technologické inovácie.",
         historia: "Nemci prišli po tatárskom vpáde na pozvanie uhorských kráľov do Hauerlandu (Kremnica, Štiavnica, Bystrica) a na Spiš (Levoča, Kežmarok, Spišská Sobota). Mali vlastné právo Zipser Willkür a vybudovali technologické centrá Európy.",
         pribeh: "Daniel Sinapius-Horčička (1640 – 1688) – spišský evanjelický učiteľ, básnik a kazateľ. Študoval v Levoči a Wittenbergu. Počas rekatolizácie (1671 – 1681) bol vyhnaný do exilu, po návrate pôsobil v Levoči až do smrti.",
         jedlo: "Cechové spracovanie mäsa: údeniny, klobásy, pečené a marinované bravčové i hovädzie. Pšeničný a jačmenný chlieb s medom, praclíky, husté fazuľové a kapustové polievky, medovníky, orechové koláče, torty a remeselné pivo.",
-        lokacie: ["Kremnica Štiavnica", "Región Spiš", "Mesto Levoča"],
-        akcie: ["Hlbinná ťažba", "Mäsiarske cechy", "Rekatolizácia exil", "Mestská samospráva"],
+        prodPlan: [
+          {
+            den: "DEŇ 1 (Ráno – Poobedie)",
+            akcia: "Remeslá, dvor s dobovou pecou, pečenie praclíkov, mestské práva a cechy (Zipser Willkür).",
+            hlavna: "Kremnica alebo Banská Štiavnica (Historické námestie)",
+            kontakt: "infocentrum@kremnica.sk | +421 45 6742 856 / tic@banskastiavnica.sk",
+            alternativy: [
+              "1. Spišská Sobota – Historické domy (rieši produkcia lokálne v Poprade)",
+              "2. Kežmarok (info@kezmarok.sk)"
+            ]
+          },
+          {
+            den: "DEŇ 2 (Ráno – Poobedie)",
+            akcia: "Príbeh D. Sinapius-Horčičku, vzdelanosť a cechové listiny.",
+            hlavna: "Starý zámok, Banská Štiavnica",
+            kontakt: "sbm@muzeumbs.sk | 045/694 94 22",
+            alternativy: [
+              "1. Spišské múzeum v Levoči / Historická radnica (info@spisskemuzeum.com | +421 53 2456 777)",
+              "2. Thurzov dom Levoča (info@spisskemuzeum.com)",
+              "3. Drevený artikulárny kostol Kežmarok (ecavkk@gmail.com)"
+            ]
+          },
+          {
+            den: "DEŇ 3 (Poldeň)",
+            akcia: "Ukážka banských a technologických inovácií a záverečné pivo.",
+            hlavna: "Banské múzeum v prírode (B. Štiavnica) / Štôlňa Bartolomej",
+            kontakt: "sbm@muzeumbs.sk | 045/694 94 22",
+            alternativy: [
+              "1. Exteriéry Ľubietová (obec@lubietova.sk)",
+              "2. Exteriéry Spišskej Novej Vsi (tic@spisskanovaves.eu)"
+            ]
+          }
+        ],
+        barbaraInfo: "★ MsÚ v Kremnici a budovy pod jeho správou (045/2289 714) | Múzeum kultúry karpatských Nemcov (02/204 912 25)",
+        lokacie: [
+          { text: "📍 D1: Kremnica / B. Štiavnica (Námestie)", bg: BG_HLAVNA, note: "DEŇ 1 Hlavná | Akcia: Remeslá, dobová pec, pečenie praclíkov, cechy | Kontakt: infocentrum@kremnica.sk | +421 45 6742 856 / tic@banskastiavnica.sk" },
+          { text: "📍 D2: Starý zámok Banská Štiavnica", bg: BG_HLAVNA, note: "DEŇ 2 Hlavná | Akcia: Príbeh D. Sinapius-Horčičku, cechové listiny | Kontakt: sbm@muzeumbs.sk | 045/694 94 22" },
+          { text: "📍 D3: Banské múzeum / Štôlňa Bartolomej", bg: BG_HLAVNA, note: "DEŇ 3 Hlavná | Akcia: Banské inovácie a záverečné pivo | Kontakt: sbm@muzeumbs.sk | 045/694 94 22" },
+          { text: "★ MsÚ v Kremnici (budovy mesta)", bg: BG_BARBARA_GREEN, note: "Barbara lokácia (Zelená) | Kontakt: 045/2289 714" },
+          { text: "B: Múzeum kultúry karpatských Nemcov", bg: BG_BARBARA_OTHER, note: "Barbara lokácia | Kontakt: 02/204 912 25" },
+          { text: "🔄 D1 Alt 1: Spišská Sobota (Historické domy)", bg: BG_ALT, note: "DEŇ 1 Alternatíva 1 | Kontakt: Produkcia rieši dvor penziónu v Poprade" },
+          { text: "🔄 D1 Alt 2: Kežmarok", bg: BG_ALT, note: "DEŇ 1 Alternatíva 2 | Kontakt: info@kezmarok.sk" },
+          { text: "🔄 D2 Alt 1: Spišské múzeum / Radnica Levoča", bg: BG_ALT, note: "DEŇ 2 Alternatíva 1 | Kontakt: info@spisskemuzeum.com | +421 53 2456 777" },
+          { text: "🔄 D2 Alt 2: Thurzov dom Levoča", bg: BG_ALT, note: "DEŇ 2 Alternatíva 2 | Kontakt: info@spisskemuzeum.com" },
+          { text: "🔄 D2 Alt 3: Artikulárny kostol Kežmarok", bg: BG_ALT, note: "DEŇ 2 Alternatíva 3 | Kontakt: ecavkk@gmail.com" },
+          { text: "🔄 D3 Alt 1: Exteriéry Ľubietová", bg: BG_ALT, note: "DEŇ 3 Alternatíva 1 | Kontakt: obec@lubietova.sk" },
+          { text: "🔄 D3 Alt 2: Exteriéry Spišská Nová Ves", bg: BG_ALT, note: "DEŇ 3 Alternatíva 2 | Kontakt: tic@spisskanovaves.eu" }
+        ],
+        akcie: ["Pečenie praclíkov", "Mäsiarske cechy", "Banské inovácie", "Cechové listiny"],
         ludia: ["Daniel Sinapius", "Spišskí mešťania", "Nemeckí baníci"],
         jedla: ["Chrumkavé praclíky", "Údené klobásy", "Medové perníky", "Remeselné pivo", "Jačmenný chlieb", "Orechové torty"]
       },
@@ -485,14 +675,67 @@
         cast: "4. Maďari",
         podtitul: "Chuť Uhorska",
         obdobie: "Rok 1867 (vplyv od 9. stor.)",
-        lokalita: "Južné Slovensko, Žitný ostrov, Košice",
+        lokalita: "Košice a okolie, Tokaj, Južné Slovensko",
+        mapaUrl: "https://tx738toxy01.github.io/hch2mp/#4",
         prinos: "Kotlíkové varenie (bogrács), guláš, perkelt, halászlé, paprikáš, pagáče a tokajské víno.",
         historia: "Slovensko bolo takmer 1000 rokov súčasťou Uhorska (príchod kmeňov okolo r. 895). Úrodná černozem a ramená Dunaja na juhu priali chovu hovädzieho dobytka, pestovaniu pšenice, viniča a teplomilnej papriky.",
         pribeh: "František II. Rákóczi (1676 – 1735) – vodca najväčšieho protihabsburského povstania (1703 – 1711). Vojenské presuny kurucov cez Košice, Prešov, Spiš, Liptov až po Komárno, Nové Zámky a Dunajskú Stredu prepojili šľachtu s ľudom a šírili paprikové jedlá.",
         jedlo: "Varenie v kotlíku (bogrács): guláš, perkelt, paprikáš, rybacie halászlé. Paprika ako základ klobás a zabíjačiek, viac hovädzieho mäsa, pšeničný biely chlieb, kysnuté koláče, štrúdle, pagáče (pogácsa) a tokajské víno.",
-        lokacie: ["Žitný ostrov", "Mesto Košice", "Nové Zámky", "Dunajská Streda"],
-        akcie: ["Rákócziho povstanie", "Kotlíkové varenie", "Chov dobytka", "Pestovanie papriky"],
-        ludia: ["František Rákóczi", "Kuruckí vojaci", "Uhorská šľachta"],
+        prodPlan: [
+          {
+            den: "DEŇ 1 (Ráno – Poobedie)",
+            akcia: "Aristokratická kuchyňa (perkelt). Víno ako mena, tufové pivnice Tokaja.",
+            hlavna: "Kaštieľ Borša a Tokaj (Malá Tŕňa)",
+            kontakt: "recepcia@borsikastely.eu",
+            alternativy: [
+              "1. Kaštieľ Betliar (info@muzeumbetliar.sk | +421 587 983 118)",
+              "2. Kráľovský Chlmec – vinice (tic@kralovskychlmec.sk)",
+              "3. Kaštieľ v Trebišove (0911 941 988)"
+            ]
+          },
+          {
+            den: "DEŇ 2 (Ráno – Poobedie)",
+            akcia: "Kuruckí vojaci a pastieri. Varenie halászlé v kotlíku pri vode.",
+            hlavna: "Breh rieky Bodrog",
+            kontakt: "Dohodne produkcia so správou povodia",
+            alternativy: [
+              "1. Mŕtve rameno Tajba (CHKO Latorica)",
+              "2. Senecké jazerá – Juh (sprava@slnechnejazera.eu)",
+              "3. Brehy rieky Latorica (Správa povodia Bodrogu a Latorice)"
+            ]
+          },
+          {
+            den: "DEŇ 3 (Poldeň)",
+            akcia: "Koniec povstania, spojenie maďarskej moci a slovenského obyvateľstva.",
+            hlavna: "Dóm sv. Alžbety v Košiciach (Krypta F. II. Rákócziho)",
+            kontakt: "guides@domsvalzbety.sk | +421 908 957 692",
+            alternativy: [
+              "1. Hlavná ulica Košice (Informačné centrum Košice)",
+              "2. Východoslovenské múzeum (info@vsmuzeum.sk | 055/6223 061)",
+              "3. Katova bašta – Rodošto Košice (info@vsmuzeum.sk | 055/622 03 09)"
+            ]
+          }
+        ],
+        barbaraInfo: "★ Cukráreň Anka a Amorova cukráreň (Košice) | Hrad Regéc Maďarsko (036 30 110 99 63) | Hrad Sárospatak Maďarsko (036 47 311 083)",
+        lokacie: [
+          { text: "📍 D1: Kaštieľ Borša & Tokaj (Malá Tŕňa)", bg: BG_HLAVNA, note: "DEŇ 1 Hlavná | Akcia: Aristokratická kuchyňa (perkelt), tufové pivnice Tokaja | Kontakt: recepcia@borsikastely.eu" },
+          { text: "📍 D2: Breh rieky Bodrog", bg: BG_HLAVNA, note: "DEŇ 2 Hlavná | Akcia: Kuruckí vojaci a pastieri, halászlé v kotlíku pri vode | Kontakt: Správa povodia" },
+          { text: "📍 D3: Dóm sv. Alžbety Košice (Krypta)", bg: BG_HLAVNA, note: "DEŇ 3 Hlavná | Akcia: Krypta F. II. Rákócziho, koniec povstania | Kontakt: guides@domsvalzbety.sk | +421 908 957 692" },
+          { text: "★ Cukráreň Anka & Amorova (Košice)", bg: BG_BARBARA_GREEN, note: "Barbara lokácia (Zelená) | Košice" },
+          { text: "B: Hrad Regéc (Maďarsko)", bg: BG_BARBARA_OTHER, note: "Barbara lokácia | Kontakt: 036 30 110 99 63" },
+          { text: "B: Hrad Sárospatak (Maďarsko)", bg: BG_BARBARA_OTHER, note: "Barbara lokácia | Kontakt: 036 47 311 083" },
+          { text: "🔄 D1 Alt 1: Kaštieľ Betliar", bg: BG_ALT, note: "DEŇ 1 Alternatíva 1 | Kontakt: info@muzeumbetliar.sk | +421 587 983 118" },
+          { text: "🔄 D1 Alt 2: Kráľovský Chlmec (vinice)", bg: BG_ALT, note: "DEŇ 1 Alternatíva 2 | Kontakt: tic@kralovskychlmec.sk" },
+          { text: "🔄 D1 Alt 3: Kaštieľ v Trebišove", bg: BG_ALT, note: "DEŇ 1 Alternatíva 3 | Kontakt: 0911 941 988" },
+          { text: "🔄 D2 Alt 1: Mŕtve rameno Tajba", bg: BG_ALT, note: "DEŇ 2 Alternatíva 1 | Kontakt: CHKO Latorica" },
+          { text: "🔄 D2 Alt 2: Senecké jazerá (Juh)", bg: BG_ALT, note: "DEŇ 2 Alternatíva 2 | Kontakt: sprava@slnechnejazera.eu" },
+          { text: "🔄 D2 Alt 3: Brehy rieky Latorica", bg: BG_ALT, note: "DEŇ 2 Alternatíva 3 | Kontakt: Správa povodia Bodrogu a Latorice" },
+          { text: "🔄 D3 Alt 1: Hlavná ulica Košice", bg: BG_ALT, note: "DEŇ 3 Alternatíva 1 | Kontakt: Informačné centrum Košice" },
+          { text: "🔄 D3 Alt 2: Východoslovenské múzeum", bg: BG_ALT, note: "DEŇ 3 Alternatíva 2 | Kontakt: info@vsmuzeum.sk | 055/6223 061" },
+          { text: "🔄 D3 Alt 3: Katova bašta (Rodošto)", bg: BG_ALT, note: "DEŇ 3 Alternatíva 3 | Kontakt: info@vsmuzeum.sk | 055/622 03 09" }
+        ],
+        akcie: ["Rákócziho povstanie", "Kotlíkové varenie", "Tufové pivnice Tokaja", "Halászlé pri vode"],
+        ludia: ["František II. Rákóczi", "Kuruckí vojaci", "Uhorská šľachta"],
         jedla: ["Kotlíkový guláš", "Šťavnatý perkelt", "Rybacie halászlé", "Oškvarkové pagáče", "Tokajské víno", "Biely chlieb", "Ťahaná štrúdľa"]
       },
       {
@@ -500,14 +743,67 @@
         cast: "5. Husiti",
         podtitul: "Nová doba",
         obdobie: "Rok 1428 (15. storočie)",
-        lokalita: "Záhorie, Severné Slovensko",
+        lokalita: "Záhorie, Myjava, Tábor (CZ)",
+        mapaUrl: "https://tx738toxy01.github.io/hch2mp/#5",
         prinos: "Vojenská táborová strava, ražný chlieb, strukoviny, sušené mäso, kyslá kapusta a pivo.",
         historia: "Český veliteľ Ján Jiskra z Brandýsa ovládol s husitskými žoldniermi hrady a banské mestá ako ochranca maloletého kráľa. V roku 1462 sa dohodol s Matejom Korvínom a vstúpil do jeho služieb.",
         pribeh: "Ján Jiskra z Brandýsa (herec Stanislav Majer) a husitský kazateľ a reformátor Mikuláš z Prachatíc (Mikuláš z Pelhřimova, cca 1385 – 1434), ktorý organizoval bratrícke komunity na severnom a strednom Slovensku.",
         jedlo: "Disciplinovaná kolektívna vojenská strava: tmavý ražný chlieb, jačmenná a ovsená kaša, hrach a šošovica, cibuľa, cesnak, kyslá kapusta proti skorbutu, solené a v dyme sušené mäso, slanina a pivo (bezpečnejšie než voda).",
-        lokacie: ["Región Záhorie", "Severné Slovensko", "Banské mestá"],
-        akcie: ["Vojenské tábory", "Kontrola hradov", "Kališnícke kázne", "Dohoda Korvínom"],
-        ludia: ["Ján Jiskra", "Mikuláš Prachatíc", "Husitskí bratríci"],
+        prodPlan: [
+          {
+            den: "DEŇ 1 (Ráno – Poobedie)",
+            akcia: "Zrod hnutia, pivo a pečenie chleba pre vojsko.",
+            hlavna: "Housův mlýn (Tábor, CZ)",
+            kontakt: "info@housuvmlyn.cz | +420 775 630 665",
+            alternativy: [
+              "1. Husitské múzeum Tábor (tabor@husitskemuzeum.cz | +420 381 252 242)",
+              "2. Kozí Hrádek (Správa hradu Sezimovo Ústí)",
+              "3. Hrad Kotnov CZ (+420 381 252 242)"
+            ]
+          },
+          {
+            den: "DEŇ 2 (Ráno – Poobedie)",
+            akcia: "Vojenský tábor a spanilé jazdy. Varenie kaše a sušené mäso na vetre.",
+            hlavna: "Hrad Branč (Záhorie)",
+            kontakt: "info@najmiesta.sk | Obecný úrad Podbranč",
+            alternativy: [
+              "1. Topoľčiansky hrad (info@topolcianskyhrad.sk | +421 910 963 637)",
+              "2. Hrad Korlátka (OcÚ Horné Orešany | 033 558 61 02)",
+              "3. Hrad Dobrá Voda (dobravoda.starosta@gmail.com | +421 33 557 50 04)"
+            ]
+          },
+          {
+            den: "DEŇ 3 (Poldeň)",
+            akcia: "Ako sa vojsko živilo v dedinách (kapusta).",
+            hlavna: "Gazdovský dvor Turá Lúka",
+            kontakt: "gazdovskydvortl@gmail.com | 0907 202 126",
+            alternativy: [
+              "1. Skanzen Strážnice CZ (skanzen@nulk.cz | +420 608 837 644)",
+              "2. Skanzen Myjava (CTK Myjava)",
+              "3. Gazdovský dvor Vrbovce (Obec Vrbovce)"
+            ]
+          }
+        ],
+        barbaraInfo: "Zvolenský zámok (045/245 30 01) | Hrad Likava – Liptovské múzeum (0907 847 232) | Pustý hrad a Mestský hrad Kremnica",
+        lokacie: [
+          { text: "📍 D1: Housův mlýn (Tábor, CZ)", bg: BG_HLAVNA, note: "DEŇ 1 Hlavná | Akcia: Zrod hnutia, pivo a pečenie chleba pre vojsko | Kontakt: info@housuvmlyn.cz | +420 775 630 665" },
+          { text: "📍 D2: Hrad Branč (Záhorie)", bg: BG_HLAVNA, note: "DEŇ 2 Hlavná | Akcia: Vojenský tábor, varenie kaše a sušené mäso | Kontakt: info@najmiesta.sk | OcÚ Podbranč" },
+          { text: "📍 D3: Gazdovský dvor Turá Lúka", bg: BG_HLAVNA, note: "DEŇ 3 Hlavná | Akcia: Ako sa vojsko živilo v dedinách (kapusta) | Kontakt: gazdovskydvortl@gmail.com | 0907 202 126" },
+          { text: "B: Zvolenský zámok", bg: BG_BARBARA_OTHER, note: "Barbara lokácia | Kontakt: 045/245 30 01" },
+          { text: "B: Hrad Likava (Liptovské múzeum)", bg: BG_BARBARA_OTHER, note: "Barbara lokácia | Kontakt: 0907 847 232" },
+          { text: "B: Pustý hrad & Mestský hrad Kremnica", bg: BG_BARBARA_OTHER, note: "Barbara lokácia | Kremnica / Zvolen" },
+          { text: "🔄 D1 Alt 1: Husitské múzeum Tábor", bg: BG_ALT, note: "DEŇ 1 Alternatíva 1 | Kontakt: tabor@husitskemuzeum.cz | +420 381 252 242" },
+          { text: "🔄 D1 Alt 2: Kozí Hrádek (CZ)", bg: BG_ALT, note: "DEŇ 1 Alternatíva 2 | Kontakt: Správa hradu Sezimovo Ústí" },
+          { text: "🔄 D1 Alt 3: Hrad Kotnov (CZ)", bg: BG_ALT, note: "DEŇ 1 Alternatíva 3 | Kontakt: +420 381 252 242" },
+          { text: "🔄 D2 Alt 1: Topoľčiansky hrad", bg: BG_ALT, note: "DEŇ 2 Alternatíva 1 | Kontakt: info@topolcianskyhrad.sk | +421 910 963 637" },
+          { text: "🔄 D2 Alt 2: Hrad Korlátka", bg: BG_ALT, note: "DEŇ 2 Alternatíva 2 | Kontakt: OcÚ Horné Orešany | 033 558 61 02" },
+          { text: "🔄 D2 Alt 3: Hrad Dobrá Voda", bg: BG_ALT, note: "DEŇ 2 Alternatíva 3 | Kontakt: dobravoda.starosta@gmail.com | +421 33 557 50 04" },
+          { text: "🔄 D3 Alt 1: Skanzen Strážnice (CZ)", bg: BG_ALT, note: "DEŇ 3 Alternatíva 1 | Kontakt: skanzen@nulk.cz | +420 608 837 644" },
+          { text: "🔄 D3 Alt 2: Skanzen Myjava", bg: BG_ALT, note: "DEŇ 3 Alternatíva 2 | Kontakt: Centrum tradičnej kultúry Myjava" },
+          { text: "🔄 D3 Alt 3: Gazdovský dvor Vrbovce", bg: BG_ALT, note: "DEŇ 3 Alternatíva 3 | Kontakt: Obec Vrbovce" }
+        ],
+        akcie: ["Pečenie pre vojsko", "Vojenský tábor", "Sušenie mäsa na vetre", "Obživa v dedinách"],
+        ludia: ["Ján Jiskra", "Mikuláš z Prachatíc", "Husitskí bratríci"],
         jedla: ["Ražný chlieb", "Hrachová kaša", "Kyslá kapusta", "Sušené mäso", "Vojenské pivo", "Varená šošovica", "Údená slanina"]
       },
       {
@@ -515,43 +811,201 @@
         cast: "6. Židia",
         podtitul: "Chuť mesta",
         obdobie: "18. storočie",
-        lokalita: "Bratislava, Trnava, Nitra",
+        lokalita: "Bratislava, Trnava, Západné a Južné Slovensko",
+        mapaUrl: "https://tx738toxy01.github.io/hch2mp/#6",
         prinos: "Husacie hody, lokše, šábesový cholent, maces, chala, husacia pečeň a makovo-orechové dezerty.",
         historia: "Po bitke pri Moháči (1526) prúdili židovské rodiny do Bratislavy, Trnavy a Nitry. V 18. storočí za Márie Terézie a Tolerančného patentu Jozefa II. nastala stabilizácia a rozmach mestského obchodu.",
         pribeh: "Mordechaj (Moric) Frankel (18. storočie, Bratislava) – významný obchodník a finančník, ktorý zastupoval záujmy komunity pred mestskou radou a podporil rozvoj židovských pekární a obchodu s potravinami.",
         jedlo: "Mestská kuchyňa formovaná pravidlami kašrutu: husacia tradícia (husacia masť, pečená hus, pečienky), lokše plnené makom alebo pečeňou, pomaly pečený sobotný cholent (mäso, fazuľa, krúpy), gefilte fiš, maces, chala, makové a orechové koláče.",
-        lokacie: ["Stará Bratislava", "Mesto Trnava", "Historická Nitra"],
-        akcie: ["Mestský obchod", "Pravidlá kašrutu", "Rozvoj pekární", "Tolerančný patent"],
+        prodPlan: [
+          {
+            den: "DEŇ 1 (Ráno – Poobedie)",
+            akcia: "Košer pravidlá. Makové/orechové dezerty, chala. Príbeh obchodníka.",
+            hlavna: "ŽNO Bratislava (Ortodoxná synagóga / Múzeum)",
+            kontakt: "znoba@znoba.sk | 02/5441-6949",
+            alternativy: [
+              "1. Múzeum židovskej kultúry SNM (mzk@snm.sk)",
+              "2. Pamätník Chatama Sofera (+421 2 5441 6949)",
+              "3. Synagóga v Stupave (Jewrope)"
+            ]
+          },
+          {
+            den: "DEŇ 2 (Ráno – Poobedie)",
+            akcia: "Zrod husacích hodov, husacia pečeň a lokše v mestskom prostredí.",
+            hlavna: "Slovenský Grob / Historická Trnava",
+            kontakt: "Cech husacinárov Slovenský Grob (M. Jajcay)",
+            alternativy: [
+              "1. Synagóga Trnava – Kaviareň (info@synagoga.sk)",
+              "2. Nitra – bývalá židovská štvrť (TIC Nitra)",
+              "3. Vinohradnícky dom Pezinok (TIC Pezinok)"
+            ]
+          },
+          {
+            den: "DEŇ 3 (Poldeň)",
+            akcia: "Príprava sobotného cholentu (pomalé pečenie), mestské trhy.",
+            hlavna: "Stará Tržnica Bratislava (alebo historická pekáreň)",
+            kontakt: "trznica@staratrznica.sk",
+            alternativy: [
+              "1. Košice – Židovské kasíno (ŽNO Košice)",
+              "2. Komárno – Menház (ŽNO Komárno)",
+              "3. Synagóga v Nových Zámkoch (ŽNO Nové Zámky)"
+            ]
+          }
+        ],
+        barbaraInfo: "Múzeum slovenskej dediny v Martine SNM (043/2458 111) | Skalica a Mikulov (exteriér)",
+        lokacie: [
+          { text: "📍 D1: ŽNO Bratislava (Ortodoxná synagóga)", bg: BG_HLAVNA, note: "DEŇ 1 Hlavná | Akcia: Košer pravidlá, dezerty, chala | Kontakt: znoba@znoba.sk | 02/5441-6949" },
+          { text: "📍 D2: Slovenský Grob / Historická Trnava", bg: BG_HLAVNA, note: "DEŇ 2 Hlavná | Akcia: Husacie hody, pečeň a lokše | Kontakt: Cech husacinárov Slovenský Grob (M. Jajcay)" },
+          { text: "📍 D3: Stará Tržnica Bratislava", bg: BG_HLAVNA, note: "DEŇ 3 Hlavná | Akcia: Príprava sobotného cholentu, mestské trhy | Kontakt: trznica@staratrznica.sk" },
+          { text: "B: Múzeum slovenskej dediny Martin", bg: BG_BARBARA_OTHER, note: "Barbara lokácia | Kontakt: 043/2458 111" },
+          { text: "B: Skalica a Mikulov (exteriér)", bg: BG_BARBARA_OTHER, note: "Barbara lokácia | Exteriéry" },
+          { text: "🔄 D1 Alt 1: Múzeum židovskej kultúry SNM", bg: BG_ALT, note: "DEŇ 1 Alternatíva 1 | Kontakt: mzk@snm.sk" },
+          { text: "🔄 D1 Alt 2: Pamätník Chatama Sofera", bg: BG_ALT, note: "DEŇ 1 Alternatíva 2 | Kontakt: +421 2 5441 6949" },
+          { text: "🔄 D1 Alt 3: Synagóga v Stupave", bg: BG_ALT, note: "DEŇ 1 Alternatíva 3 | Kontakt: Združenie Jewrope" },
+          { text: "🔄 D2 Alt 1: Synagóga Trnava (Kaviareň)", bg: BG_ALT, note: "DEŇ 2 Alternatíva 1 | Kontakt: info@synagoga.sk" },
+          { text: "🔄 D2 Alt 2: Nitra (židovská štvrť)", bg: BG_ALT, note: "DEŇ 2 Alternatíva 2 | Kontakt: TIC Nitra" },
+          { text: "🔄 D2 Alt 3: Vinohradnícky dom Pezinok", bg: BG_ALT, note: "DEŇ 2 Alternatíva 3 | Kontakt: TIC Pezinok" },
+          { text: "🔄 D3 Alt 1: Košice (Židovské kasíno)", bg: BG_ALT, note: "DEŇ 3 Alternatíva 1 | Kontakt: ŽNO Košice" },
+          { text: "🔄 D3 Alt 2: Komárno (Menház)", bg: BG_ALT, note: "DEŇ 3 Alternatíva 2 | Kontakt: ŽNO Komárno" },
+          { text: "🔄 D3 Alt 3: Synagóga Nové Zámky", bg: BG_ALT, note: "DEŇ 3 Alternatíva 3 | Kontakt: ŽNO Nové Zámky" }
+        ],
+        akcie: ["Pravidlá kašrutu", "Zrod husacích hodov", "Pomalé pečenie cholentu", "Mestské trhy"],
         ludia: ["Moric Frankel", "Bratislavskí rabíni", "Židovskí pekári"],
         jedla: ["Pečená hus", "Zemiakové lokše", "Sobotný cholent", "Pletená chala", "Gefilte fiš", "Husacia pečeň", "Makové dezerty", "Nekvasený maces"]
       },
       {
         id: 7,
         cast: "7. Mongoli",
-        podtitul: "Ako Slováci porazili Mongolov - Chuť Ázie",
+        podtitul: "Ako Slováci porazili Mongolov",
         obdobie: "Rok 1241 / 1285 (13. stor.)",
-        lokalita: "Východné Slovensko, Košice, Zemplín",
+        lokalita: "Prešov, Košice, Spiš, Zemplín",
+        mapaUrl: "https://tx738toxy01.github.io/hch2mp/#7",
         prinos: "Technika kotlíkového varenia, sušené mlieko (qurut), proso, kumys a príprava mäsa boodog.",
         historia: "Po drvivej porážke pri rieke Slaná (1241) pod vedením Batuchána odolali len kamenné hrady. Pri druhom vpáde v roku 1285 narazila 40-tisícová armáda chána Nogaja na novovybudovanú sieť pevností.",
         pribeh: "Vojvodca Juraj Bakša zo Zemplína (herec Michal Hudák) – veliteľ kráľa Ladislava IV., ktorý guerillovou taktikou a výpadmi z kamenných hradov porazil Tatárov na Zemplíne, Šariši a pri Podolínci na Spiši.",
         jedlo: "Každý arban (10 mužov) viezol 3,5 sušenej ovce a kotlík. Kumys (kobylí nápoj), qurut (sušený syr rozmiešaný vo vode), prosná kaša, shülen (mäso varené v kotlíku so soľou), parené taštičky buuz, rezance tsuivan, boodog (mäso pečené horúcimi kameňmi), boortsog a slaný čaj suutei tsai.",
-        lokacie: ["Rieka Slaná", "Zemplín Šariš", "Hrad Podolínec", "Verecký priesmyk"],
-        akcie: ["Tatársky vpád", "Guerillová taktika", "Obrana hradov", "Bitka Podolínci"],
-        ludia: ["Juraj Bakša", "Chán Nogaj", "Kráľ Ladislav"],
-        jedla: ["Kobylí kumys", "Sušený qurut", "Kotlíkový shülen", "Parený buuz", "Pečený boodog", "Rezance tsuivan", "Slaný čaj"]
+        prodPlan: [
+          {
+            den: "DEŇ 1 (Ráno – Poobedie)",
+            akcia: "Mongolská kavaléria. Príprava sušeného mäsa a varenie v koži zvierat (Boodog).",
+            hlavna: "Zemplínsky hrad (valy) / Šarišská otvorená krajina",
+            kontakt: "starosta@obeczemplin.sk | 056/679 84 57",
+            alternativy: [
+              "1. Hrad Brekov (brekov@brekov.sk)",
+              "2. Jasov – Opátstvo (opatstvojasov@gmail.com | 055/466 41 06)",
+              "3. Hradište v Tibave (obectibava@gmail.com | 056/658 24 31)"
+            ]
+          },
+          {
+            den: "DEŇ 2 (Ráno – Poobedie)",
+            akcia: "Uhorská obrana. Varenie prosa a kumys. Príbeh Juraja Bakšu.",
+            hlavna: "Spišský hrad (kamenné útočisko)",
+            kontakt: "info@spisskemuzeum.com | +421 53 454 13 36",
+            alternativy: [
+              "1. Hrad Ľubovňa (info@hradlubovna.sk | +421 52 43 22 422)",
+              "2. Podolínec – mestské hradby (msou@podolinec.eu)",
+              "3. Kežmarský hrad (info@kezmarok.com | +421 52 452 26 19)"
+            ]
+          },
+          {
+            den: "DEŇ 3 (Poldeň)",
+            akcia: "Vplyv ázijských techník na kotlík. Mliečna pasta qurut a čaj Suutei Tsai.",
+            hlavna: "Prírodná scenéria Košice-okolie",
+            kontakt: "Lokačný manažér v exteriéri",
+            alternativy: [
+              "1. Zádiel – Zádielska tiesňava (obeczadiel@gmail.com | 055/466 21 00)",
+              "2. Hradisko Valaliky (obec@valaliky.sk | 055/699 98 01)",
+              "3. Archeoskanzen Nižná Myšľa (info@niznamysla.sk | 055/698 01 24)"
+            ]
+          }
+        ],
+        barbaraInfo: "★ Mongolské jurty (mongolskejurty.sk) | ★ Zbojnícky hrad Prešov (Solivar), Veľký Kamenec a Čičva (zrúcaniny)",
+        lokacie: [
+          { text: "📍 D1: Zemplínsky hrad (valy) / Šariš", bg: BG_HLAVNA, note: "DEŇ 1 Hlavná | Akcia: Mongolská kavaléria, sušené mäso, Boodog | Kontakt: starosta@obeczemplin.sk | 056/679 84 57" },
+          { text: "📍 D2: Spišský hrad", bg: BG_HLAVNA, note: "DEŇ 2 Hlavná | Akcia: Uhorská obrana, proso, kumys, Juraj Bakša | Kontakt: info@spisskemuzeum.com | +421 53 454 13 36" },
+          { text: "📍 D3: Prírodná scenéria Košice-okolie", bg: BG_HLAVNA, note: "DEŇ 3 Hlavná | Akcia: Ázijský kotlík, qurut a čaj Suutei Tsai | Kontakt: Lokačný manažér" },
+          { text: "★ Mongolské jurty", bg: BG_BARBARA_GREEN, note: "Barbara lokácia (Zelená) | Kontakt: mongolskejurty.sk" },
+          { text: "★ Zbojnícky hrad, Veľký Kamenec, Čičva", bg: BG_BARBARA_GREEN, note: "Barbara lokácia (Zelená) | Zrúcaniny Prešov-Solivar, Zemplín" },
+          { text: "🔄 D1 Alt 1: Hrad Brekov", bg: BG_ALT, note: "DEŇ 1 Alternatíva 1 | Kontakt: brekov@brekov.sk" },
+          { text: "🔄 D1 Alt 2: Opátstvo Jasov", bg: BG_ALT, note: "DEŇ 1 Alternatíva 2 | Kontakt: opatstvojasov@gmail.com | 055/466 41 06" },
+          { text: "🔄 D1 Alt 3: Hradište v Tibave", bg: BG_ALT, note: "DEŇ 1 Alternatíva 3 | Kontakt: obectibava@gmail.com | 056/658 24 31" },
+          { text: "🔄 D2 Alt 1: Hrad Ľubovňa", bg: BG_ALT, note: "DEŇ 2 Alternatíva 1 | Kontakt: info@hradlubovna.sk | +421 52 43 22 422" },
+          { text: "🔄 D2 Alt 2: Podolínec (mestské hradby)", bg: BG_ALT, note: "DEŇ 2 Alternatíva 2 | Kontakt: msou@podolinec.eu" },
+          { text: "🔄 D2 Alt 3: Kežmarský hrad", bg: BG_ALT, note: "DEŇ 2 Alternatíva 3 | Kontakt: info@kezmarok.com | +421 52 452 26 19" },
+          { text: "🔄 D3 Alt 1: Zádielska tiesňava", bg: BG_ALT, note: "DEŇ 3 Alternatíva 1 | Kontakt: obeczadiel@gmail.com | 055/466 21 00" },
+          { text: "🔄 D3 Alt 2: Hradisko Valaliky", bg: BG_ALT, note: "DEŇ 3 Alternatíva 2 | Kontakt: obec@valaliky.sk | 055/699 98 01" },
+          { text: "🔄 D3 Alt 3: Archeoskanzen Nižná Myšľa", bg: BG_ALT, note: "DEŇ 3 Alternatíva 3 | Kontakt: info@niznamysla.sk | 055/698 01 24" }
+        ],
+        akcie: ["Mongolská kavaléria", "Pečenie Boodog", "Obrana kamenných hradov", "Ázijský kotlík"],
+        ludia: ["Juraj Bakša", "Chán Nogaj", "Kráľ Ladislav IV."],
+        jedla: ["Kobylí kumys", "Sušený qurut", "Kotlíkový shülen", "Parený buuz", "Pečený boodog", "Rezance tsuivan", "Slaný čaj Suutei Tsai"]
       },
       {
         id: 8,
         cast: "8. Rusíni",
         podtitul: "Zabudnutí Slovania",
         obdobie: "Rok 1848 (19. storočie)",
-        lokalita: "Snina, Humenné, Svidník, Bardejov",
+        lokalita: "Stará Ľubovňa, Bardejov, Svidník, Prešov",
+        mapaUrl: "https://tx738toxy01.github.io/hch2mp/#8",
         prinos: "Mačanka, tatarské pirohy, holubky, vaječný syr hrudka, paska a pôstna karpatská kuchyňa.",
         historia: "Počas revolúcie 1848 bojovali Rusíni za uznanie, no po vyrovnaní v r. 1867 čelili tvrdej maďarizácii. Tisíce Rusínov odišli do USA (Pensylvánia, Ohio), kde zakladali spolky a zachránili národnú identitu.",
         pribeh: "Adolf Dobriansky (vizionár, ktorý v r. 1849 dosiahol vznik Užhorodského dištriktu) a prešovský kňaz a básnik Alexander Duchnovič („Ja Rusín bol, som i budem!“), ktorý zakladal čitárne a písal šlabikáre.",
         jedlo: "Filozofia „z mála urobiť hostinu“ a prísne pôsty. Svätá trojica: zemiaky (grule/bandurky), kapusta a múka + huby. Mačanka (z kapustovej jušky a húb), tatarské pirohy z pohánky, koločanka, holubky, lokša, pastiersky čir, veľkonočný koláč paska a vaječný syr hrudka (sirec).",
-        lokacie: ["Snina Humenné", "Svidník Bardejov", "Mesto Prešov"],
-        akcie: ["Národné obrodenie", "Prísne pôsty", "Emigrácia Ameriky", "Zber húb"],
+        prodPlan: [
+          {
+            den: "DEŇ 1 (Ráno – Poobedie)",
+            akcia: "Náboženské pôsty, varenie mačanky z kyslej kapusty (jušky) a húb. Zemiaky a kapusta.",
+            hlavna: "Skanzen Svidník (Národopisná expozícia v prírode)",
+            kontakt: "svidnik@snm.sk | +421 54 245 10 01",
+            alternativy: [
+              "1. Skanzen Humenné (sekretariat@muzeumhumenne.sk | 057/775 22 40)",
+              "2. Skanzen Bardejovské Kúpele (muzeum@muzeumbardejov.sk | +421 54 472 20 09)",
+              "3. Skanzen pod Ľubovnianskym hradom (info@hradlubovna.sk | +421 52 43 22 422)"
+            ]
+          },
+          {
+            den: "DEŇ 2 (Ráno – Poobedie)",
+            akcia: "Príbeh Duchnoviča a Dobrianskeho. Príprava Pasky, hrudky a pirohov z tmavej múky.",
+            hlavna: "Múzeum rusínskej kultúry (SNM Prešov) / Historická fara",
+            kontakt: "mrk@snm.sk | +421 51 245 33 21",
+            alternativy: [
+              "1. Drevený chrám Ladomirová (obecladomirova@gmail.com)",
+              "2. Sninský kaštieľ (kastiel@snina.sk | 057/756 18 93)",
+              "3. Drevený chrám v Hervartove (obec@hervartov.sk | +421 54 472 32 30)"
+            ]
+          },
+          {
+            den: "DEŇ 3 (Poldeň)",
+            akcia: "Americká migrácia a udržanie tradícií. Exteriérové varenie „holubkov“.",
+            hlavna: "Drevená dedinka v okolí Bardejova",
+            kontakt: "Lokačný manažér",
+            alternativy: [
+              "1. Východné Karpaty – Poloniny (sekretariat.nppoloniny@sopsr.sk)",
+              "2. Obec Tokajík (obec@obectokajik.sk | +421 905 607 726)",
+              "3. Obec Runina (obecrunina@gmail.com | 057 769 81 21)"
+            ]
+          }
+        ],
+        barbaraInfo: "★ Drevený chrám sv. Michala Archanjela Topoľa (057/769 81 17) | ★ Divadlo Alexandra Duchnoviča | Kaštieľ Dobrianskych v Čertižnom | Matica slovenská Martin | Katedrála sv. Jána Krstiteľa Prešov",
+        lokacie: [
+          { text: "📍 D1: Skanzen Svidník", bg: BG_HLAVNA, note: "DEŇ 1 Hlavná | Akcia: Pôsty, varenie mačanky z jušky a húb | Kontakt: svidnik@snm.sk | +421 54 245 10 01" },
+          { text: "📍 D2: Múzeum rusínskej kultúry Prešov", bg: BG_HLAVNA, note: "DEŇ 2 Hlavná | Akcia: Duchnovič a Dobriansky, Paska, hrudka, pirohy | Kontakt: mrk@snm.sk | +421 51 245 33 21" },
+          { text: "📍 D3: Drevená dedinka pri Bardejove", bg: BG_HLAVNA, note: "DEŇ 3 Hlavná | Akcia: Americká migrácia, exteriérové varenie holubkov | Kontakt: Lokačný manažér" },
+          { text: "★ Drevený chrám Topoľa", bg: BG_BARBARA_GREEN, note: "Barbara lokácia (Zelená) | Chrám sv. Michala Archanjela | Kontakt: 057/769 81 17" },
+          { text: "★ Divadlo Alexandra Duchnoviča", bg: BG_BARBARA_GREEN, note: "Barbara lokácia (Zelená) | Prešov" },
+          { text: "B: Kaštieľ Dobrianskych v Čertižnom", bg: BG_BARBARA_OTHER, note: "Barbara lokácia | Čertižné + Matica slovenská v Martine" },
+          { text: "B: Katedrála sv. Jána Krstiteľa Prešov", bg: BG_BARBARA_OTHER, note: "Barbara lokácia | Gréckokatolícka katedrála Prešov" },
+          { text: "🔄 D1 Alt 1: Skanzen Humenné", bg: BG_ALT, note: "DEŇ 1 Alternatíva 1 | Kontakt: sekretariat@muzeumhumenne.sk | 057/775 22 40" },
+          { text: "🔄 D1 Alt 2: Skanzen Bardejovské Kúpele", bg: BG_ALT, note: "DEŇ 1 Alternatíva 2 | Kontakt: muzeum@muzeumbardejov.sk | +421 54 472 20 09" },
+          { text: "🔄 D1 Alt 3: Skanzen Stará Ľubovňa", bg: BG_ALT, note: "DEŇ 1 Alternatíva 3 | Kontakt: info@hradlubovna.sk | +421 52 43 22 422" },
+          { text: "🔄 D2 Alt 1: Drevený chrám Ladomirová", bg: BG_ALT, note: "DEŇ 2 Alternatíva 1 | Kontakt: obecladomirova@gmail.com" },
+          { text: "🔄 D2 Alt 2: Sninský kaštieľ", bg: BG_ALT, note: "DEŇ 2 Alternatíva 2 | Kontakt: kastiel@snina.sk | 057/756 18 93" },
+          { text: "🔄 D2 Alt 3: Drevený chrám Hervartov", bg: BG_ALT, note: "DEŇ 2 Alternatíva 3 | Kontakt: obec@hervartov.sk | +421 54 472 32 30" },
+          { text: "🔄 D3 Alt 1: NP Poloniny", bg: BG_ALT, note: "DEŇ 3 Alternatíva 1 | Kontakt: sekretariat.nppoloniny@sopsr.sk" },
+          { text: "🔄 D3 Alt 2: Obec Tokajík", bg: BG_ALT, note: "DEŇ 3 Alternatíva 2 | Kontakt: obec@obectokajik.sk | +421 905 607 726" },
+          { text: "🔄 D3 Alt 3: Obec Runina", bg: BG_ALT, note: "DEŇ 3 Alternatíva 3 | Kontakt: obecrunina@gmail.com | 057 769 81 21" }
+        ],
+        akcie: ["Náboženské pôsty", "Varenie mačanky", "Príprava Pasky a hrudky", "Exteriérové holubky"],
         ludia: ["Adolf Dobriansky", "Alexander Duchnovič", "Karpatskí pastieri"],
         jedla: ["Hubová mačanka", "Tatarské pirohy", "Plnené holubky", "Vaječná hrudka", "Veľkonočná paska", "Zemiaková koločanka", "Pastiersky čir", "Kapustová juška"]
       },
@@ -560,13 +1014,64 @@
         cast: "9. Rómovia",
         podtitul: "Chuť vášne",
         obdobie: "18. storočie",
-        lokalita: "Lučenec, Levice, Košice, Rimavská Sobota",
-        prinos: "Kotlíkové špeciality na ohni, korenistá gója, hustá fazóľová polievka a hudobno-kováčska tradícia.",
+        lokalita: "Lučenec, Rimavská Sobota, Fiľakovo, Košice",
+        mapaUrl: "https://tx738toxy01.github.io/hch2mp/#9",
+        prinos: "Kotlíkové špeciality na ohni, korenistá gója, hustá fazóľová polievka, hudba, jarmoky a kováči.",
         historia: "Príchod v 14. – 15. storočí z Indie cez Balkán. Za Žigmunda Luxemburského dostávali ochranné listiny ako kováči (vyrábali kotly, nože, podkovy) a hudobníci. V 18. storočí čelili nariadeniam Márie Terézie a Jozefa II. o usadení.",
         pribeh: "Rodina Ráczovcov – najmä Ján Rácz, vychýrený rómsky primáš a kapelník z 18. storočia pôsobiaci v Hornom Uhorsku, ktorého si objednávali šľachtické dvory aj mestské rady.",
         jedlo: "Kuchyňa otvoreného ohňa a kotlíka: gója (bravčové črevo plnené korenistým mäsom, ryžou a cibuľou), hustá cesnaková fazóľová polievka s údeným mäsom, domáci chlieb a jedlá z vnútorností.",
-        lokacie: ["Lučenec Levice", "Rimavská Sobota", "Mesto Košice"],
-        akcie: ["Kováčske remeslo", "Jarmočná muzika", "Varenie ohni", "Šľachtické hostiny"],
+        prodPlan: [
+          {
+            den: "DEŇ 1 (Ráno – Poobedie)",
+            akcia: "Kolektívne varenie pri ohni (hustá fazuľová polievka s údeným), hudba.",
+            hlavna: "Historický dvor alebo Skanzen (Lučenec / Rimavská Sobota)",
+            kontakt: "nmg@nmg.sk | Novohradské múzeum Lučenec",
+            alternativy: [
+              "1. Múzeum rómskej kultúry SNM Martin (msd@snm.sk | +421 43 24 58 116)",
+              "2. Skanzen Rožňava – Banícke múzeum (info@banmuz.sk)",
+              "3. Dvor vo Fiľakove (hradfilakovo@hradfilakovo.sk | 047/43 82 017)"
+            ]
+          },
+          {
+            den: "DEŇ 2 (Ráno – Poobedie)",
+            akcia: "Remeslo (kováčstvo) a príprava tradičnej góje (plnené črevo). Príbeh primáša.",
+            hlavna: "Panský kaštieľ alebo mestské korzo (Košice)",
+            kontakt: "Zabezpečenie kapely a lokácie rieši produkcia",
+            alternativy: [
+              "1. Levický hrad (tmlevice@muzeumlevice.sk)",
+              "2. Historická Nitra (info@nitra.sk)",
+              "3. Park kaštieľa Betliar (info@muzeumbetliar.sk)"
+            ]
+          },
+          {
+            den: "DEŇ 3 (Poldeň)",
+            akcia: "Jarmočný ruch, kočovanie a obchod s koňmi (B-roll a dotáčky).",
+            hlavna: "Ranč / Otvorená lúka na južnom Slovensku",
+            kontakt: "Farma/Ranč v okolí (lokačný manažér)",
+            alternativy: [
+              "1. Podunajsko (info@podunajsko.com)",
+              "2. Abov (info@kosiceregion.com)",
+              "3. Lúky na Gemeri (info@regiongemer.sk)"
+            ]
+          }
+        ],
+        barbaraInfo: "★ Hradné múzeum vo Fiľakove (047/438 26 19) | ★ Mestské múzeum Lučenec a Radnica (0911 733 980, lukus.sk) | ★ Múzeum slovenskej dediny Martin, Kaštieľ vo Veľkom Blhu, KC Mučín",
+        lokacie: [
+          { text: "📍 D1: Historický dvor / Skanzen Lučenec", bg: BG_HLAVNA, note: "DEŇ 1 Hlavná | Akcia: Varenie pri ohni (fazóľová s údeným), hudba | Kontakt: nmg@nmg.sk | Novohradské múzeum Lučenec" },
+          { text: "📍 D2: Panský kaštieľ / Korzo Košice", bg: BG_HLAVNA, note: "DEŇ 2 Hlavná | Akcia: Kováčstvo, príprava góje, príbeh primáša | Kontakt: Produkcia" },
+          { text: "📍 D3: Ranč / Otvorená lúka (Juh SR)", bg: BG_HLAVNA, note: "DEŇ 3 Hlavná | Akcia: Jarmočný ruch, kočovanie a obchod s koňmi | Kontakt: Lokačný manažér" },
+          { text: "★ Hradné múzeum vo Fiľakove", bg: BG_BARBARA_GREEN, note: "Barbara lokácia (Zelená) | Kontakt: 047/438 26 19 | hradfilakovo@hradfilakovo.sk" },
+          { text: "★ Mestské múzeum a Radnica Lučenec", bg: BG_BARBARA_GREEN, note: "Barbara lokácia (Zelená) | Kontakt: 0911 733 980 | lukus.sk" },
+          { text: "★ Kaštieľ Veľký Blh, KC Mučín, SNM Martin", bg: BG_BARBARA_GREEN, note: "Barbara lokácie (Zelená) | Múzeum kultúry Rómov Martin (msd@snm.sk | +421 43 24 58 116)" },
+          { text: "🔄 D1 Alt 2: Skanzen Rožňava (Banícke múz.)", bg: BG_ALT, note: "DEŇ 1 Alternatíva 2 | Kontakt: info@banmuz.sk" },
+          { text: "🔄 D2 Alt 1: Levický hrad", bg: BG_ALT, note: "DEŇ 2 Alternatíva 1 | Kontakt: tmlevice@muzeumlevice.sk" },
+          { text: "🔄 D2 Alt 2: Historická Nitra", bg: BG_ALT, note: "DEŇ 2 Alternatíva 2 | Kontakt: info@nitra.sk" },
+          { text: "🔄 D2 Alt 3: Park kaštieľa Betliar", bg: BG_ALT, note: "DEŇ 2 Alternatíva 3 | Kontakt: info@muzeumbetliar.sk" },
+          { text: "🔄 D3 Alt 1: Podunajsko", bg: BG_ALT, note: "DEŇ 3 Alternatíva 1 | Kontakt: info@podunajsko.com" },
+          { text: "🔄 D3 Alt 2: Abov (Košice región)", bg: BG_ALT, note: "DEŇ 3 Alternatíva 2 | Kontakt: info@kosiceregion.com" },
+          { text: "🔄 D3 Alt 3: Lúky na Gemeri", bg: BG_ALT, note: "DEŇ 3 Alternatíva 3 | Kontakt: info@regiongemer.sk" }
+        ],
+        akcie: ["Kováčske remeslo", "Príprava góje", "Varenie pri ohni", "Obchod s koňmi"],
         ludia: ["Ján Rácz", "Rómski primáši", "Putujúci kováči"],
         jedla: ["Pečená gója", "Fazóľová polievka", "Údené mäso", "Korenené vnútornosti", "Domáci chlieb", "Kotlíkové mäso"]
       },
@@ -575,12 +1080,62 @@
         cast: "10. Habáni",
         podtitul: "Chuť komunity a hliny",
         obdobie: "16. – 17. storočie",
-        lokalita: "Sobotište, Veľké Leváre, Moravský Svätý Ján",
-        prinos: "Habánska majolika, hygiena stolovania, štepenie ovocia, komorové sušiarne a habánsky koláč.",
+        lokalita: "Záhorie (Veľké Leváre, Sobotište)",
+        mapaUrl: "https://tx738toxy01.github.io/hch2mp/#10",
+        prinos: "Spoločné stolovanie, hygiena, habánska majolika, štepenie ovocia, sušiarne a habánsky koláč.",
         historia: "Novokrstenci (anabaptisti) utekajúci v 16. storočí zo Švajčiarska, Nemecka a severného Talianska. Odmietali zbrane a súkromné vlastníctvo, zakladali uzavreté rovnostárske dvory – „haushabeny“.",
         pribeh: "Správca dvora „Haushalter“ a majster keramikár. Život v habánskom dvore pripomínal prísne organizovanú utópiu: varilo sa v jednej obrovskej kuchyni a jedlo sa v spoločných jedálňach v úplnom tichu.",
         jedlo: "Špičkové ovocinárstvo (štepenie jabĺk a hrušiek), veľké komorové sušiarne na sušené ovocie, husté ovocné kaše, habánsky koláč, kvalitná zelenina, slabé pivo a slávna biela glazovaná keramika (majolika).",
-        lokacie: ["Obec Sobotište", "Veľké Leváre", "Moravský Ján"],
+        prodPlan: [
+          {
+            den: "DEŇ 1 (Ráno – Poobedie)",
+            akcia: "Život v Haushabene. Keramická dielňa. Majolika a zmena stolovania.",
+            hlavna: "Habánsky dvor Veľké Leváre",
+            kontakt: "ocuvl@levare.sk | 034 / 779 44 93",
+            alternativy: [
+              "1. Habánsky dvor Sobotište (sobotiste@sobotiste.sk)",
+              "2. Moravský Svätý Ján (info@moravskysvatyjan.sk)",
+              "3. Majolika Modra – dielňa (+421 911 980 105)"
+            ]
+          },
+          {
+            den: "DEŇ 2 (Ráno – Poobedie)",
+            akcia: "Kolektívna kuchyňa, ovocinárstvo a sušenie ovocia. Pečenie habánskych koláčov.",
+            hlavna: "Historický mlyn alebo sušiareň na Záhorí",
+            kontakt: "Lokačný manažér (priestor s tehlovou pecou)",
+            alternativy: [
+              "1. Schaubmarov mlyn Pezinok (schaubmarovmlyn@sng.sk | +421 33 640 40 35)",
+              "2. Holíčsky zámok (tikholic@holic.sk | 0907 657 884)",
+              "3. Mlyny Oblazy – Kvačianska dolina (oblazy@oblazy.sk)"
+            ]
+          },
+          {
+            den: "DEŇ 3 (Poldeň)",
+            akcia: "Organizácia komunity. Spoločná dlhá jedáleň (utópia).",
+            hlavna: "Interiér múzea vo Veľkých Levároch",
+            kontakt: "Lokálna fara / Obec Veľké Leváre: ocuvl@levare.sk",
+            alternativy: [
+              "1. Skalica – Záhorské múzeum (zahorskemuzeum@zahorskemuzeum.sk | +421 34 664 42 05)",
+              "2. Smolenice – Zámok (zamok-smolenice@savba.sk | +421 33 5586 193)",
+              "3. Historický dvor v Gajaroch (info@gajary.sk)"
+            ]
+          }
+        ],
+        barbaraInfo: "★ Habánsky mlyn (Múzeum habánov, Sobotište) – sprievodkyňa: 0918 438 044, zriaďovateľ múzea: 034/628 21 02",
+        lokacie: [
+          { text: "📍 D1: Habánsky dvor Veľké Leváre", bg: BG_HLAVNA, note: "DEŇ 1 Hlavná | Akcia: Haushaben, keramická dielňa, majolika | Kontakt: ocuvl@levare.sk | 034 / 779 44 93" },
+          { text: "📍 D2: Historický mlyn / sušiareň Záhorie", bg: BG_HLAVNA, note: "DEŇ 2 Hlavná | Akcia: Kolektívna kuchyňa, sušenie ovocia, habánske koláče | Kontakt: Lokačný manažér" },
+          { text: "📍 D3: Interiér múzea Veľké Leváre", bg: BG_HLAVNA, note: "DEŇ 3 Hlavná | Akcia: Spoločná dlhá jedáleň (utópia) | Kontakt: ocuvl@levare.sk" },
+          { text: "★ Habánsky mlyn (Múzeum Sobotište)", bg: BG_BARBARA_GREEN, note: "Barbara lokácia (Zelená) + D1 Alt 1 | Sprievodkyňa: 0918 438 044, obec: 034/628 21 02, sobotiste@sobotiste.sk" },
+          { text: "🔄 D1 Alt 2: Moravský Svätý Ján", bg: BG_ALT, note: "DEŇ 1 Alternatíva 2 | Kontakt: info@moravskysvatyjan.sk" },
+          { text: "🔄 D1 Alt 3: Majolika Modra (dielňa)", bg: BG_ALT, note: "DEŇ 1 Alternatíva 3 | Kontakt: +421 911 980 105" },
+          { text: "🔄 D2 Alt 1: Schaubmarov mlyn Pezinok", bg: BG_ALT, note: "DEŇ 2 Alternatíva 1 | Kontakt: schaubmarovmlyn@sng.sk | +421 33 640 40 35" },
+          { text: "🔄 D2 Alt 2: Holíčsky zámok", bg: BG_ALT, note: "DEŇ 2 Alternatíva 2 | Kontakt: tikholic@holic.sk | 0907 657 884" },
+          { text: "🔄 D2 Alt 3: Mlyny Oblazy (Kvačianska dol.)", bg: BG_ALT, note: "DEŇ 2 Alternatíva 3 | Kontakt: oblazy@oblazy.sk" },
+          { text: "🔄 D3 Alt 1: Záhorské múzeum Skalica", bg: BG_ALT, note: "DEŇ 3 Alternatíva 1 | Kontakt: zahorskemuzeum@zahorskemuzeum.sk | +421 34 664 42 05" },
+          { text: "🔄 D3 Alt 2: Zámok Smolenice", bg: BG_ALT, note: "DEŇ 3 Alternatíva 2 | Kontakt: zamok-smolenice@savba.sk | +421 33 5586 193" },
+          { text: "🔄 D3 Alt 3: Historický dvor v Gajaroch", bg: BG_ALT, note: "DEŇ 3 Alternatíva 3 | Kontakt: info@gajary.sk" }
+        ],
         akcie: ["Spoločná jedáleň", "Výroba majoliky", "Štepenie stromov", "Komorové sušenie"],
         ludia: ["Dvorový Haushalter", "Majster keramikár", "Habánski lekári"],
         jedla: ["Habánsky koláč", "Sušené ovocie", "Ovocné kaše", "Štepené jablká", "Ľahké pivo", "Záhradná zelenina"]
@@ -590,13 +1145,65 @@
         cast: "11. Chorváti",
         podtitul: "Chuť úteku a domova",
         obdobie: "16. storočie",
-        lokalita: "Chorvátsky Grob, Devínska Nová Ves, Jarovce, Čunovo",
+        lokalita: "Devínska N. Ves, Grob, Pezinok a okolie",
+        mapaUrl: "https://tx738toxy01.github.io/hch2mp/#11",
         prinos: "Mlinci, husacie hody, odroda viniča Frankovka a zúrodnenie močaristých území.",
         historia: "Po bitke pri Moháči (1526) a páde Budína utekali Chorváti pred Osmanmi na panstvá Erdődyovcov a Pálffyovcov pri Bratislave a Trnave, kde vybudovali súvislý pás chorvátskych dedín.",
         pribeh: "Chorvátska utečenecká rodina prichádza na vozoch do Chorvátskeho Grobu či Devínskej Novej Vsi, ručne odvodňuje močiare, klčuje lesy a udržiava si čakavské nárečie a kroje dodnes.",
         jedlo: "Mlinci (tenké pláty nekvaseného cesta z múky, vody a soli pečené nasucho na platni, zalievané horúcim výpekom z pečenej husi), husacie hody, červené víno Frankovka, korenisté bravčové a dunajské ryby.",
-        lokacie: ["Chorvátsky Grob", "Devínska Ves", "Jarovce Čunovo"],
-        akcie: ["Útek Balkánu", "Odvodňovanie močiarov", "Pestovanie viniča", "Chov husí"],
+        prodPlan: [
+          {
+            den: "DEŇ 1 (Ráno – Poobedie)",
+            akcia: "Útek pred hrozbou z juhu. Založenie osady a kultúrne dedičstvo.",
+            hlavna: "Múzeum kultúry Chorvátov na Slovensku (Devínska N. Ves)",
+            kontakt: "mkchs@snm.sk | +421 2 204 931 01",
+            alternativy: [
+              "1. Chorvátsky Grob (starosta@chorvatskygrob.sk)",
+              "2. Jarovce / Čunovo (miestnyurad@jarovce.sk)",
+              "3. Rusovce (info@bratislava-rusovce.sk)"
+            ]
+          },
+          {
+            den: "DEŇ 2 (Ráno – Poobedie)",
+            akcia: "Varenie: príprava „mlincov“ na horúcej platni a spojenie s husacinou.",
+            hlavna: "Husacinárska reštaurácia v Chorvátskom / Slovenskom Grobe",
+            kontakt: "Cech husacinárov Slovenský Grob: 0905 264 196",
+            alternativy: [
+              "1. Pezinok (msu@msupezinok.sk | TIC Pezinok)",
+              "2. Svätý Jur (msu@svatyjur.sk)",
+              "3. Modra – tradičné reštaurácie (info@modra.sk)"
+            ]
+          },
+          {
+            den: "DEŇ 3 (Poldeň)",
+            akcia: "Frankovka a vinohrady. Zúrodňovanie močiarov.",
+            hlavna: "Malokarpatské vinohrady (Rača / Svätý Jur)",
+            kontakt: "rabeco.sk@gmail.com | +421 905 466 231",
+            alternativy: [
+              "1. Modra – Vinice (vinarimodra@gmail.com)",
+              "2. Devín – Vinice (devinsky.strapec@gmail.com)",
+              "3. Vajnory – Vinice (vajnorskyvinohradnickyspolok@gmail.com)"
+            ]
+          }
+        ],
+        barbaraInfo: "★ Múzeum kultúry Chorvátov na Slovensku (02/204 931 02) | ★ Chorvátsky Grob – starostka (02/322 230 01) | ★ Skanzen Bardejov a Humenné (054/472 20 72, 057/775 56 71) | ★ Múzeum kultúry Chorvátov Martin",
+        lokacie: [
+          { text: "📍 D1 ★ Múzeum kultúry Chorvátov (DNV)", bg: BG_BARBARA_GREEN, note: "DEŇ 1 Hlavná + Barbara ★ | Akcia: Útek z juhu, založenie osady | Kontakt: mkchs@snm.sk | 02/204 931 01, 02/204 931 02" },
+          { text: "📍 D2: Husacinárska reštaurácia Grob", bg: BG_HLAVNA, note: "DEŇ 2 Hlavná | Akcia: Príprava mlincov na horúcej platni a husacina | Kontakt: Cech husacinárov 0905 264 196" },
+          { text: "📍 D3: Malokarpatské vinohrady (Rača/Sv. Jur)", bg: BG_HLAVNA, note: "DEŇ 3 Hlavná | Akcia: Frankovka, vinohrady, zúrodňovanie | Kontakt: rabeco.sk@gmail.com | +421 905 466 231" },
+          { text: "★ Chorvátsky Grob (Obec / Starostka)", bg: BG_BARBARA_GREEN, note: "Barbara lokácia (Zelená) + D1 Alt 1 | Kontakt: starosta@chorvatskygrob.sk | 02/322 230 01" },
+          { text: "★ Skanzen Bardejov & Humenné", bg: BG_BARBARA_GREEN, note: "Barbara lokácia (Zelená) | Kontakty: 054/472 20 72, 057/775 56 71" },
+          { text: "★ Múzeum kultúry Chorvátov Martin", bg: BG_BARBARA_GREEN, note: "Barbara lokácia (Zelená) | SNM Martin" },
+          { text: "🔄 D1 Alt 2: Jarovce / Čunovo", bg: BG_ALT, note: "DEŇ 1 Alternatíva 2 | Kontakt: miestnyurad@jarovce.sk" },
+          { text: "🔄 D1 Alt 3: Rusovce", bg: BG_ALT, note: "DEŇ 1 Alternatíva 3 | Kontakt: info@bratislava-rusovce.sk" },
+          { text: "🔄 D2 Alt 1: Pezinok", bg: BG_ALT, note: "DEŇ 2 Alternatíva 1 | Kontakt: msu@msupezinok.sk | TIC Pezinok" },
+          { text: "🔄 D2 Alt 2: Svätý Jur", bg: BG_ALT, note: "DEŇ 2 Alternatíva 2 | Kontakt: msu@svatyjur.sk" },
+          { text: "🔄 D2 Alt 3: Modra (reštaurácie)", bg: BG_ALT, note: "DEŇ 2 Alternatíva 3 | Kontakt: info@modra.sk" },
+          { text: "🔄 D3 Alt 1: Modra (Vinice)", bg: BG_ALT, note: "DEŇ 3 Alternatíva 1 | Kontakt: vinarimodra@gmail.com" },
+          { text: "🔄 D3 Alt 2: Devín (Vinice)", bg: BG_ALT, note: "DEŇ 3 Alternatíva 2 | Kontakt: devinsky.strapec@gmail.com" },
+          { text: "🔄 D3 Alt 3: Vajnory (Vinice)", bg: BG_ALT, note: "DEŇ 3 Alternatíva 3 | Kontakt: vajnorskyvinohradnickyspolok@gmail.com" }
+        ],
+        akcie: ["Útek z Balkánu", "Príprava mlincov", "Pestovanie Frankovky", "Zúrodňovanie močiarov"],
         ludia: ["Utečenecké rodiny", "Rod Pálffyovcov", "Grobské gazdiné"],
         jedla: ["Tradičné mlinci", "Grobská husacina", "Víno Frankovka", "Husací výpek", "Dunajské ryby", "Korenené bravčové"]
       },
@@ -605,13 +1212,63 @@
         cast: "12. Francúzi",
         podtitul: "Chuť improvizácie",
         obdobie: "1805 / 1809",
-        lokalita: "Bratislava, Devín, Trnava",
+        lokalita: "Bratislava, Devín, Trnava a okolie",
+        mapaUrl: "https://tx738toxy01.github.io/hch2mp/#12",
         prinos: "Granadírsky pochod, cukrová repa ako náhrada trstiny a cigória/melta namiesto kávy.",
         historia: "Napoleonské vojny zasiahli Slovensko v r. 1805 a 1809 (ostreľovanie Bratislavy a vyhodenie hradu Devín do povetria). Kontinentálna blokáda zastavila dovoz koloniálneho trstinového cukru a kávy.",
         pribeh: "Pohľad francúzskeho granadiera táboriaceho pri Bratislave a domáceho sedliaka, ktorý musí zakopávať obilie pred vojenským rekvírovaním a prechádza na varenie zo zemiakov.",
         jedlo: "Granadírsky pochod (Grenadiermarsch – zemiaky, cibuľa, bravčová masť, fliačky a červená paprika), vznik prvých cukrovarov na cukrovú repu (napr. v Trnave) a náhrada kávy praženou čakankou (cigória) a žaluďovou meltou.",
-        lokacie: ["Hrad Devín", "Mesto Bratislava", "Trnavský cukrovar"],
-        akcie: ["Kontinentálna blokáda", "Vojenské rekvírovanie", "Ostreľovanie Devína", "Výroba cukru"],
+        prodPlan: [
+          {
+            den: "DEŇ 1 (Ráno – Poobedie)",
+            akcia: "Obliehanie a vojna. Varenie Granadírskeho pochodu v poľných podmienkach (vojenský kotol).",
+            hlavna: "Hrad Devín (Lúky a ruiny)",
+            kontakt: "hrad.devin@mmb.sk | +421 265 730 105",
+            alternativy: [
+              "1. Sad Janka Kráľa (Magistrát mesta Bratislava)",
+              "2. Bratislavský hrad – hradby (bratislavskyhrad@snm.sk | +421 2 2048 3110)",
+              "3. Hrad Pajštún (info@stupava.sk | TIC Stupava)"
+            ]
+          },
+          {
+            den: "DEŇ 2 (Ráno – Poobedie)",
+            akcia: "Nedostatok a blokáda. Vznik cukrovarov a pestovanie cukrovej repy.",
+            hlavna: "Trnava (okolie historického cukrovaru / polia)",
+            kontakt: "Mesto Trnava / Poľnohospodárske družstvo",
+            alternativy: [
+              "1. Sereď – Cukrovar (Mesto Sereď)",
+              "2. Šurany – Mestské múzeum (msu@surany.sk)",
+              "3. Sládkovičovo – historický cukrovar (info@sladkovicovo.sk)"
+            ]
+          },
+          {
+            den: "DEŇ 3 (Poldeň)",
+            akcia: "Náhrada kávy (Cigória) a prežitie sedliakov v zázemí.",
+            hlavna: "Historický sedliacky dvor (Záhorie / Pezinok)",
+            kontakt: "Produkcia vybaví dedinský exteriér",
+            alternativy: [
+              "1. Múzeum Červený Kameň (info@hradcervenykamen.sk | +421 33 245 51 03)",
+              "2. Modra – Keramický dvor / Múzeum Ľ. Štúra (SNM)",
+              "3. Abeland – Gazdovská dedinka (info@abeland.sk | +421 905 387 063)"
+            ]
+          }
+        ],
+        barbaraInfo: "Bez osobitných Barbara lokácií – hlavný dôraz na Devín, historické cukrovary a sedliacke dvory.",
+        lokacie: [
+          { text: "📍 D1: Hrad Devín (Lúky a ruiny)", bg: BG_HLAVNA, note: "DEŇ 1 Hlavná | Akcia: Obliehanie, varenie Granadírskeho pochodu v poľnom kotle | Kontakt: hrad.devin@mmb.sk | +421 265 730 105" },
+          { text: "📍 D2: Trnava (historický cukrovar / polia)", bg: BG_HLAVNA, note: "DEŇ 2 Hlavná | Akcia: Kontinentálna blokáda, vznik cukrovarov, cukrová repa | Kontakt: Mesto Trnava / PD" },
+          { text: "📍 D3: Historický sedliacky dvor (Záhorie/PK)", bg: BG_HLAVNA, note: "DEŇ 3 Hlavná | Akcia: Náhrada kávy (Cigória) a prežitie sedliakov | Kontakt: Produkcia" },
+          { text: "🔄 D1 Alt 1: Sad Janka Kráľa (BA)", bg: BG_ALT, note: "DEŇ 1 Alternatíva 1 | Kontakt: Magistrát mesta Bratislava" },
+          { text: "🔄 D1 Alt 2: Bratislavský hrad (hradby)", bg: BG_ALT, note: "DEŇ 1 Alternatíva 2 | Kontakt: bratislavskyhrad@snm.sk | +421 2 2048 3110" },
+          { text: "🔄 D1 Alt 3: Hrad Pajštún", bg: BG_ALT, note: "DEŇ 1 Alternatíva 3 | Kontakt: info@stupava.sk | TIC Stupava" },
+          { text: "🔄 D2 Alt 1: Sereď (Cukrovar)", bg: BG_ALT, note: "DEŇ 2 Alternatíva 1 | Kontakt: Mesto Sereď" },
+          { text: "🔄 D2 Alt 2: Šurany (Mestské múzeum)", bg: BG_ALT, note: "DEŇ 2 Alternatíva 2 | Kontakt: msu@surany.sk" },
+          { text: "🔄 D2 Alt 3: Sládkovičovo (cukrovar)", bg: BG_ALT, note: "DEŇ 2 Alternatíva 3 | Kontakt: info@sladkovicovo.sk" },
+          { text: "🔄 D3 Alt 1: Hrad Červený Kameň", bg: BG_ALT, note: "DEŇ 3 Alternatíva 1 | Kontakt: info@hradcervenykamen.sk | +421 33 245 51 03" },
+          { text: "🔄 D3 Alt 2: Modra (Múzeum Ľ. Štúra)", bg: BG_ALT, note: "DEŇ 3 Alternatíva 2 | Kontakt: SNM Modra" },
+          { text: "🔄 D3 Alt 3: Abeland (Gazdovská dedinka)", bg: BG_ALT, note: "DEŇ 3 Alternatíva 3 | Kontakt: info@abeland.sk | +421 905 387 063" }
+        ],
+        akcie: ["Kontinentálna blokáda", "Poľný Granadír", "Ostreľovanie Devína", "Výroba cukru z repy"],
         ludia: ["Francúzsky granadier", "Cisár Napoleon", "Domáci sedliaci"],
         jedla: ["Granadírsky pochod", "Cukrová repa", "Čakanková cigória", "Žaluďová melta", "Zemiakové fliačky"]
       },
@@ -621,13 +1278,65 @@
         podtitul: "Chuť renesancie a etikety",
         obdobie: "Rok 1476",
         lokalita: "Zvolenský zámok, Bratislavský hrad",
+        mapaUrl: "https://tx738toxy01.github.io/hch2mp/#13",
         prinos: "Zavedenie vidličky, cestovín (maccheroni), parmezánu, marcipánu a renesančného prestierania.",
         historia: "Sobáš kráľa Mateja Korvína s neapolskou princeznou Beatrix Aragónskou v roku 1476 priniesol na uhorský dvor renesančných umelcov, kuchárov, cukrárov a záhradníkov.",
         pribeh: "Kultúrny šok talianskeho šéfkuchára na Zvolenskom a Bratislavskom hrade, kde sa jedlo ťažké mäso rukami a kosti sa hádzali psom pod stôl. Kráľovná Beatrix zavádza vyšívané obrusy, protokol a dvojhrotú vidličku.",
         jedlo: "Prvé cestoviny „maccheroni“, tvrdé parmezánové syry, olivový olej, figy, citrusy, mandle, jedlé gaštany, marcipánové diela a hradné záhrady s jemnejšou cibuľou, cesnakom a listovými šalátmi.",
-        lokacie: ["Zvolenský zámok", "Bratislavský hrad", "Kráľovské záhrady"],
-        akcie: ["Kráľovská svadba", "Zavedenie vidličky", "Renesančná etiketa", "Šľachtenie zeleniny"],
-        ludia: ["Beatrix Aragónska", "Matej Korvín", "Taliansky kuchár"],
+        prodPlan: [
+          {
+            den: "DEŇ 1 (Ráno – Poobedie)",
+            akcia: "Kontrast hrubej stredovekej a jemnej renesančnej šľachty. Kráľovská hostina.",
+            hlavna: "Zvolenský zámok (Sály a nádvorie)",
+            kontakt: "zvolen@sng.sk | 045 53 21 903",
+            alternativy: [
+              "1. Bratislavský hrad (bratislavskyhrad@snm.sk | +421 2 2048 3110)",
+              "2. Smolenický zámok (zamok-smolenice@savba.sk | +421 33 5586 193)",
+              "3. Oravský hrad – renesančné priestory (rezervacie@oravskemuzeum.sk | +421 43 581 61 51)"
+            ]
+          },
+          {
+            den: "DEŇ 2 (Ráno – Poobedie)",
+            akcia: "Príchod vidličky. Príprava renesančných „maccheroni“, marcipán, mandle, parmezán.",
+            hlavna: "Historická zámocká kuchyňa / Sála (Bratislava alebo Zvolen)",
+            kontakt: "Kulinársky historik / Kancelária NR SR",
+            alternativy: [
+              "1. Červený Kameň (info@hradcervenykamen.sk | +421 33 245 51 03)",
+              "2. Oponice – Chateau Appony (info@chateauappony.sk | +421 38 323 81 11)",
+              "3. Kaštieľ Mojmírovce (recepcia@kastielmojmirovce.sk | +421 37 77 98 201)"
+            ]
+          },
+          {
+            den: "DEŇ 3 (Poldeň)",
+            akcia: "Zámocké záhrady, šľachtenie zeleniny a talianski záhradníci.",
+            hlavna: "Záhrady Bratislavského hradu",
+            kontakt: "info@nrsr.sk | Kancelária NR SR",
+            alternativy: [
+              "1. Zámocký park všeobecne (podľa ročného obdobia)",
+              "2. Arborétum Mlyňany (arboretum.mlynany@savba.sk | +421 37 633 45 71)",
+              "3. Zámocký park Betliar (info@muzeumbetliar.sk | +421 587 983 118)"
+            ]
+          }
+        ],
+        barbaraInfo: "Thurzov dom v Banskej Bystrici (048/412 58 96) | Vodný hrad Hronsek (0905 869 772) | Drevený artikulárny kostol Hronsek (048/418 81 28)",
+        lokacie: [
+          { text: "📍 D1: Zvolenský zámok (Sály a nádvorie)", bg: BG_HLAVNA, note: "DEŇ 1 Hlavná | Akcia: Kráľovská hostina, stredovek vs. renesancia | Kontakt: zvolen@sng.sk | 045 53 21 903" },
+          { text: "📍 D2: Historická zámocká kuchyňa (BA/ZV)", bg: BG_HLAVNA, note: "DEŇ 2 Hlavná | Akcia: Príchod vidličky, maccheroni, marcipán, parmezán | Kontakt: Kancelária NR SR / SNG" },
+          { text: "📍 D3: Záhrady Bratislavského hradu", bg: BG_HLAVNA, note: "DEŇ 3 Hlavná | Akcia: Zámocké záhrady a šľachtenie zeleniny | Kontakt: info@nrsr.sk | Kancelária NR SR" },
+          { text: "B: Thurzov dom Banská Bystrica", bg: BG_BARBARA_OTHER, note: "Barbara lokácia | Kontakt: 048/412 58 96" },
+          { text: "B: Vodný hrad Hronsek", bg: BG_BARBARA_OTHER, note: "Barbara lokácia | Kontakt: 0905 869 772" },
+          { text: "B: Drevený artikulárny kostol Hronsek", bg: BG_BARBARA_OTHER, note: "Barbara lokácia | Kontakt: 048/418 81 28" },
+          { text: "🔄 D1 Alt 1: Bratislavský hrad", bg: BG_ALT, note: "DEŇ 1 Alternatíva 1 | Kontakt: bratislavskyhrad@snm.sk | +421 2 2048 3110" },
+          { text: "🔄 D1 Alt 2: Smolenický zámok", bg: BG_ALT, note: "DEŇ 1 Alternatíva 2 | Kontakt: zamok-smolenice@savba.sk | +421 33 5586 193" },
+          { text: "🔄 D1 Alt 3: Oravský hrad", bg: BG_ALT, note: "DEŇ 1 Alternatíva 3 | Kontakt: rezervacie@oravskemuzeum.sk | +421 43 581 61 51" },
+          { text: "🔄 D2 Alt 1: Hrad Červený Kameň", bg: BG_ALT, note: "DEŇ 2 Alternatíva 1 | Kontakt: info@hradcervenykamen.sk | +421 33 245 51 03" },
+          { text: "🔄 D2 Alt 2: Chateau Appony Oponice", bg: BG_ALT, note: "DEŇ 2 Alternatíva 2 | Kontakt: info@chateauappony.sk | +421 38 323 81 11" },
+          { text: "🔄 D2 Alt 3: Kaštieľ Mojmírovce", bg: BG_ALT, note: "DEŇ 2 Alternatíva 3 | Kontakt: recepcia@kastielmojmirovce.sk | +421 37 77 98 201" },
+          { text: "🔄 D3 Alt 2: Arborétum Mlyňany", bg: BG_ALT, note: "DEŇ 3 Alternatíva 2 | Kontakt: arboretum.mlynany@savba.sk | +421 37 633 45 71" },
+          { text: "🔄 D3 Alt 3: Zámocký park Betliar", bg: BG_ALT, note: "DEŇ 3 Alternatíva 3 | Kontakt: info@muzeumbetliar.sk | +421 587 983 118" }
+        ],
+        akcie: ["Kráľovská hostina", "Zavedenie vidličky", "Príprava maccheroni", "Šľachtenie zeleniny"],
+        ludia: ["Beatrix Aragónska", "Matej Korvín", "Taliansky šéfkuchár"],
         jedla: ["Cestoviny maccheroni", "Tvrdý parmezán", "Sladký marcipán", "Jedlé gaštany", "Listové šaláty", "Olivový olej"]
       },
       {
@@ -635,13 +1344,64 @@
         cast: "14. Gorali",
         podtitul: "Chuť drsnej hranice",
         obdobie: "18. – 19. storočie",
-        lokalita: "Zamagurie, Červený Kláštor, Orava, Ždiar",
+        lokalita: "Pieniny, Zamagurie, Červený Kláštor, Orava",
+        mapaUrl: "https://tx738toxy01.github.io/hch2mp/#14",
         prinos: "Horská fermentácia syrov (oscypek), pltnícka polievka kwaśnica a zemiaková placka moskol.",
         historia: "Etnografická skupina na poľsko-slovenskom pohraničí (Orava, Kysuce, Spiš, Zamagurie) spájajúca valašský a poľský vplyv v najchladnejších horských polohách.",
         pribeh: "Miestny pltník splavujúci drevo na pltiach po Dunajci až k Baltu (alebo po Váhu do Komárna) prináša rodine peniaze a drahocennú soľ, kým na hraniciach kvitne aj pašeráctvo koní a tabaku.",
         jedlo: "Bohato zdobený údený ovčí syr oscypek s vrzgavou textúrou, kwaśnica (čistá kyslá polievka z kapustovej vody a baraniny/údeného mäsa bez smotany a hríbov) a zemiaková placka moskol pečená na kachliach s cesnakom a masťou.",
-        lokacie: ["Región Zamagurie", "Červený Kláštor", "Orava Ždiar", "Rieka Dunajec"],
-        akcie: ["Splavovanie plťami", "Údenie oscypkov", "Hraničné pašovanie", "Prežitie mrazoch"],
+        prodPlan: [
+          {
+            den: "DEŇ 1 (Ráno – Poobedie)",
+            akcia: "Horská izolácia, pltníctvo a obchod. Splav na pltiach.",
+            hlavna: "Zamagurie / Prístavisko pltí na Dunajci",
+            kontakt: "plte@plte-dunajec.sk | +421 905 298 859 (Združenie pltníkov Dunajec)",
+            alternativy: [
+              "1. Plte na Váhu – Strečno (info@plte-strecno.sk | 0907 196 999)",
+              "2. Plte na Orave (plte@orava.sk | +421 905 358 182)",
+              "3. Plte na rieke Poprad (produkcia preverí zjazdnosť)"
+            ]
+          },
+          {
+            den: "DEŇ 2 (Ráno – Poobedie)",
+            akcia: "Varenie veľmi kyslej kwaśnice a pečenie oskajcov/moskolov na kachliach.",
+            hlavna: "Múzeum Červený Kláštor / Tradičná drevenica (Ždiar)",
+            kontakt: "info@muzeumcervenyklastor.sk | +421 911 393 116",
+            alternativy: [
+              "1. Skanzen Stará Ľubovňa (info@hradlubovna.sk | +421 52 43 22 422)",
+              "2. Oravský podzámok (rezervacie@oravskemuzeum.sk)",
+              "3. Múzeum oravskej dediny Zuberec (muzeum@zuberec.sk | +421 43 5395 149)"
+            ]
+          },
+          {
+            den: "DEŇ 3 (Poldeň)",
+            akcia: "Príprava tvrdého údeného syra (oscypek) so zdobením.",
+            hlavna: "Goralský dvor / Salaš v Zamagurí",
+            kontakt: "info@goralskydvor.sk | +421 905 389 413",
+            alternativy: [
+              "1. Obec Lendak (obec@lendak.sk | 052 468 40 40)",
+              "2. Obec Osturňa (obecosturna@netlines.sk | 052 489 27 50)",
+              "3. Salaš v Bachledovej doline (info@bachledka.sk | +421 911 977 455)"
+            ]
+          }
+        ],
+        barbaraInfo: "★ Skanzen v St. Ľubovni a plte Červený Kláštor (0949 169 044) | ★ Múzeum oravskej dediny Zuberec (043/5395 149) | Plte Oravský podzámok (0911 358 182) | Podbiel – Chata u Pltníka (0904 149 515)",
+        lokacie: [
+          { text: "📍 D1 ★ Plte na Dunajci / Červený Kláštor", bg: BG_BARBARA_GREEN, note: "DEŇ 1 Hlavná + Barbara ★ | Akcia: Pltníctvo a splav na Dunajci | Kontakt: plte@plte-dunajec.sk | +421 905 298 859, 0949 169 044" },
+          { text: "📍 D2: Múzeum Červený Kláštor / Ždiar", bg: BG_HLAVNA, note: "DEŇ 2 Hlavná | Akcia: Varenie kwaśnice a pečenie moskolov na kachliach | Kontakt: info@muzeumcervenyklastor.sk | +421 911 393 116" },
+          { text: "📍 D3: Goralský dvor / Salaš v Zamagurí", bg: BG_HLAVNA, note: "DEŇ 3 Hlavná | Akcia: Príprava údeného syra oscypek so zdobením | Kontakt: info@goralskydvor.sk | +421 905 389 413" },
+          { text: "★ Skanzen Stará Ľubovňa", bg: BG_BARBARA_GREEN, note: "Barbara lokácia (Zelená) + D2 Alt 1 | Kontakt: info@hradlubovna.sk | +421 52 43 22 422, 0949 169 044" },
+          { text: "★ Múzeum oravskej dediny Zuberec", bg: BG_BARBARA_GREEN, note: "Barbara lokácia (Zelená) + D2 Alt 3 | Kontakt: muzeum@zuberec.sk | 043/5395 149" },
+          { text: "B: Podbiel (Chata u Pltníka)", bg: BG_BARBARA_OTHER, note: "Barbara lokácia | Kontakt: 0904 149 515" },
+          { text: "🔄 D1 Alt 1: Plte na Váhu (Strečno)", bg: BG_ALT, note: "DEŇ 1 Alternatíva 1 | Kontakt: info@plte-strecno.sk | 0907 196 999" },
+          { text: "🔄 D1 Alt 2: Plte Oravský podzámok", bg: BG_ALT, note: "DEŇ 1 Alternatíva 2 + Barbara | Kontakt: plte@orava.sk | 0905 358 182, 0911 358 182" },
+          { text: "🔄 D1 Alt 3: Plte na rieke Poprad", bg: BG_ALT, note: "DEŇ 1 Alternatíva 3 | Kontakt: Produkcia preverí zjazdnosť" },
+          { text: "🔄 D2 Alt 2: Oravský podzámok", bg: BG_ALT, note: "DEŇ 2 Alternatíva 2 | Kontakt: rezervacie@oravskemuzeum.sk" },
+          { text: "🔄 D3 Alt 1: Obec Lendak", bg: BG_ALT, note: "DEŇ 3 Alternatíva 1 | Kontakt: obec@lendak.sk | 052 468 40 40" },
+          { text: "🔄 D3 Alt 2: Obec Osturňa", bg: BG_ALT, note: "DEŇ 3 Alternatíva 2 | Kontakt: obecosturna@netlines.sk | 052 489 27 50" },
+          { text: "🔄 D3 Alt 3: Salaš v Bachledovej doline", bg: BG_ALT, note: "DEŇ 3 Alternatíva 3 | Kontakt: info@bachledka.sk | +421 911 977 455" }
+        ],
+        akcie: ["Splav na pltiach", "Varenie kwaśnice", "Pečenie moskolov", "Údenie oscypkov"],
         ludia: ["Dunajeckí pltníci", "Goralskí pastieri", "Pohraniční pašeráci"],
         jedla: ["Údený oscypek", "Kyslá kwaśnica", "Zemiakový moskol", "Varená baranina", "Kapustová voda"]
       },
@@ -650,29 +1410,92 @@
         cast: "15. Vietnamci",
         podtitul: "Chuť exotiky a nového domova",
         obdobie: "70. roky 20. stor. – súčasnosť",
-        lokalita: "Bratislava, Svit, Partizánske",
+        lokalita: "Bratislava, Partizánske, Svit",
+        mapaUrl: "https://tx738toxy01.github.io/hch2mp/#15",
         prinos: "Kultúra polievky Phở, čerstvých byliniek (koriander, perila), ryžových rezancov a moderného street-foodu.",
         historia: "V 70. a 80. rokoch prišli tisíce mladých Vietnamcov pracovať do obuvníckeho a textilného priemyslu (Svit, ZDA Partizánske). Po roku 1989 prešli na tržnice a postupne zakladali prvé ázijské bistrá.",
         pribeh: "Prvá generácia trhovcov v uzimených stánkoch na bratislavskej Miletičke obetujúca komfort pre vzdelanie detí a druhá „banánová generácia“, ktorá dnes otvára moderné vietnamské reštaurácie.",
         jedlo: "Čerstvé bylinky (koriander, mäta, perila, thajská bazalka), hodiny ťahaný vývar Phở s badiánom, zázvorom, škoricou a ryžovými rezancami, grilované Bún chả, nesmažené letné rolky v ryžovom papieri a rybacia omáčka.",
-        lokacie: ["Tržnica Miletičova", "Závody Svit", "Mesto Partizánske"],
-        akcie: ["Práca továrňach", "Trhový predaj", "Otváranie bistier", "Generačný posun"],
+        prodPlan: [
+          {
+            den: "DEŇ 1 (Ráno – Poobedie)",
+            akcia: "Príbeh prvej generácie. Práca v tržniciach. Pomalé ťahanie vývaru Phở.",
+            hlavna: "Tržnica Miletičova (Bratislava)",
+            kontakt: "Správa mestskej tržnice Ružinov: +421 2 48 28 41 11",
+            alternativy: [
+              "1. Tržnica Trnavské Mýto (trznica@novatrznica.sk | EKO-podnik VPS)",
+              "2. Stará Vajnorská / Zlaté Piesky – ázijský trh (lokačný manažér)",
+              "3. Tržnica Žilinská Bratislava (staromestske.trhy@staremesto.sk)"
+            ]
+          },
+          {
+            den: "DEŇ 2 (Ráno – Poobedie)",
+            akcia: "História tovární vo Svite a Partizánskom. Kontrast továrne a nového podnikania.",
+            hlavna: "Areál bývalých závodov ZDA Partizánske alebo Svit",
+            kontakt: "primator@partizanske.sk | +421 38 749 22 13",
+            alternativy: [
+              "1. Cvernovka historická (info@novacvernovka.eu)",
+              "2. Múzeum obuvi Partizánske (muzeum@partizanske.sk)",
+              "3. Areál bývalých závodov Makyta Púchov (makyta@makyta.sk | +421 42 465 01 11)"
+            ]
+          },
+          {
+            den: "DEŇ 3 (Poldeň)",
+            akcia: "Súčasná pouličná gastronómia, odkaz predkov a domáce ingrediencie s ázijskými bylinkami.",
+            hlavna: "Fresh Market – Tradičné ázijské bistro (Bratislava)",
+            kontakt: "Lokačný manažér dohodne prevádzku vo Fresh Markete",
+            alternativy: [
+              "1. Tržnica Nivy (Správa tržnice Nivy Bratislava)",
+              "2. Rodinná bylinková záhrada (lokálny pestovateľ ázijských byliniek)",
+              "3. Ázijské potraviny (priama dohoda s majiteľmi)"
+            ]
+          }
+        ],
+        barbaraInfo: "Internáty Mlynská dolina | Cvernovka | Miletička | Tržnica na Rožňavskej | Sološnica (jazykové stredisko)",
+        lokacie: [
+          { text: "📍 D1: Tržnica Miletičova (Bratislava)", bg: BG_HLAVNA, note: "DEŇ 1 Hlavná + Barbara | Akcia: Prvá generácia trhovcov, pomalé ťahanie vývaru Phở | Kontakt: Správa tržnice Ružinov +421 2 48 28 41 11" },
+          { text: "📍 D2: Areál ZDA Partizánske / Svit", bg: BG_HLAVNA, note: "DEŇ 2 Hlavná | Akcia: História tovární vo Svite a Partizánskom | Kontakt: primator@partizanske.sk | +421 38 749 22 13" },
+          { text: "📍 D3: Fresh Market (ázijské bistro BA)", bg: BG_HLAVNA, note: "DEŇ 3 Hlavná | Akcia: Súčasná pouličná gastronómia a ázijské bylinky | Kontakt: Lokačný manažér" },
+          { text: "B: Internáty Mlynská dolina & Sološnica", bg: BG_BARBARA_OTHER, note: "Barbara lokácia | Jazykové stredisko Sološnica a internáty Bratislava" },
+          { text: "B: Tržnica na Rožňavskej (BA)", bg: BG_BARBARA_OTHER, note: "Barbara lokácia | Bratislava" },
+          { text: "🔄 D1 Alt 1: Tržnica Trnavské Mýto", bg: BG_ALT, note: "DEŇ 1 Alternatíva 1 | Kontakt: trznica@novatrznica.sk | EKO-podnik VPS" },
+          { text: "🔄 D1 Alt 2: Stará Vajnorská / Zlaté Piesky", bg: BG_ALT, note: "DEŇ 1 Alternatíva 2 | Ázijský trh – dohodne lokačný manažér" },
+          { text: "🔄 D1 Alt 3: Tržnica Žilinská (BA)", bg: BG_ALT, note: "DEŇ 1 Alternatíva 3 | Kontakt: staromestske.trhy@staremesto.sk" },
+          { text: "🔄 D2 Alt 1: Nová Cvernovka", bg: BG_ALT, note: "DEŇ 2 Alternatíva 1 + Barbara | Kontakt: info@novacvernovka.eu" },
+          { text: "🔄 D2 Alt 2: Múzeum obuvi Partizánske", bg: BG_ALT, note: "DEŇ 2 Alternatíva 2 | Kontakt: muzeum@partizanske.sk" },
+          { text: "🔄 D2 Alt 3: Areál Makyta Púchov", bg: BG_ALT, note: "DEŇ 2 Alternatíva 3 | Kontakt: makyta@makyta.sk | +421 42 465 01 11" },
+          { text: "🔄 D3 Alt 1: Tržnica Nivy (BA)", bg: BG_ALT, note: "DEŇ 3 Alternatíva 1 | Kontakt: Správa tržnice Nivy" },
+          { text: "🔄 D3 Alt 2: Rodinná bylinková záhrada", bg: BG_ALT, note: "DEŇ 3 Alternatíva 2 | Lokálny pestovateľ ázijských byliniek" },
+          { text: "🔄 D3 Alt 3: Ázijské potraviny", bg: BG_ALT, note: "DEŇ 3 Alternatíva 3 | Priama dohoda s majiteľmi prevádzky" }
+        ],
+        akcie: ["Ťahanie vývaru Phở", "Práca v továrňach", "Trhový predaj", "Otváranie moderných bistier"],
         ludia: ["Banánová generácia", "Miletičskí trhovci", "Vietnamskí kuchári"],
         jedla: ["Polievka Phở", "Grilované Bún-chả", "Čerstvý koriander", "Letné rolky", "Ryžové rezance", "Rybacia omáčka"]
       }
     ];
 
-    const STORAGE_KEY = "historia_chuti_2_mobile_v4";
+    const STORAGE_KEY = "historia_chuti_2_mobile_v5_prodplan";
 
     function normalizeEpisodes(rawList) {
-      return rawList.map(ep => {
-        const copy = { ...ep };
+      return rawList.map((ep, idx) => {
+        const rawFallback = RAW_EPISODES[idx] || {};
+        const copy = {
+          ...rawFallback,
+          ...ep,
+          prodPlan: ep.prodPlan || rawFallback.prodPlan || [],
+          barbaraInfo: ep.barbaraInfo !== undefined ? ep.barbaraInfo : (rawFallback.barbaraInfo || ""),
+          mapaUrl: ep.mapaUrl || rawFallback.mapaUrl || `https://tx738toxy01.github.io/hch2mp/#${ep.id || (idx + 1)}`
+        };
         ['lokacie', 'akcie', 'ludia', 'jedla'].forEach(cat => {
           copy[cat] = (copy[cat] || []).map(item => {
             if (typeof item === 'string') {
-              return { text: item, bg: DEFAULT_CAT_COLOR[cat] };
+              return { text: item, bg: DEFAULT_CAT_COLOR[cat], note: '' };
             }
-            return { text: item.text || '', bg: item.bg || DEFAULT_CAT_COLOR[cat] };
+            return {
+              text: item.text || '',
+              bg: item.bg || DEFAULT_CAT_COLOR[cat],
+              note: item.note || ''
+            };
           });
         });
         return copy;
@@ -691,8 +1514,10 @@
     let episodes = loadData();
     let currentEpisodeId = 1;
     let isTableView = false;
-    let isNarrativeOpen = true;
+    let isNarrativeOpen = false;
+    let isProdPlanOpen = false;
     let searchQuery = "";
+    let locFilter = "all";
 
     let modalState = {
       epId: 1,
@@ -735,6 +1560,31 @@
       const items = ep[category] || [];
       const nonViolet = items.find(i => i.bg && i.bg.toLowerCase() !== VIOLET_BG);
       return nonViolet ? nonViolet.bg : DEFAULT_CAT_COLOR[category];
+    }
+
+    function matchesLocFilter(itemObj) {
+      if (locFilter === "all") return true;
+      const t = (itemObj.text || "").toLowerCase();
+      const bg = (itemObj.bg || "").toLowerCase();
+      if (locFilter === "hlavna") {
+        return t.includes("📍") || bg === BG_HLAVNA;
+      }
+      if (locFilter === "barbara") {
+        return t.includes("★") || t.startsWith("b:") || bg === BG_BARBARA_GREEN || bg === BG_BARBARA_OTHER;
+      }
+      if (locFilter === "alt") {
+        return t.includes("🔄") || t.includes("alt") || bg === BG_ALT;
+      }
+      return true;
+    }
+
+    function setLocFilter(val) {
+      locFilter = val;
+      const s1 = document.getElementById("locFilterSelect");
+      const s2 = document.getElementById("tableLocFilterSelect");
+      if (s1) s1.value = val;
+      if (s2) s2.value = val;
+      renderCurrentView();
     }
 
     function renderNavigation() {
@@ -789,6 +1639,9 @@
       span.style.backgroundColor = itemObj.bg;
       span.style.color = getTextColorForBg(itemObj.bg);
       span.dataset.index = index;
+      if (itemObj.note) {
+        span.title = itemObj.note;
+      }
       span.textContent = itemObj.text;
 
       span.addEventListener("click", (e) => {
@@ -801,6 +1654,7 @@
 
     function initSortableContainer(containerEl, epId, category) {
       if (!containerEl || typeof Sortable === 'undefined') return;
+      if (category === 'lokacie' && locFilter !== 'all') return;
       Sortable.create(containerEl, {
         animation: 150,
         delay: 140,
@@ -822,10 +1676,81 @@
       });
     }
 
+    function renderProdPlanSection(ep) {
+      const daysGrid = document.getElementById("prodDaysGrid");
+      const barbaraBox = document.getElementById("prodBarbaraBox");
+      daysGrid.innerHTML = "";
+
+      (ep.prodPlan || []).forEach((d, dIdx) => {
+        const card = document.createElement("div");
+        card.className = "bg-white p-3 rounded-xl border border-stone-200/90 shadow-2xs flex flex-col justify-between space-y-2";
+        const altsHtml = (d.alternativy || []).map(a => `<li class="truncate" title="${a.replace(/"/g, '&quot;')}">${a}</li>`).join("");
+        card.innerHTML = `
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between gap-1 border-b border-stone-100 pb-1">
+              <span class="font-extrabold text-[11px] uppercase tracking-wider text-amber-900 flex items-center gap-1">
+                <i class="fa-regular fa-calendar-check text-amber-600"></i> ${d.den}
+              </span>
+            </div>
+            <div class="text-[11px] text-stone-600 leading-snug">
+              <strong class="text-stone-800">Akcia:</strong> <span contenteditable="true" data-day="${dIdx}" data-field="akcia">${d.akcia || ''}</span>
+            </div>
+            <div class="p-2 rounded-lg bg-amber-50/90 border border-amber-200/80">
+              <div class="font-bold text-xs text-stone-900 flex items-center gap-1">
+                <i class="fa-solid fa-location-dot text-amber-600"></i>
+                <span contenteditable="true" data-day="${dIdx}" data-field="hlavna">${d.hlavna || ''}</span>
+              </div>
+              <div class="text-[11px] text-stone-600 mt-0.5 flex items-center gap-1">
+                <i class="fa-solid fa-address-book text-stone-400 text-[10px]"></i>
+                <span contenteditable="true" data-day="${dIdx}" data-field="kontakt">${d.kontakt || ''}</span>
+              </div>
+            </div>
+          </div>
+          <div class="pt-1 border-t border-stone-100">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-sky-900 mb-0.5">🔄 Alternatívy (1–3):</div>
+            <ul class="text-[11px] text-stone-600 space-y-0.5 pl-1">${altsHtml}</ul>
+          </div>
+        `;
+        card.querySelectorAll('[contenteditable="true"]').forEach(el => {
+          el.onblur = () => {
+            const dayIndex = parseInt(el.dataset.day, 10);
+            const fld = el.dataset.field;
+            if (ep.prodPlan[dayIndex]) {
+              ep.prodPlan[dayIndex][fld] = el.textContent.trim();
+              saveData();
+            }
+          };
+        });
+        daysGrid.appendChild(card);
+      });
+
+      barbaraBox.innerHTML = `
+        <div class="flex-1 min-w-[220px] text-xs">
+          <span class="font-bold text-emerald-900 uppercase text-[10px] tracking-wider mr-1.5">
+            <i class="fa-solid fa-star text-emerald-600 mr-1"></i>Barbara lokácie & Kontakty:
+          </span>
+          <span id="editBarbaraInfo" contenteditable="true" class="text-stone-700 font-medium">${ep.barbaraInfo || ''}</span>
+        </div>
+        <a href="${ep.mapaUrl || '#'}" target="_blank" rel="noopener"
+           class="px-2.5 py-1 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-[11px] flex items-center gap-1.5 shrink-0 transition">
+          <i class="fa-solid fa-map-location-dot"></i> Interaktívna mapa Epizódy ${ep.id}
+        </a>
+      `;
+      const barbEdit = document.getElementById("editBarbaraInfo");
+      if (barbEdit) {
+        barbEdit.onblur = () => {
+          ep.barbaraInfo = barbEdit.textContent.trim();
+          saveData();
+        };
+      }
+    }
+
     function renderSingleView() {
       const ep = getEp();
 
       document.getElementById("epNumberBadge").textContent = ep.id;
+      document.getElementById("epMapLink").href = ep.mapaUrl || `https://tx738toxy01.github.io/hch2mp/#${ep.id}`;
+
       const heroTitle = document.getElementById("heroTitle");
       heroTitle.textContent = `${ep.cast} — ${ep.podtitul || ''}`;
       heroTitle.onblur = () => {
@@ -851,24 +1776,7 @@
       bindEditable("narrPribeh", "pribeh");
       bindEditable("narrJedlo", "jedlo");
 
-      const colCast = document.getElementById("cardColCast");
-      colCast.innerHTML = `
-        <div class="text-2xl font-extrabold text-stone-900 font-serif-title">${ep.id}</div>
-        <div id="castShortEdit" contenteditable="true" class="font-bold text-xs text-stone-800 px-1.5 py-0.5">${ep.cast}</div>
-        <div id="castSubEdit" contenteditable="true" class="text-[11px] text-stone-500 px-1">${ep.podtitul || ''}</div>
-      `;
-      document.getElementById("castShortEdit").onblur = (e) => {
-        ep.cast = e.target.textContent.trim();
-        saveData();
-        renderNavigation();
-        renderSingleView();
-      };
-      document.getElementById("castSubEdit").onblur = (e) => {
-        ep.podtitul = e.target.textContent.trim();
-        saveData();
-        renderNavigation();
-        renderSingleView();
-      };
+      renderProdPlanSection(ep);
 
       const mapCols = [
         { key: 'lokacie', elId: 'cardColLokacie' },
@@ -881,6 +1789,7 @@
         const container = document.getElementById(elId);
         container.innerHTML = "";
         ep[key].forEach((itemObj, idx) => {
+          if (key === 'lokacie' && !matchesLocFilter(itemObj)) return;
           container.appendChild(createPillElement(itemObj, key, idx, ep.id));
         });
         initSortableContainer(container, ep.id, key);
@@ -900,8 +1809,8 @@
       const filtered = episodes.filter(ep => {
         if (!q) return true;
         const dump = [
-          ep.cast, ep.podtitul, ep.obdobie, ep.lokalita, ep.prinos, ep.historia, ep.pribeh, ep.jedlo,
-          ...ep.lokacie.map(x => x.text),
+          ep.cast, ep.podtitul, ep.obdobie, ep.lokalita, ep.prinos, ep.historia, ep.pribeh, ep.jedlo, ep.barbaraInfo,
+          ...ep.lokacie.map(x => `${x.text} ${x.note || ''}`),
           ...ep.akcie.map(x => x.text),
           ...ep.ludia.map(x => x.text),
           ...ep.jedla.map(x => x.text)
@@ -921,6 +1830,9 @@
               <span class="font-extrabold text-xs text-stone-900 block cursor-pointer hover:text-amber-700" onclick="selectEpisode(${ep.id})">${ep.cast}</span>
               <span class="text-[10px] text-stone-500 block leading-tight mt-0.5">${ep.podtitul || ''}</span>
               <span class="text-[10px] text-amber-800 font-semibold block mt-1">${ep.obdobie || ''}</span>
+              <a href="${ep.mapaUrl || '#'}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-[10px] text-amber-700 hover:underline mt-1 font-bold">
+                <i class="fa-solid fa-map-location-dot"></i> Mapa #${ep.id}
+              </a>
             </div>
           </div>
         `;
@@ -934,6 +1846,7 @@
           wrap.className = "flex flex-wrap items-center gap-1 min-h-[32px]";
 
           ep[cat].forEach((itemObj, idx) => {
+            if (cat === 'lokacie' && !matchesLocFilter(itemObj)) return;
             wrap.appendChild(createPillElement(itemObj, cat, idx, ep.id));
           });
 
@@ -956,7 +1869,7 @@
       const ep = getEp(epId);
       const isNew = (index === -1);
       const item = isNew
-        ? { text: "", bg: VIOLET_BG }
+        ? { text: "", bg: VIOLET_BG, note: "" }
         : ep[category][index];
 
       modalState = {
@@ -972,7 +1885,9 @@
         : `Upraviť položku (${catLabels[category]})`;
 
       const input = document.getElementById("itemModalInput");
+      const noteInput = document.getElementById("itemModalNote");
       input.value = item.text;
+      noteInput.value = item.note || "";
 
       document.getElementById("itemModalDeleteBtn").classList.toggle("hidden", isNew);
       document.getElementById("itemModalMoveBox").classList.toggle("hidden", isNew);
@@ -1058,9 +1973,10 @@
 
     function saveItemModal() {
       const text = document.getElementById("itemModalInput").value.trim();
+      const note = document.getElementById("itemModalNote").value.trim();
       if (!text) return;
       const ep = getEp(modalState.epId);
-      const newObj = { text, bg: modalState.selectedBg };
+      const newObj = { text, bg: modalState.selectedBg, note };
 
       if (modalState.index === -1) {
         ep[modalState.category].unshift(newObj);
@@ -1145,6 +2061,12 @@
       document.getElementById("toggleNarrativeIcon").style.transform = isNarrativeOpen ? "rotate(0deg)" : "rotate(180deg)";
     };
 
+    document.getElementById("toggleProdPlanBtn").onclick = () => {
+      isProdPlanOpen = !isProdPlanOpen;
+      document.getElementById("prodPlanContainer").classList.toggle("hidden", !isProdPlanOpen);
+      document.getElementById("toggleProdPlanIcon").style.transform = isProdPlanOpen ? "rotate(0deg)" : "rotate(180deg)";
+    };
+
     document.getElementById("prevEpBtn").onclick = () => {
       if (currentEpisodeId > 1) { currentEpisodeId--; updateActiveView(); }
     };
@@ -1190,7 +2112,7 @@
     };
 
     function downloadCsv(epList, filename) {
-      let csv = "\uFEFFČasť;Podtitul;Obdobie;Lokalita;Kľúčový prínos;Lokácie;Akcie;Ľudia;Jedlá\n";
+      let csv = "\uFEFFČasť;Podtitul;Obdobie;Lokalita;Kľúčový prínos;Lokácie;Barbara lokácie;Akcie;Ľudia;Jedlá\n";
       epList.forEach(ep => {
         csv += [
           `"${(ep.cast || '').replace(/"/g, '""')}"`,
@@ -1198,7 +2120,8 @@
           `"${(ep.obdobie || '').replace(/"/g, '""')}"`,
           `"${(ep.lokalita || '').replace(/"/g, '""')}"`,
           `"${(ep.prinos || '').replace(/"/g, '""')}"`,
-          `"${ep.lokacie.map(x=>x.text).join(", ").replace(/"/g, '""')}"`,
+          `"${ep.lokacie.map(x => x.note ? `${x.text} (${x.note})` : x.text).join(" | ").replace(/"/g, '""')}"`,
+          `"${(ep.barbaraInfo || '').replace(/"/g, '""')}"`,
           `"${ep.akcie.map(x=>x.text).join(", ").replace(/"/g, '""')}"`,
           `"${ep.ludia.map(x=>x.text).join(", ").replace(/"/g, '""')}"`,
           `"${ep.jedla.map(x=>x.text).join(", ").replace(/"/g, '""')}"`
@@ -1228,6 +2151,7 @@
       episodes.forEach(ep => {
         out += `${ep.cast} (${ep.podtitul}) | ${ep.obdobie}\n`;
         out += `Lokácie: ${ep.lokacie.map(x=>x.text).join(", ")}\n`;
+        out += `Barbara lokácie: ${ep.barbaraInfo || ''}\n`;
         out += `Akcie: ${ep.akcie.map(x=>x.text).join(", ")}\n`;
         out += `Ľudia: ${ep.ludia.map(x=>x.text).join(", ")}\n`;
         out += `Jedlá: ${ep.jedla.map(x=>x.text).join(", ")}\n\n`;
@@ -1238,11 +2162,19 @@
       });
     };
 
+    document.getElementById("resetDataBtn").onclick = () => {
+      localStorage.removeItem(STORAGE_KEY);
+      episodes = normalizeEpisodes(JSON.parse(JSON.stringify(RAW_EPISODES)));
+      settingsMenu.classList.add("hidden");
+      updateActiveView();
+      showToast("Predvolené dáta obnovené");
+    };
+
     window.onload = () => {
       updateActiveView();
       if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js').catch(() => {});
-}
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      }
     };
   </script>
 </body>
