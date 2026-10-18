@@ -5,7 +5,7 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0f172a">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>HISTÓRIA CHUTÍ 2</title>
+  <title>HCH2namet</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
@@ -68,7 +68,7 @@
           </div>
           <div>
             <h1 class="font-serif-title text-sm sm:text-base font-bold text-amber-200 tracking-wide leading-none">
-              HISTÓRIA CHUTÍ 2
+              HCH2namet
             </h1>
             <p class="text-[10px] text-stone-400 hidden sm:block">Námet: Jana Cviková</p>
           </div>
@@ -1210,17 +1210,17 @@
     }
 
     document.getElementById("exportAllCsvBtn").onclick = () => {
-      downloadCsv(episodes, "Historia_Chuti_2_Cely_Projekt.csv");
+      downloadCsv(episodes, "hch2namet_Cely_Projekt.csv");
     };
 
     document.getElementById("exportCurrentCsvBtn").onclick = () => {
       const ep = getEp();
       const safeName = ep.cast.replace(/[^a-zA-Z0-9]/g, "_");
-      downloadCsv([ep], `Historia_Chuti_2_${safeName}.csv`);
+      downloadCsv([ep], `hch2namet_${safeName}.csv`);
     };
 
     document.getElementById("copyAllTextBtn").onclick = () => {
-      let out = "HISTÓRIA CHUTÍ 2 — PREHĽAD\n\n";
+      let out = "HCH2namet — PREHĽAD\n\n";
       episodes.forEach(ep => {
         out += `${ep.cast} (${ep.podtitul}) | ${ep.obdobie}\n`;
         out += `Lokácie: ${ep.lokacie.map(x=>x.text).join(", ")}\n`;
