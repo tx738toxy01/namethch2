@@ -191,8 +191,6 @@
       </div>
     </aside>
 
-    <div id="sidebarBackdrop" class="fixed inset-0 bg-black/50 z-20 hidden lg:hidden"></div>
-
     <main class="flex-1 overflow-y-auto p-2.5 sm:p-4 lg:p-5 w-full">
 
       <section id="singleView" class="space-y-3">
@@ -1624,7 +1622,6 @@
     let isProdPlanOpen = false;
     let currentFontScale = parseFloat(localStorage.getItem("hch2_font_scale")) || 1.0;
     let searchQuery = "";
-    let locFilter = "all";
 
     let modalState = {
       epId: 1,
@@ -1667,31 +1664,6 @@
       const items = ep[category] || [];
       const nonViolet = items.find(i => i.bg && i.bg.toLowerCase() !== VIOLET_BG);
       return nonViolet ? nonViolet.bg : DEFAULT_CAT_COLOR[category];
-    }
-
-    function matchesLocFilter(itemObj) {
-      if (locFilter === "all") return true;
-      const t = (itemObj.text || "").toLowerCase();
-      const bg = (itemObj.bg || "").toLowerCase();
-      if (locFilter === "hlavna") {
-        return t.includes("📍") || bg === BG_HLAVNA;
-      }
-      if (locFilter === "barbara") {
-        return t.includes("★") || t.startsWith("b:") || bg === BG_BARBARA_GREEN || bg === BG_BARBARA_OTHER;
-      }
-      if (locFilter === "alt") {
-        return t.includes("🔄") || t.includes("alt") || bg === BG_ALT;
-      }
-      return true;
-    }
-
-    function setLocFilter(val) {
-      locFilter = val;
-      const s1 = document.getElementById("locFilterSelect");
-      const s2 = document.getElementById("tableLocFilterSelect");
-      if (s1) s1.value = val;
-      if (s2) s2.value = val;
-      renderCurrentView();
     }
 
     function renderNavigation() {
@@ -1737,7 +1709,6 @@
       currentEpisodeId = id;
       isTableView = false;
       updateActiveView();
-      closeMobileSidebar();
     }
 
     function createPillElement(itemObj, category, index, epId) {
@@ -1761,7 +1732,6 @@
 
     function initSortableContainer(containerEl, epId, category) {
       if (!containerEl || typeof Sortable === 'undefined') return;
-      if (category === 'lokacie' && locFilter !== 'all') return;
       Sortable.create(containerEl, {
         animation: 150,
         delay: 140,
@@ -1896,7 +1866,6 @@
         const container = document.getElementById(elId);
         container.innerHTML = "";
         ep[key].forEach((itemObj, idx) => {
-          if (key === 'lokacie' && !matchesLocFilter(itemObj)) return;
           container.appendChild(createPillElement(itemObj, key, idx, ep.id));
         });
         initSortableContainer(container, ep.id, key);
@@ -1953,7 +1922,6 @@
           wrap.className = "flex flex-wrap items-center gap-1 min-h-[32px]";
 
           ep[cat].forEach((itemObj, idx) => {
-            if (cat === 'lokacie' && !matchesLocFilter(itemObj)) return;
             wrap.appendChild(createPillElement(itemObj, cat, idx, ep.id));
           });
 
@@ -2140,8 +2108,6 @@
       renderCurrentView();
     }
 
-    function closeMobileSidebar() {}
-
     document.getElementById("viewToggleBtn").onclick = () => {
       isTableView = !isTableView;
       updateActiveView();
@@ -2149,7 +2115,6 @@
     document.getElementById("btnSwitchToTable").onclick = () => {
       isTableView = true;
       updateActiveView();
-      closeMobileSidebar();
     };
 
     document.getElementById("toggleNarrativeBtn").onclick = () => {
