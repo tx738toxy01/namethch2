@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="sk">
-<html lang="sk" class="dark">
 <head>
   <meta charset="UTF-8">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0f172a">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <link rel="manifest" href="./manifest.json" />
   <title>HCH2namet</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -1239,7 +1237,7 @@
     window.onload = () => {
       updateActiveView();
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').catch(() => {});
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
       }
     };
   </script>
