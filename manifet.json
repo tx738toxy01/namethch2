@@ -2,6 +2,7 @@
   "name": "HCH2namet",
   "short_name": "HCH2namet",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#f8f5f0",
   "theme_color": "#0f172a",
