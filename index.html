@@ -1638,29 +1638,8 @@
     let isTableView = false;
     let isNarrativeOpen = false;
     let isProdPlanOpen = false;
-    applyFontScale();
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js').catch(() => {});
-      }
-    };
-
-    function applyFontScale() {
-      document.body.style.zoom = currentFontScale;
-      const indicator = document.getElementById("fontSizeIndicator");
-      if (indicator) {
-        indicator.textContent = Math.round(currentFontScale * 100) + "%";
-      }
-    }
-
-    function changeFontSize(direction) {
-      if (direction > 0) {
-        if (currentFontScale < 1.45) currentFontScale += 0.05;
-      } else {
-        if (currentFontScale > 0.85) currentFontScale -= 0.05;
-      }
-      applyFontScale();
-    }
-  </script>
+    let currentFontScale = parseFloat(localStorage.getItem("hch2_font_scale")) || 1.0;
+    let searchQuery = "";
     let locFilter = "all";
 
     let modalState = {
