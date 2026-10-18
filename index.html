@@ -122,6 +122,22 @@
               </div>
             </button>
 
+            <div class="px-3.5 py-2 border-b border-stone-100 flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2 text-stone-700 font-semibold">
+                <i class="fa-solid fa-text-height text-amber-600 text-sm w-4 text-center"></i>
+                <span>Veľkosť písma</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <button type="button" onclick="changeFontSize(-1)" class="w-7 h-7 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-800 font-extrabold flex items-center justify-center transition" title="Zmenšiť">
+                  <i class="fa-solid fa-minus text-[10px]"></i>
+                </button>
+                <span id="fontSizeIndicator" class="w-9 text-center font-bold text-stone-700 text-xs">100%</span>
+                <button type="button" onclick="changeFontSize(1)" class="w-7 h-7 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-800 font-extrabold flex items-center justify-center transition" title="Zväčšiť">
+                  <i class="fa-solid fa-plus text-[10px]"></i>
+                </button>
+              </div>
+            </div>
+
             <div class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-stone-400 border-b border-stone-100 mt-1">
               Export do CSV (Excel)
             </div>
@@ -1622,7 +1638,29 @@
     let isTableView = false;
     let isNarrativeOpen = false;
     let isProdPlanOpen = false;
-    let searchQuery = "";
+    applyFontScale();
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      }
+    };
+
+    function applyFontScale() {
+      document.body.style.zoom = currentFontScale;
+      const indicator = document.getElementById("fontSizeIndicator");
+      if (indicator) {
+        indicator.textContent = Math.round(currentFontScale * 100) + "%";
+      }
+    }
+
+    function changeFontSize(direction) {
+      if (direction > 0) {
+        if (currentFontScale < 1.45) currentFontScale += 0.05;
+      } else {
+        if (currentFontScale > 0.85) currentFontScale -= 0.05;
+      }
+      applyFontScale();
+    }
+  </script>
     let locFilter = "all";
 
     let modalState = {
@@ -2486,10 +2524,29 @@
       if (getDriveSyncUrl() && isAutoSyncEnabled()) {
         pullFromDrive(true);
       }
+      applyFontScale();
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js').catch(() => {});
       }
     };
+
+    function applyFontScale() {
+      document.body.style.zoom = currentFontScale;
+      const indicator = document.getElementById("fontSizeIndicator");
+      if (indicator) {
+        indicator.textContent = Math.round(currentFontScale * 100) + "%";
+      }
+      localStorage.setItem("hch2_font_scale", currentFontScale);
+    }
+
+    function changeFontSize(direction) {
+      if (direction > 0) {
+        if (currentFontScale < 1.45) currentFontScale += 0.05;
+      } else {
+        if (currentFontScale > 0.85) currentFontScale -= 0.05;
+      }
+      applyFontScale();
+    }
   </script>
 </body>
 </html>
