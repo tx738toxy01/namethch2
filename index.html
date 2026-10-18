@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>HISTÓRIA CHUTÍ 2</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .font-serif-title { font-family: 'Cinzel', serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .item-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      border-radius: 0.5rem;
+      padding: 0.3rem 0.6rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      line-height: 1.2;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+    .item-pill:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+    }
+    .item-pill:active { transform: scale(0.97); }
+    .sortable-ghost { opacity: 0.35; transform: scale(0.95); }
+    .sortable-drag { box-shadow: 0 8px 20px rgba(0,0,0,0.18) !important; z-index: 50; }
+
+    [contenteditable="true"] {
+      outline: none;
+      border-radius: 0.375rem;
+      transition: background-color 0.15s, box-shadow 0.15s, color 0.15s;
+    }
+    [contenteditable="true"]:focus {
+      background-color: #ffffff !important;
+      color: #1c1917 !important;
+      box-shadow: 0 0 0 2px #d97706 !important;
+      padding: 2px 4px;
+    }
+  </style>
+</head>
+<body class="bg-[#f8f5f0] text-stone-800 antialiased min-h-screen flex flex-col">
+
+  <header class="bg-stone-900 text-amber-50 sticky top-0 z-30 shadow-md border-b border-stone-800">
+    <div class="px-3 py-2.5 flex items-center justify-between gap-2 max-w-7xl mx-auto">
+      <div class="flex items-center gap-2.5">
+        <button id="mobileMenuBtn" class="lg:hidden w-9 h-9 flex items-center justify-center rounded-lg bg-stone-800 text-amber-300 hover:bg-stone-700">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-amber-600 flex items-center justify-center text-white shadow-sm shrink-0">
+            <i class="fa-solid fa-utensils text-sm"></i>
+          </div>
+          <div>
+            <h1 class="font-serif-title text-sm sm:text-base font-bold text-amber-200 tracking-wide leading-none">
+              HISTÓRIA CHUTÍ 2
+            </h1>
+            <p class="text-[10px] text-stone-400 hidden sm:block">Námet: Jana Cviková</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        <div class="relative w-32 sm:w-48">
+          <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2 text-stone-400 text-[11px]"></i>
+          <input type="text" id="searchInput" placeholder="Hľadať..." 
+                 class="w-full bg-stone-800 text-stone-100 placeholder-stone-400 text-xs rounded-lg pl-7 pr-2 py-1.5 border border-stone-700 focus:outline-none focus:border-amber-400" />
+        </div>
+
+        <button id="viewToggleBtn" class="px-2.5 py-1.5 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shrink-0">
+          <i class="fa-solid fa-table-cells"></i>
+          <span id="viewToggleText" class="hidden sm:inline">Tabuľka</span>
+        </button>
+
+        <button id="infoModalBtn" title="Koncept série a Slovníček pojmov" class="w-8 h-8 rounded-lg bg-stone-800 hover:bg-stone-700 text-amber-300 flex items-center justify-center text-xs border border-stone-700 shrink-0">
+          <i class="fa-solid fa-book-open"></i>
+        </button>
+
+        <div class="relative">
+          <button id="settingsBtn" title="Nastavenia a Export" class="w-8 h-8 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-amber-300 flex items-center justify-center border border-stone-700 shrink-0 transition">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+
+          <div id="settingsMenu" class="hidden absolute right-0 mt-2 w-64 bg-white text-stone-800 rounded-xl shadow-2xl border border-stone-200 py-2 z-50 text-xs">
+            <div class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-stone-400 border-b border-stone-100">
+              Export do CSV (Excel)
+            </div>
+            <button id="exportAllCsvBtn" class="w-full text-left px-3.5 py-2.5 hover:bg-amber-50 flex items-center gap-2.5 font-semibold text-stone-700 transition">
+              <i class="fa-solid fa-file-csv text-amber-600 text-sm"></i>
+              <div>
+                <div>Celý projekt (15 častí)</div>
+                <div class="text-[10px] font-normal text-stone-400">Kompletná tabuľka so zmenami</div>
+              </div>
+            </button>
+            <button id="exportCurrentCsvBtn" class="w-full text-left px-3.5 py-2.5 hover:bg-amber-50 flex items-center gap-2.5 font-semibold text-stone-700 transition">
+              <i class="fa-solid fa-file-export text-emerald-600 text-sm"></i>
+              <div>
+                <div>Aktuálna časť (<span id="settingsCurrentEpLabel">1. Turci</span>)</div>
+                <div class="text-[10px] font-normal text-stone-400">Iba práve vybraná epizóda</div>
+              </div>
+            </button>
+            <div class="border-t border-stone-100 mt-1 pt-1">
+              <button id="copyAllTextBtn" class="w-full text-left px-3.5 py-2 hover:bg-stone-50 flex items-center gap-2.5 font-medium text-stone-600 transition">
+                <i class="fa-regular fa-copy text-stone-400"></i>
+                <span>Kopírovať text celého prehľadu</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-stone-950/90 border-t border-stone-800 px-2 py-1.5 lg:hidden">
+      <div id="mobileQuickNav" class="flex items-center gap-1 overflow-x-auto no-scrollbar"></div>
+    </div>
+  </header>
+
+  <div class="flex-1 flex overflow-hidden relative max-w-7xl w-full mx-auto">
+
+    <aside id="sidebar" class="fixed inset-y-0 left-0 top-[53px] z-30 w-72 bg-white border-r border-stone-200 shadow-2xl lg:shadow-none lg:static flex flex-col transition-transform duration-200 -translate-x-full lg:translate-x-0">
+      <div class="p-3 border-b border-stone-200 bg-stone-50 flex items-center justify-between">
+        <span class="text-xs font-bold uppercase tracking-wider text-stone-700">Epizódy (15)</span>
+        <button id="btnSwitchToTable" class="text-xs text-amber-700 hover:text-amber-900 font-semibold flex items-center gap-1">
+          <i class="fa-solid fa-table-list"></i> Celá matica
+        </button>
+      </div>
+
+      <nav id="episodeList" class="flex-1 overflow-y-auto p-2 space-y-1 text-xs"></nav>
+
+      <div class="p-2.5 bg-stone-100 border-t border-stone-200 text-[11px] text-stone-500 flex items-center justify-between">
+        <span>Automatické ukladanie zapnuté</span>
+        <i class="fa-solid fa-cloud-arrow-up text-amber-600"></i>
+      </div>
+    </aside>
+
+    <div id="sidebarBackdrop" class="fixed inset-0 bg-black/50 z-20 hidden lg:hidden"></div>
+
+    <main class="flex-1 overflow-y-auto p-2.5 sm:p-4 lg:p-5 w-full">
+
+      <section id="singleView" class="space-y-3">
+
+        <div class="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden">
+          <div class="bg-gradient-to-r from-stone-900 via-amber-950 to-stone-900 text-white p-3.5 sm:p-4 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5 min-w-0 flex-1">
+              <span id="epNumberBadge" class="w-8 h-8 rounded-xl bg-amber-500 text-stone-950 font-extrabold text-sm flex items-center justify-center shrink-0 shadow">
+                1
+              </span>
+              <div class="min-w-0 flex-1">
+                <h2 id="heroTitle" contenteditable="true" class="text-base sm:text-xl font-extrabold text-amber-100 focus:text-stone-900 tracking-tight truncate">
+                  1. Turci - Hrdinská obrana Fiľakova
+                </h2>
+                <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-amber-200/80 mt-0.5">
+                  <span><i class="fa-regular fa-calendar mr-1"></i><span id="metaObdobie" contenteditable="true"></span></span>
+                  <span><i class="fa-solid fa-location-dot mr-1"></i><span id="metaLokalita" contenteditable="true"></span></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-1 shrink-0">
+              <button id="prevEpBtn" class="w-8 h-8 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-200 flex items-center justify-center text-xs border border-stone-700">
+                <i class="fa-solid fa-chevron-left"></i>
+              </button>
+              <button id="nextEpBtn" class="w-8 h-8 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-200 flex items-center justify-center text-xs border border-stone-700">
+                <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="px-3.5 py-2.5 bg-amber-50/70 border-b border-stone-200 flex items-start sm:items-center justify-between gap-2">
+            <div class="text-xs text-stone-800 flex-1">
+              <span class="font-bold text-amber-900 uppercase text-[10px] tracking-wider mr-1.5">Kľúčový prínos:</span>
+              <span id="metaPrinos" contenteditable="true" class="text-stone-700"></span>
+            </div>
+            <button id="toggleNarrativeBtn" class="px-2.5 py-1 rounded-lg bg-amber-200/70 hover:bg-amber-300/70 text-amber-950 font-bold text-[11px] flex items-center gap-1 shrink-0 transition">
+              <span id="toggleNarrativeText">Námet & Príbeh</span>
+              <i id="toggleNarrativeIcon" class="fa-solid fa-chevron-up transition-transform"></i>
+            </button>
+          </div>
+
+          <div id="narrativeContainer" class="p-3.5 bg-stone-50/60 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs leading-relaxed border-b border-stone-100">
+            <div class="bg-white p-3 rounded-xl border border-stone-200/80 shadow-2xs">
+              <div class="font-bold text-[11px] uppercase tracking-wider text-stone-600 mb-1 flex items-center gap-1.5">
+                <i class="fa-solid fa-landmark text-amber-600"></i> 1. Historický kontext
+              </div>
+              <div id="narrHistoria" contenteditable="true" class="text-stone-700"></div>
+            </div>
+            <div class="bg-white p-3 rounded-xl border border-stone-200/80 shadow-2xs">
+              <div class="font-bold text-[11px] uppercase tracking-wider text-stone-600 mb-1 flex items-center gap-1.5">
+                <i class="fa-solid fa-user-shield text-rose-600"></i> 2. Príbeh a postavy
+              </div>
+              <div id="narrPribeh" contenteditable="true" class="text-stone-700"></div>
+            </div>
+            <div class="bg-white p-3 rounded-xl border border-stone-200/80 shadow-2xs">
+              <div class="font-bold text-[11px] uppercase tracking-wider text-stone-600 mb-1 flex items-center gap-1.5">
+                <i class="fa-solid fa-utensils text-emerald-600"></i> 3. Jedlo ako stopa
+              </div>
+              <div id="narrJedlo" contenteditable="true" class="text-stone-700"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 sm:gap-3">
+
+          <div class="col-span-2 sm:col-span-2 lg:col-span-1 bg-white rounded-xl p-3 border border-stone-200 shadow-2xs flex flex-col">
+            <div class="pb-2 mb-2 border-b border-stone-100 flex items-center justify-between">
+              <h3 class="font-bold text-xs uppercase tracking-wider text-stone-700 flex items-center gap-1.5">
+                <i class="fa-solid fa-hashtag text-stone-400"></i> Časť
+              </h3>
+            </div>
+            <div id="cardColCast" class="flex-1 flex flex-col justify-center items-center text-center p-2 bg-stone-50 rounded-lg border border-stone-100"></div>
+          </div>
+
+          <div class="bg-white rounded-xl p-3 border border-stone-200 shadow-2xs flex flex-col">
+            <div class="pb-2 mb-2 border-b border-stone-100 flex items-center justify-between">
+              <h3 class="font-bold text-xs uppercase tracking-wider text-amber-900 flex items-center gap-1">
+                <i class="fa-solid fa-location-dot text-amber-500"></i> Lokácie
+              </h3>
+              <button onclick="openItemModal('lokacie', -1)" class="w-6 h-6 rounded-md bg-amber-50 hover:bg-amber-100 text-amber-800 flex items-center justify-center text-xs font-bold">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
+            <div id="cardColLokacie" class="flex-1 flex flex-wrap content-start gap-1.5 min-h-[70px]"></div>
+          </div>
+
+          <div class="bg-white rounded-xl p-3 border border-stone-200 shadow-2xs flex flex-col">
+            <div class="pb-2 mb-2 border-b border-stone-100 flex items-center justify-between">
+              <h3 class="font-bold text-xs uppercase tracking-wider text-orange-900 flex items-center gap-1">
+                <i class="fa-solid fa-bolt text-orange-500"></i> Akcie
+              </h3>
+              <button onclick="openItemModal('akcie', -1)" class="w-6 h-6 rounded-md bg-orange-50 hover:bg-orange-100 text-orange-800 flex items-center justify-center text-xs font-bold">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
+            <div id="cardColAkcie" class="flex-1 flex flex-wrap content-start gap-1.5 min-h-[70px]"></div>
+          </div>
+
+          <div class="bg-white rounded-xl p-3 border border-stone-200 shadow-2xs flex flex-col">
+            <div class="pb-2 mb-2 border-b border-stone-100 flex items-center justify-between">
+              <h3 class="font-bold text-xs uppercase tracking-wider text-rose-900 flex items-center gap-1">
+                <i class="fa-solid fa-users text-rose-500"></i> Ľudia
+              </h3>
+              <button onclick="openItemModal('ludia', -1)" class="w-6 h-6 rounded-md bg-rose-50 hover:bg-rose-100 text-rose-800 flex items-center justify-center text-xs font-bold">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
+            <div id="cardColLudia" class="flex-1 flex flex-wrap content-start gap-1.5 min-h-[70px]"></div>
+          </div>
+
+          <div class="bg-white rounded-xl p-3 border border-stone-200 shadow-2xs flex flex-col">
+            <div class="pb-2 mb-2 border-b border-stone-100 flex items-center justify-between">
+              <h3 class="font-bold text-xs uppercase tracking-wider text-emerald-900 flex items-center gap-1">
+                <i class="fa-solid fa-bowl-food text-emerald-500"></i> Jedlá
+              </h3>
+              <button onclick="openItemModal('jedla', -1)" class="w-6 h-6 rounded-md bg-emerald-50 hover:bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-bold">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
+            <div id="cardColJedla" class="flex-1 flex flex-wrap content-start gap-1.5 min-h-[70px]"></div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <section id="tableView" class="hidden space-y-3">
+        <div class="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead class="bg-stone-900 text-stone-100 font-bold uppercase tracking-wider text-[11px]">
+                <tr>
+                  <th class="py-2.5 px-3 w-36 border-r border-stone-800">Časť</th>
+                  <th class="py-2.5 px-3 w-48 border-r border-stone-800">Lokácie</th>
+                  <th class="py-2.5 px-3 w-52 border-r border-stone-800">Akcie</th>
+                  <th class="py-2.5 px-3 w-48 border-r border-stone-800">Ľudia</th>
+                  <th class="py-2.5 px-3">Jedlá</th>
+                </tr>
+              </thead>
+              <tbody id="masterTableBody" class="divide-y divide-stone-200 bg-white"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <div id="itemModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border border-stone-200 space-y-4">
+      
+      <div class="flex items-center justify-between border-b border-stone-100 pb-2.5">
+        <h3 id="itemModalTitle" class="font-bold text-sm text-stone-900">Upraviť položku</h3>
+        <button onclick="closeItemModal()" class="w-7 h-7 rounded-lg text-stone-400 hover:text-stone-700 hover:bg-stone-100 flex items-center justify-center">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="flex items-center justify-between bg-stone-50 p-2.5 rounded-xl border border-stone-200/80">
+        <span class="text-[11px] text-stone-500 font-medium">Náhľad:</span>
+        <span id="itemModalPreview" class="item-pill">Ukážka textu</span>
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-bold uppercase tracking-wider text-stone-600 mb-1">
+          Text položky
+        </label>
+        <input type="text" id="itemModalInput" placeholder="napr. Fiľakovský hrad"
+               class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-sm font-semibold focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20" />
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-bold uppercase tracking-wider text-stone-600 mb-1.5">
+          Farba pozadia
+        </label>
+        <div id="colorPaletteGrid" class="flex flex-wrap items-center gap-2"></div>
+      </div>
+
+      <div id="itemModalMoveBox" class="pt-1 flex items-center justify-between border-t border-stone-100">
+        <span class="text-[11px] font-semibold text-stone-500">Poradie v bunke:</span>
+        <div class="flex items-center gap-1.5">
+          <button type="button" onclick="moveCurrentItem(-1)" class="px-2.5 py-1 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-lg text-xs font-semibold flex items-center gap-1">
+            <i class="fa-solid fa-arrow-left text-[10px]"></i> Skôr
+          </button>
+          <button type="button" onclick="moveCurrentItem(1)" class="px-2.5 py-1 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-lg text-xs font-semibold flex items-center gap-1">
+            Neskôr <i class="fa-solid fa-arrow-right text-[10px]"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-stone-200 flex items-center justify-between gap-2">
+        <button type="button" id="itemModalDeleteBtn" onclick="deleteCurrentItem()"
+                class="px-3 py-2 bg-rose-50 hover:bg-rose-600 text-rose-700 hover:text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 border border-rose-200">
+          <i class="fa-solid fa-trash-can"></i> Vymazať
+        </button>
+
+        <div class="flex items-center gap-2 ml-auto">
+          <button type="button" onclick="closeItemModal()" class="px-3 py-2 text-xs font-semibold text-stone-600 hover:bg-stone-100 rounded-xl">
+            Zrušiť
+          </button>
+          <button type="button" id="itemModalSaveBtn" onclick="saveItemModal()"
+                  class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded-xl shadow-sm transition">
+            Uložiť
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="infoModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-stone-200 overflow-hidden">
+      <div class="p-4 bg-stone-900 text-amber-100 flex items-center justify-between">
+        <h3 class="font-serif-title font-bold text-sm sm:text-base">HISTÓRIA CHUTÍ 2 — Koncept a Slovníček pojmov</h3>
+        <button onclick="document.getElementById('infoModal').classList.add('hidden')" class="text-stone-400 hover:text-white">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <div class="p-4 overflow-y-auto space-y-4 text-xs leading-relaxed text-stone-700">
+        <div class="bg-amber-50 p-3.5 rounded-xl border border-amber-200">
+          <h4 class="font-bold text-amber-950 uppercase mb-1">Koncept 2. série („Krajina legiend a chutí“)</h4>
+          <p class="mb-2"><strong>Námet:</strong> Jana Cviková. Každá 52-minútová epizóda sleduje jeden kultúrny príbeh a jeho odtlačok na našej kuchyni prostredníctvom 4 vrstiev:</p>
+          <ul class="list-disc pl-4 space-y-1">
+            <li><strong>1. Historický kontext:</strong> prečo a ako sa táto unikátna gastronómia ocitla na našom území.</li>
+            <li><strong>2. Príbeh:</strong> konkrétna historická postava a jej osud prepojený s dobou.</li>
+            <li><strong>3. Jedlo ako stopa:</strong> suroviny, techniky a recepty (Jánošík a hrach, Granadír a Napoleon, Ryža a Turci, Zmrzlina a Mongoli).</li>
+            <li><strong>4. Súčasný presah:</strong> ako tento vplyv žije dnes (kuchári, remeselníci, regióny).</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold text-stone-900 uppercase mb-2">Slovníček chutí a pojmov</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div class="p-2 bg-stone-50 rounded-lg border border-stone-200"><strong>Haushaben (Habáni):</strong> Uzavretý habánsky dvor fungujúci na princípe spoločného majetku a stravovania.</div>
+            <div class="p-2 bg-stone-50 rounded-lg border border-stone-200"><strong>Mlinci (Chorváti):</strong> Tenké plátky nekvaseného cesta pečené nasucho, podávané k husacine.</div>
+            <div class="p-2 bg-stone-50 rounded-lg border border-stone-200"><strong>Moskol (Gorali):</strong> Hutná goralská placka z varených zemiakov a múky pečená na kachliach.</div>
+            <div class="p-2 bg-stone-50 rounded-lg border border-stone-200"><strong>Oscypek (Gorali):</strong> Zdobený údený ovčí syr s vrzgavou textúrou.</div>
+            <div class="p-2 bg-stone-50 rounded-lg border border-stone-200"><strong>Kwaśnica (Gorali):</strong> Čistá, veľmi kyslá goralská polievka z kapustovej vody a baraniny.</div>
+            <div class="p-2 bg-stone-50 rounded-lg border border-stone-200"><strong>Phở (Vietnamci):</strong> Vietnamská polievka s ryžovými rezancami a silným aromatickým vývarom.</div>
+            <div class="p-2 bg-stone-50 rounded-lg border border-stone-200"><strong>Paska & Hrudka (Rusíni):</strong> Veľkonočný zdobený koláč a sladkastý vaječný syr varený v mlieku.</div>
+            <div class="p-2 bg-stone-50 rounded-lg border border-stone-200"><strong>Čir (Rusíni):</strong> Tradičná jednoduchá kaša z múky a mlieka chudobných pastierov.</div>
+            <div class="p-2 bg-stone-50 rounded-lg border border-stone-200"><strong>Gója (Rómovia):</strong> Bravčové črevo plnené korenistou zmesou mäsa a ryže.</div>
+            <div class="p-2 bg-stone-50 rounded-lg border border-stone-200"><strong>Cigória (Francúzi):</strong> Pražený koreň čakanky ako náhrada kávy počas napoleonskej blokády.</div>
+            <div class="p-2 bg-stone-50 rounded-lg border border-stone-200"><strong>Kebab, Köfte, Meze, Pide, Lahmacun, Güvec (Turci):</strong> Tradičné osmanské špeciality z mäsa, cesta a zeleniny.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="fixed bottom-4 right-4 z-50 bg-stone-900 text-white text-xs px-3.5 py-2 rounded-xl shadow-lg border border-amber-500/40 transform translate-y-16 opacity-0 transition-all duration-200 pointer-events-none flex items-center gap-2">
+    <i class="fa-solid fa-check text-amber-400"></i>
+    <span id="toastMsg">Uložené</span>
+  </div>
+
+  <script>
+    const VIOLET_BG = '#ede9fe';
+
+    const COLOR_PALETTE = [
+      { id: 'violet',  name: 'Fialová',   bg: '#ede9fe', text: '#4c1d95', border: '#c4b5fd' },
+      { id: 'amber',   name: 'Jantárová', bg: '#fef3c7', text: '#78350f', border: '#fcd34d' },
+      { id: 'orange',  name: 'Oranžová',  bg: '#ffedd5', text: '#7c2d12', border: '#fdba74' },
+      { id: 'rose',    name: 'Ružová',    bg: '#ffe4e6', text: '#881337', border: '#fda4af' },
+      { id: 'emerald', name: 'Zelená',    bg: '#d1fae5', text: '#064e3b', border: '#6ee7b7' },
+      { id: 'sky',     name: 'Modrá',     bg: '#e0f2fe', text: '#0c4a6e', border: '#7dd3fc' },
+      { id: 'lime',    name: 'Limetková', bg: '#ecfccb', text: '#365314', border: '#bef264' },
+      { id: 'yellow',  name: 'Žltá',      bg: '#fef9c3', text: '#713f12', border: '#fde047' },
+      { id: 'stone',   name: 'Sivá',      bg: '#e7e5e4', text: '#1c1917', border: '#a8a29e' }
+    ];
+
+    const DEFAULT_CAT_COLOR = {
+      lokacie: '#fef3c7',
+      akcie:   '#ffedd5',
+      ludia:   '#ffe4e6',
+      jedla:   '#d1fae5'
+    };
+
+    const RAW_EPISODES = [
+      {
+        id: 1,
+        cast: "1. Turci",
+        podtitul: "Hrdinská obrana Fiľakova",
+        obdobie: "1526 – 1699 (16. – 17. stor.)",
+        lokalita: "Južné Slovensko, Fiľakovo",
+        prinos: "Paprika, ryža, káva, mleté mäso, kebab, mercimek a orientálne sladkosti (práca s tenkým cestom).",
+        historia: "1526 – 1699: Približne 170 rokov osmanskej prítomnosti, pričom najtvrdšia okupácia južného Slovenska trvala asi 130 rokov (1552 – 1686). Hranica po páde Budína (1541) nebola múr, ale obchodný pás (dobytok, obilie, víno, soľ, šafrán).",
+        pribeh: "Štefan II. Koháry – významný uhorský šľachtic a bojovník proti Turkom, ktorému v bojoch zabili otca. V roku 1664 vynaliezavo bránil Fiľakovský hrad, po urputných bojoch a zrade padol do osmanského zajatia v Turecku. Po návrate v r. 1685 dal vo Fiľakove postaviť kostol s kláštorom františkánov.",
+        jedlo: "Paprika prišla cez Balkán ako náhrada čierneho korenia. Káva a ryža cez Osmanov. Dusenie mäsa s cibuľou a paprikou položilo základ guláša. Tradičné jedlá: döner, Adana a şiş kebab, köfte, meze (hummus, dolma, haydari), pide, lahmacun, gözleme, simit, imam bayildi, güvec, mercimek, baklava, lokum a ayran.",
+        lokacie: ["Južné Slovensko", "Fiľakovský hrad", "Osmanská hranica"],
+        akcie: ["Obrana hradu", "Osmanská okupácia", "Pohraničný obchod", "Väzenie zajatie"],
+        ludia: ["Štefan Koháry", "Františkánski mnísi", "Osmanskí vojaci"],
+        jedla: ["Mleté mäso", "Čierna káva", "Kotlíkový guláš", "Polievka mercimek", "Sladká baklava", "Döner kebab", "Plnená dolma", "Turecký lokum"]
+      },
+      {
+        id: 2,
+        cast: "2. Valasi",
+        podtitul: "Chuť slobody a hôr",
+        obdobie: "14. – 17. storočie",
+        lokalita: "Terchová, Detva, Karpaty",
+        prinos: "Salašníctvo, bryndza, žinčica, oštiepok, parenica a halušky. Pastierska mobilita ako kultúrny fenomén.",
+        historia: "Stáročná migrácia pastierskych skupín cez Karpaty z juhovýchodu (Rumunsko, Ukrajina). Usádzali sa na Kysuciach, Orave, Liptove, Gemeri a Zemplíne. „Valašské právo“ im dávalo nižšie dane a slobodu pohybu so stádom výmenou za stráženie hraníc, čo vyvolávalo napätie s roľníkmi.",
+        pribeh: "Juraj Jánošík (1688 – 1713). Jeho prostredie je typicky valašské. Valasi stáli medzi šľachtou a poddanými – mali istú mieru slobody, no žili tvrdo a na okraji, z čoho sa rodilo zbojníctvo.",
+        jedlo: "Syrárstvo a bryndziarstvo: fermentovaná bryndza (prvá bryndziareň v Detve koncom 18. stor.), žinčica, oštiepok, parenica, halušky. Ovčie a kozľacie mäso, kaše z jačmeňa a prosa, kyslé mlieko, cesnak a cibuľa, valašské frgále, kyselica, podlesníky, pohánkový kontrabáš a trnková omáčka.",
+        lokacie: ["Terchová Detva", "Horské Karpaty", "Kysuce Orava", "Liptov Gemer"],
+        akcie: ["Horská kolonizácia", "Pasenie oviec", "Valašské právo", "Zbojnícke družiny"],
+        ludia: ["Juraj Jánošík", "Valašskí bačovia", "Horskí pastieri"],
+        jedla: ["Ovčia bryndza", "Kyslá žinčica", "Údený oštiepok", "Zemiakové halušky", "Polievka kyselica", "Valašské frgále", "Pohánkový kontrabáš", "Trnková omáčka"]
+      },
+      {
+        id: 3,
+        cast: "3. Nemci",
+        podtitul: "Remeslo má zlaté dno",
+        obdobie: "12. – 13. storočie",
+        lokalita: "Kremnica, Banská Štiavnica, Spiš",
+        prinos: "Mestská kuchyňa, údeniny, praclíky, cechové spracovanie mäsa, pekárstvo a rozvoj baníctva.",
+        historia: "Nemci prišli po tatárskom vpáde na pozvanie uhorských kráľov do Hauerlandu (Kremnica, Štiavnica, Bystrica) a na Spiš (Levoča, Kežmarok, Spišská Sobota). Mali vlastné právo Zipser Willkür a vybudovali technologické centrá Európy.",
+        pribeh: "Daniel Sinapius-Horčička (1640 – 1688) – spišský evanjelický učiteľ, básnik a kazateľ. Študoval v Levoči a Wittenbergu. Počas rekatolizácie (1671 – 1681) bol vyhnaný do exilu, po návrate pôsobil v Levoči až do smrti.",
+        jedlo: "Cechové spracovanie mäsa: údeniny, klobásy, pečené a marinované bravčové i hovädzie. Pšeničný a jačmenný chlieb s medom, praclíky, husté fazuľové a kapustové polievky, medovníky, orechové koláče, torty a remeselné pivo.",
+        lokacie: ["Kremnica Štiavnica", "Región Spiš", "Mesto Levoča"],
+        akcie: ["Hlbinná ťažba", "Mäsiarske cechy", "Rekatolizácia exil", "Mestská samospráva"],
+        ludia: ["Daniel Sinapius", "Spišskí mešťania", "Nemeckí baníci"],
+        jedla: ["Chrumkavé praclíky", "Údené klobásy", "Medové perníky", "Remeselné pivo", "Jačmenný chlieb", "Orechové torty"]
+      },
+      {
+        id: 4,
+        cast: "4. Maďari",
+        podtitul: "Chuť Uhorska",
+        obdobie: "Rok 1867 (vplyv od 9. stor.)",
+        lokalita: "Južné Slovensko, Žitný ostrov, Košice",
+        prinos: "Kotlíkové varenie (bogrács), guláš, perkelt, halászlé, paprikáš, pagáče a tokajské víno.",
+        historia: "Slovensko bolo takmer 1000 rokov súčasťou Uhorska (príchod kmeňov okolo r. 895). Úrodná černozem a ramená Dunaja na juhu priali chovu hovädzieho dobytka, pestovaniu pšenice, viniča a teplomilnej papriky.",
+        pribeh: "František II. Rákóczi (1676 – 1735) – vodca najväčšieho protihabsburského povstania (1703 – 1711). Vojenské presuny kurucov cez Košice, Prešov, Spiš, Liptov až po Komárno, Nové Zámky a Dunajskú Stredu prepojili šľachtu s ľudom a šírili paprikové jedlá.",
+        jedlo: "Varenie v kotlíku (bogrács): guláš, perkelt, paprikáš, rybacie halászlé. Paprika ako základ klobás a zabíjačiek, viac hovädzieho mäsa, pšeničný biely chlieb, kysnuté koláče, štrúdle, pagáče (pogácsa) a tokajské víno.",
+        lokacie: ["Žitný ostrov", "Mesto Košice", "Nové Zámky", "Dunajská Streda"],
+        akcie: ["Rákócziho povstanie", "Kotlíkové varenie", "Chov dobytka", "Pestovanie papriky"],
+        ludia: ["František Rákóczi", "Kuruckí vojaci", "Uhorská šľachta"],
+        jedla: ["Kotlíkový guláš", "Šťavnatý perkelt", "Rybacie halászlé", "Oškvarkové pagáče", "Tokajské víno", "Biely chlieb", "Ťahaná štrúdľa"]
+      },
+      {
+        id: 5,
+        cast: "5. Husiti",
+        podtitul: "Nová doba",
+        obdobie: "Rok 1428 (15. storočie)",
+        lokalita: "Záhorie, Severné Slovensko",
+        prinos: "Vojenská táborová strava, ražný chlieb, strukoviny, sušené mäso, kyslá kapusta a pivo.",
+        historia: "Český veliteľ Ján Jiskra z Brandýsa ovládol s husitskými žoldniermi hrady a banské mestá ako ochranca maloletého kráľa. V roku 1462 sa dohodol s Matejom Korvínom a vstúpil do jeho služieb.",
+        pribeh: "Ján Jiskra z Brandýsa (herec Stanislav Majer) a husitský kazateľ a reformátor Mikuláš z Prachatíc (Mikuláš z Pelhřimova, cca 1385 – 1434), ktorý organizoval bratrícke komunity na severnom a strednom Slovensku.",
+        jedlo: "Disciplinovaná kolektívna vojenská strava: tmavý ražný chlieb, jačmenná a ovsená kaša, hrach a šošovica, cibuľa, cesnak, kyslá kapusta proti skorbutu, solené a v dyme sušené mäso, slanina a pivo (bezpečnejšie než voda).",
+        lokacie: ["Región Záhorie", "Severné Slovensko", "Banské mestá"],
+        akcie: ["Vojenské tábory", "Kontrola hradov", "Kališnícke kázne", "Dohoda Korvínom"],
+        ludia: ["Ján Jiskra", "Mikuláš Prachatíc", "Husitskí bratríci"],
+        jedla: ["Ražný chlieb", "Hrachová kaša", "Kyslá kapusta", "Sušené mäso", "Vojenské pivo", "Varená šošovica", "Údená slanina"]
+      },
+      {
+        id: 6,
+        cast: "6. Židia",
+        podtitul: "Chuť mesta",
+        obdobie: "18. storočie",
+        lokalita: "Bratislava, Trnava, Nitra",
+        prinos: "Husacie hody, lokše, šábesový cholent, maces, chala, husacia pečeň a makovo-orechové dezerty.",
+        historia: "Po bitke pri Moháči (1526) prúdili židovské rodiny do Bratislavy, Trnavy a Nitry. V 18. storočí za Márie Terézie a Tolerančného patentu Jozefa II. nastala stabilizácia a rozmach mestského obchodu.",
+        pribeh: "Mordechaj (Moric) Frankel (18. storočie, Bratislava) – významný obchodník a finančník, ktorý zastupoval záujmy komunity pred mestskou radou a podporil rozvoj židovských pekární a obchodu s potravinami.",
+        jedlo: "Mestská kuchyňa formovaná pravidlami kašrutu: husacia tradícia (husacia masť, pečená hus, pečienky), lokše plnené makom alebo pečeňou, pomaly pečený sobotný cholent (mäso, fazuľa, krúpy), gefilte fiš, maces, chala, makové a orechové koláče.",
+        lokacie: ["Stará Bratislava", "Mesto Trnava", "Historická Nitra"],
+        akcie: ["Mestský obchod", "Pravidlá kašrutu", "Rozvoj pekární", "Tolerančný patent"],
+        ludia: ["Moric Frankel", "Bratislavskí rabíni", "Židovskí pekári"],
+        jedla: ["Pečená hus", "Zemiakové lokše", "Sobotný cholent", "Pletená chala", "Gefilte fiš", "Husacia pečeň", "Makové dezerty", "Nekvasený maces"]
+      },
+      {
+        id: 7,
+        cast: "7. Mongoli",
+        podtitul: "Ako Slováci porazili Mongolov - Chuť Ázie",
+        obdobie: "Rok 1241 / 1285 (13. stor.)",
+        lokalita: "Východné Slovensko, Košice, Zemplín",
+        prinos: "Technika kotlíkového varenia, sušené mlieko (qurut), proso, kumys a príprava mäsa boodog.",
+        historia: "Po drvivej porážke pri rieke Slaná (1241) pod vedením Batuchána odolali len kamenné hrady. Pri druhom vpáde v roku 1285 narazila 40-tisícová armáda chána Nogaja na novovybudovanú sieť pevností.",
+        pribeh: "Vojvodca Juraj Bakša zo Zemplína (herec Michal Hudák) – veliteľ kráľa Ladislava IV., ktorý guerillovou taktikou a výpadmi z kamenných hradov porazil Tatárov na Zemplíne, Šariši a pri Podolínci na Spiši.",
+        jedlo: "Každý arban (10 mužov) viezol 3,5 sušenej ovce a kotlík. Kumys (kobylí nápoj), qurut (sušený syr rozmiešaný vo vode), prosná kaša, shülen (mäso varené v kotlíku so soľou), parené taštičky buuz, rezance tsuivan, boodog (mäso pečené horúcimi kameňmi), boortsog a slaný čaj suutei tsai.",
+        lokacie: ["Rieka Slaná", "Zemplín Šariš", "Hrad Podolínec", "Verecký priesmyk"],
+        akcie: ["Tatársky vpád", "Guerillová taktika", "Obrana hradov", "Bitka Podolínci"],
+        ludia: ["Juraj Bakša", "Chán Nogaj", "Kráľ Ladislav"],
+        jedla: ["Kobylí kumys", "Sušený qurut", "Kotlíkový shülen", "Parený buuz", "Pečený boodog", "Rezance tsuivan", "Slaný čaj"]
+      },
+      {
+        id: 8,
+        cast: "8. Rusíni",
+        podtitul: "Zabudnutí Slovania",
+        obdobie: "Rok 1848 (19. storočie)",
+        lokalita: "Snina, Humenné, Svidník, Bardejov",
+        prinos: "Mačanka, tatarské pirohy, holubky, vaječný syr hrudka, paska a pôstna karpatská kuchyňa.",
+        historia: "Počas revolúcie 1848 bojovali Rusíni za uznanie, no po vyrovnaní v r. 1867 čelili tvrdej maďarizácii. Tisíce Rusínov odišli do USA (Pensylvánia, Ohio), kde zakladali spolky a zachránili národnú identitu.",
+        pribeh: "Adolf Dobriansky (vizionár, ktorý v r. 1849 dosiahol vznik Užhorodského dištriktu) a prešovský kňaz a básnik Alexander Duchnovič („Ja Rusín bol, som i budem!“), ktorý zakladal čitárne a písal šlabikáre.",
+        jedlo: "Filozofia „z mála urobiť hostinu“ a prísne pôsty. Svätá trojica: zemiaky (grule/bandurky), kapusta a múka + huby. Mačanka (z kapustovej jušky a húb), tatarské pirohy z pohánky, koločanka, holubky, lokša, pastiersky čir, veľkonočný koláč paska a vaječný syr hrudka (sirec).",
+        lokacie: ["Snina Humenné", "Svidník Bardejov", "Mesto Prešov"],
+        akcie: ["Národné obrodenie", "Prísne pôsty", "Emigrácia Ameriky", "Zber húb"],
+        ludia: ["Adolf Dobriansky", "Alexander Duchnovič", "Karpatskí pastieri"],
+        jedla: ["Hubová mačanka", "Tatarské pirohy", "Plnené holubky", "Vaječná hrudka", "Veľkonočná paska", "Zemiaková koločanka", "Pastiersky čir", "Kapustová juška"]
+      },
+      {
+        id: 9,
+        cast: "9. Rómovia",
+        podtitul: "Chuť vášne",
+        obdobie: "18. storočie",
+        lokalita: "Lučenec, Levice, Košice, Rimavská Sobota",
+        prinos: "Kotlíkové špeciality na ohni, korenistá gója, hustá fazóľová polievka a hudobno-kováčska tradícia.",
+        historia: "Príchod v 14. – 15. storočí z Indie cez Balkán. Za Žigmunda Luxemburského dostávali ochranné listiny ako kováči (vyrábali kotly, nože, podkovy) a hudobníci. V 18. storočí čelili nariadeniam Márie Terézie a Jozefa II. o usadení.",
+        pribeh: "Rodina Ráczovcov – najmä Ján Rácz, vychýrený rómsky primáš a kapelník z 18. storočia pôsobiaci v Hornom Uhorsku, ktorého si objednávali šľachtické dvory aj mestské rady.",
+        jedlo: "Kuchyňa otvoreného ohňa a kotlíka: gója (bravčové črevo plnené korenistým mäsom, ryžou a cibuľou), hustá cesnaková fazóľová polievka s údeným mäsom, domáci chlieb a jedlá z vnútorností.",
+        lokacie: ["Lučenec Levice", "Rimavská Sobota", "Mesto Košice"],
+        akcie: ["Kováčske remeslo", "Jarmočná muzika", "Varenie ohni", "Šľachtické hostiny"],
+        ludia: ["Ján Rácz", "Rómski primáši", "Putujúci kováči"],
+        jedla: ["Pečená gója", "Fazóľová polievka", "Údené mäso", "Korenené vnútornosti", "Domáci chlieb", "Kotlíkové mäso"]
+      },
+      {
+        id: 10,
+        cast: "10. Habáni",
+        podtitul: "Chuť komunity a hliny",
+        obdobie: "16. – 17. storočie",
+        lokalita: "Sobotište, Veľké Leváre, Moravský Svätý Ján",
+        prinos: "Habánska majolika, hygiena stolovania, štepenie ovocia, komorové sušiarne a habánsky koláč.",
+        historia: "Novokrstenci (anabaptisti) utekajúci v 16. storočí zo Švajčiarska, Nemecka a severného Talianska. Odmietali zbrane a súkromné vlastníctvo, zakladali uzavreté rovnostárske dvory – „haushabeny“.",
+        pribeh: "Správca dvora „Haushalter“ a majster keramikár. Život v habánskom dvore pripomínal prísne organizovanú utópiu: varilo sa v jednej obrovskej kuchyni a jedlo sa v spoločných jedálňach v úplnom tichu.",
+        jedlo: "Špičkové ovocinárstvo (štepenie jabĺk a hrušiek), veľké komorové sušiarne na sušené ovocie, husté ovocné kaše, habánsky koláč, kvalitná zelenina, slabé pivo a slávna biela glazovaná keramika (majolika).",
+        lokacie: ["Obec Sobotište", "Veľké Leváre", "Moravský Ján"],
+        akcie: ["Spoločná jedáleň", "Výroba majoliky", "Štepenie stromov", "Komorové sušenie"],
+        ludia: ["Dvorový Haushalter", "Majster keramikár", "Habánski lekári"],
+        jedla: ["Habánsky koláč", "Sušené ovocie", "Ovocné kaše", "Štepené jablká", "Ľahké pivo", "Záhradná zelenina"]
+      },
+      {
+        id: 11,
+        cast: "11. Chorváti",
+        podtitul: "Chuť úteku a domova",
+        obdobie: "16. storočie",
+        lokalita: "Chorvátsky Grob, Devínska Nová Ves, Jarovce, Čunovo",
+        prinos: "Mlinci, husacie hody, odroda viniča Frankovka a zúrodnenie močaristých území.",
+        historia: "Po bitke pri Moháči (1526) a páde Budína utekali Chorváti pred Osmanmi na panstvá Erdődyovcov a Pálffyovcov pri Bratislave a Trnave, kde vybudovali súvislý pás chorvátskych dedín.",
+        pribeh: "Chorvátska utečenecká rodina prichádza na vozoch do Chorvátskeho Grobu či Devínskej Novej Vsi, ručne odvodňuje močiare, klčuje lesy a udržiava si čakavské nárečie a kroje dodnes.",
+        jedlo: "Mlinci (tenké pláty nekvaseného cesta z múky, vody a soli pečené nasucho na platni, zalievané horúcim výpekom z pečenej husi), husacie hody, červené víno Frankovka, korenisté bravčové a dunajské ryby.",
+        lokacie: ["Chorvátsky Grob", "Devínska Ves", "Jarovce Čunovo"],
+        akcie: ["Útek Balkánu", "Odvodňovanie močiarov", "Pestovanie viniča", "Chov husí"],
+        ludia: ["Utečenecké rodiny", "Rod Pálffyovcov", "Grobské gazdiné"],
+        jedla: ["Tradičné mlinci", "Grobská husacina", "Víno Frankovka", "Husací výpek", "Dunajské ryby", "Korenené bravčové"]
+      },
+      {
+        id: 12,
+        cast: "12. Francúzi",
+        podtitul: "Chuť improvizácie",
+        obdobie: "1805 / 1809",
+        lokalita: "Bratislava, Devín, Trnava",
+        prinos: "Granadírsky pochod, cukrová repa ako náhrada trstiny a cigória/melta namiesto kávy.",
+        historia: "Napoleonské vojny zasiahli Slovensko v r. 1805 a 1809 (ostreľovanie Bratislavy a vyhodenie hradu Devín do povetria). Kontinentálna blokáda zastavila dovoz koloniálneho trstinového cukru a kávy.",
+        pribeh: "Pohľad francúzskeho granadiera táboriaceho pri Bratislave a domáceho sedliaka, ktorý musí zakopávať obilie pred vojenským rekvírovaním a prechádza na varenie zo zemiakov.",
+        jedlo: "Granadírsky pochod (Grenadiermarsch – zemiaky, cibuľa, bravčová masť, fliačky a červená paprika), vznik prvých cukrovarov na cukrovú repu (napr. v Trnave) a náhrada kávy praženou čakankou (cigória) a žaluďovou meltou.",
+        lokacie: ["Hrad Devín", "Mesto Bratislava", "Trnavský cukrovar"],
+        akcie: ["Kontinentálna blokáda", "Vojenské rekvírovanie", "Ostreľovanie Devína", "Výroba cukru"],
+        ludia: ["Francúzsky granadier", "Cisár Napoleon", "Domáci sedliaci"],
+        jedla: ["Granadírsky pochod", "Cukrová repa", "Čakanková cigória", "Žaluďová melta", "Zemiakové fliačky"]
+      },
+      {
+        id: 13,
+        cast: "13. Taliani",
+        podtitul: "Chuť renesancie a etikety",
+        obdobie: "Rok 1476",
+        lokalita: "Zvolenský zámok, Bratislavský hrad",
+        prinos: "Zavedenie vidličky, cestovín (maccheroni), parmezánu, marcipánu a renesančného prestierania.",
+        historia: "Sobáš kráľa Mateja Korvína s neapolskou princeznou Beatrix Aragónskou v roku 1476 priniesol na uhorský dvor renesančných umelcov, kuchárov, cukrárov a záhradníkov.",
+        pribeh: "Kultúrny šok talianskeho šéfkuchára na Zvolenskom a Bratislavskom hrade, kde sa jedlo ťažké mäso rukami a kosti sa hádzali psom pod stôl. Kráľovná Beatrix zavádza vyšívané obrusy, protokol a dvojhrotú vidličku.",
+        jedlo: "Prvé cestoviny „maccheroni“, tvrdé parmezánové syry, olivový olej, figy, citrusy, mandle, jedlé gaštany, marcipánové diela a hradné záhrady s jemnejšou cibuľou, cesnakom a listovými šalátmi.",
+        lokacie: ["Zvolenský zámok", "Bratislavský hrad", "Kráľovské záhrady"],
+        akcie: ["Kráľovská svadba", "Zavedenie vidličky", "Renesančná etiketa", "Šľachtenie zeleniny"],
+        ludia: ["Beatrix Aragónska", "Matej Korvín", "Taliansky kuchár"],
+        jedla: ["Cestoviny maccheroni", "Tvrdý parmezán", "Sladký marcipán", "Jedlé gaštany", "Listové šaláty", "Olivový olej"]
+      },
+      {
+        id: 14,
+        cast: "14. Gorali",
+        podtitul: "Chuť drsnej hranice",
+        obdobie: "18. – 19. storočie",
+        lokalita: "Zamagurie, Červený Kláštor, Orava, Ždiar",
+        prinos: "Horská fermentácia syrov (oscypek), pltnícka polievka kwaśnica a zemiaková placka moskol.",
+        historia: "Etnografická skupina na poľsko-slovenskom pohraničí (Orava, Kysuce, Spiš, Zamagurie) spájajúca valašský a poľský vplyv v najchladnejších horských polohách.",
+        pribeh: "Miestny pltník splavujúci drevo na pltiach po Dunajci až k Baltu (alebo po Váhu do Komárna) prináša rodine peniaze a drahocennú soľ, kým na hraniciach kvitne aj pašeráctvo koní a tabaku.",
+        jedlo: "Bohato zdobený údený ovčí syr oscypek s vrzgavou textúrou, kwaśnica (čistá kyslá polievka z kapustovej vody a baraniny/údeného mäsa bez smotany a hríbov) a zemiaková placka moskol pečená na kachliach s cesnakom a masťou.",
+        lokacie: ["Región Zamagurie", "Červený Kláštor", "Orava Ždiar", "Rieka Dunajec"],
+        akcie: ["Splavovanie plťami", "Údenie oscypkov", "Hraničné pašovanie", "Prežitie mrazoch"],
+        ludia: ["Dunajeckí pltníci", "Goralskí pastieri", "Pohraniční pašeráci"],
+        jedla: ["Údený oscypek", "Kyslá kwaśnica", "Zemiakový moskol", "Varená baranina", "Kapustová voda"]
+      },
+      {
+        id: 15,
+        cast: "15. Vietnamci",
+        podtitul: "Chuť exotiky a nového domova",
+        obdobie: "70. roky 20. stor. – súčasnosť",
+        lokalita: "Bratislava, Svit, Partizánske",
+        prinos: "Kultúra polievky Phở, čerstvých byliniek (koriander, perila), ryžových rezancov a moderného street-foodu.",
+        historia: "V 70. a 80. rokoch prišli tisíce mladých Vietnamcov pracovať do obuvníckeho a textilného priemyslu (Svit, ZDA Partizánske). Po roku 1989 prešli na tržnice a postupne zakladali prvé ázijské bistrá.",
+        pribeh: "Prvá generácia trhovcov v uzimených stánkoch na bratislavskej Miletičke obetujúca komfort pre vzdelanie detí a druhá „banánová generácia“, ktorá dnes otvára moderné vietnamské reštaurácie.",
+        jedlo: "Čerstvé bylinky (koriander, mäta, perila, thajská bazalka), hodiny ťahaný vývar Phở s badiánom, zázvorom, škoricou a ryžovými rezancami, grilované Bún chả, nesmažené letné rolky v ryžovom papieri a rybacia omáčka.",
+        lokacie: ["Tržnica Miletičova", "Závody Svit", "Mesto Partizánske"],
+        akcie: ["Práca továrňach", "Trhový predaj", "Otváranie bistier", "Generačný posun"],
+        ludia: ["Banánová generácia", "Miletičskí trhovci", "Vietnamskí kuchári"],
+        jedla: ["Polievka Phở", "Grilované Bún-chả", "Čerstvý koriander", "Letné rolky", "Ryžové rezance", "Rybacia omáčka"]
+      }
+    ];
+
+    const STORAGE_KEY = "historia_chuti_2_mobile_v4";
+
+    function normalizeEpisodes(rawList) {
+      return rawList.map(ep => {
+        const copy = { ...ep };
+        ['lokacie', 'akcie', 'ludia', 'jedla'].forEach(cat => {
+          copy[cat] = (copy[cat] || []).map(item => {
+            if (typeof item === 'string') {
+              return { text: item, bg: DEFAULT_CAT_COLOR[cat] };
+            }
+            return { text: item.text || '', bg: item.bg || DEFAULT_CAT_COLOR[cat] };
+          });
+        });
+        return copy;
+      });
+    }
+
+    function loadData() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try { return normalizeEpisodes(JSON.parse(saved)); }
+        catch (e) { console.error(e); }
+      }
+      return normalizeEpisodes(JSON.parse(JSON.stringify(RAW_EPISODES)));
+    }
+
+    let episodes = loadData();
+    let currentEpisodeId = 1;
+    let isTableView = false;
+    let isNarrativeOpen = true;
+    let searchQuery = "";
+
+    let modalState = {
+      epId: 1,
+      category: 'lokacie',
+      index: -1,
+      selectedBg: VIOLET_BG
+    };
+
+    function saveData(msg = "Uložené") {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(episodes));
+      showToast(msg);
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      document.getElementById("toastMsg").textContent = msg;
+      t.classList.remove("translate-y-16", "opacity-0");
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        t.classList.add("translate-y-16", "opacity-0");
+      }, 1600);
+    }
+
+    function getEp(id = currentEpisodeId) {
+      return episodes.find(e => e.id === id) || episodes[0];
+    }
+
+    function getTextColorForBg(hex) {
+      const found = COLOR_PALETTE.find(c => c.bg.toLowerCase() === (hex || '').toLowerCase());
+      if (found) return found.text;
+      if (!hex || !hex.startsWith('#') || hex.length !== 7) return '#1c1917';
+      const r = parseInt(hex.slice(1,3), 16);
+      const g = parseInt(hex.slice(3,5), 16);
+      const b = parseInt(hex.slice(5,7), 16);
+      const yiq = ((r*299)+(g*587)+(b*114))/1000;
+      return (yiq >= 145) ? '#1c1917' : '#ffffff';
+    }
+
+    function getCellBaseBg(ep, category) {
+      const items = ep[category] || [];
+      const nonViolet = items.find(i => i.bg && i.bg.toLowerCase() !== VIOLET_BG);
+      return nonViolet ? nonViolet.bg : DEFAULT_CAT_COLOR[category];
+    }
+
+    function renderNavigation() {
+      const nav = document.getElementById("episodeList");
+      const quick = document.getElementById("mobileQuickNav");
+      nav.innerHTML = "";
+      quick.innerHTML = "";
+
+      episodes.forEach(ep => {
+        const active = (ep.id === currentEpisodeId && !isTableView);
+
+        const btn = document.createElement("button");
+        btn.className = `w-full text-left px-2.5 py-2 rounded-xl transition flex items-center justify-between ${
+          active ? "bg-amber-900 text-white font-bold shadow-xs" : "hover:bg-amber-50 text-stone-700"
+        }`;
+        btn.innerHTML = `
+          <div class="flex items-center gap-2 truncate">
+            <span class="w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-bold shrink-0 ${
+              active ? "bg-amber-400 text-stone-950" : "bg-stone-200 text-stone-700"
+            }">${ep.id}</span>
+            <div class="truncate">
+              <div class="truncate">${ep.cast}</div>
+              <div class="text-[10px] opacity-70 truncate">${ep.podtitul || ''}</div>
+            </div>
+          </div>
+        `;
+        btn.onclick = () => selectEpisode(ep.id);
+        nav.appendChild(btn);
+
+        const qBtn = document.createElement("button");
+        qBtn.className = `px-2.5 py-1 rounded-lg text-xs font-bold shrink-0 transition ${
+          active
+            ? "bg-amber-500 text-stone-950 shadow-xs"
+            : "bg-stone-800 text-stone-300 hover:bg-stone-700"
+        }`;
+        qBtn.textContent = ep.cast;
+        qBtn.onclick = () => selectEpisode(ep.id);
+        quick.appendChild(qBtn);
+      });
+    }
+
+    function selectEpisode(id) {
+      currentEpisodeId = id;
+      isTableView = false;
+      updateActiveView();
+      closeMobileSidebar();
+    }
+
+    function createPillElement(itemObj, category, index, epId) {
+      const span = document.createElement("span");
+      span.className = "item-pill";
+      span.style.backgroundColor = itemObj.bg;
+      span.style.color = getTextColorForBg(itemObj.bg);
+      span.dataset.index = index;
+      span.textContent = itemObj.text;
+
+      span.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openItemModal(category, index, epId);
+      });
+
+      return span;
+    }
+
+    function initSortableContainer(containerEl, epId, category) {
+      if (!containerEl || typeof Sortable === 'undefined') return;
+      Sortable.create(containerEl, {
+        animation: 150,
+        delay: 140,
+        delayOnTouchOnly: true,
+        ghostClass: 'sortable-ghost',
+        dragClass: 'sortable-drag',
+        filter: '.add-btn-ignore',
+        onEnd: function (evt) {
+          const oldIdx = evt.oldIndex;
+          const newIdx = evt.newIndex;
+          if (oldIdx === newIdx || oldIdx == null || newIdx == null) return;
+          const ep = getEp(epId);
+          if (!ep || !ep[category]) return;
+          const moved = ep[category].splice(oldIdx, 1)[0];
+          ep[category].splice(newIdx, 0, moved);
+          saveData("Poradie upravené");
+          renderCurrentView();
+        }
+      });
+    }
+
+    function renderSingleView() {
+      const ep = getEp();
+
+      document.getElementById("epNumberBadge").textContent = ep.id;
+      const heroTitle = document.getElementById("heroTitle");
+      heroTitle.textContent = `${ep.cast} — ${ep.podtitul || ''}`;
+      heroTitle.onblur = () => {
+        const parts = heroTitle.textContent.split("—");
+        ep.cast = (parts[0] || ep.cast).trim();
+        if (parts[1] !== undefined) ep.podtitul = parts.slice(1).join("—").trim();
+        saveData();
+        renderNavigation();
+      };
+
+      const bindEditable = (elId, field) => {
+        const el = document.getElementById(elId);
+        el.textContent = ep[field] || "";
+        el.onblur = () => {
+          ep[field] = el.textContent.trim();
+          saveData();
+        };
+      };
+      bindEditable("metaObdobie", "obdobie");
+      bindEditable("metaLokalita", "lokalita");
+      bindEditable("metaPrinos", "prinos");
+      bindEditable("narrHistoria", "historia");
+      bindEditable("narrPribeh", "pribeh");
+      bindEditable("narrJedlo", "jedlo");
+
+      const colCast = document.getElementById("cardColCast");
+      colCast.innerHTML = `
+        <div class="text-2xl font-extrabold text-stone-900 font-serif-title">${ep.id}</div>
+        <div id="castShortEdit" contenteditable="true" class="font-bold text-xs text-stone-800 px-1.5 py-0.5">${ep.cast}</div>
+        <div id="castSubEdit" contenteditable="true" class="text-[11px] text-stone-500 px-1">${ep.podtitul || ''}</div>
+      `;
+      document.getElementById("castShortEdit").onblur = (e) => {
+        ep.cast = e.target.textContent.trim();
+        saveData();
+        renderNavigation();
+        renderSingleView();
+      };
+      document.getElementById("castSubEdit").onblur = (e) => {
+        ep.podtitul = e.target.textContent.trim();
+        saveData();
+        renderNavigation();
+        renderSingleView();
+      };
+
+      const mapCols = [
+        { key: 'lokacie', elId: 'cardColLokacie' },
+        { key: 'akcie',   elId: 'cardColAkcie' },
+        { key: 'ludia',   elId: 'cardColLudia' },
+        { key: 'jedla',   elId: 'cardColJedla' }
+      ];
+
+      mapCols.forEach(({ key, elId }) => {
+        const container = document.getElementById(elId);
+        container.innerHTML = "";
+        ep[key].forEach((itemObj, idx) => {
+          container.appendChild(createPillElement(itemObj, key, idx, ep.id));
+        });
+        initSortableContainer(container, ep.id, key);
+      });
+
+      document.getElementById("prevEpBtn").disabled = (ep.id === 1);
+      document.getElementById("nextEpBtn").disabled = (ep.id === episodes.length);
+      document.getElementById("prevEpBtn").style.opacity = (ep.id === 1) ? "0.35" : "1";
+      document.getElementById("nextEpBtn").style.opacity = (ep.id === episodes.length) ? "0.35" : "1";
+    }
+
+    function renderMasterTable() {
+      const tbody = document.getElementById("masterTableBody");
+      tbody.innerHTML = "";
+      const q = searchQuery.toLowerCase().trim();
+
+      const filtered = episodes.filter(ep => {
+        if (!q) return true;
+        const dump = [
+          ep.cast, ep.podtitul, ep.obdobie, ep.lokalita, ep.prinos, ep.historia, ep.pribeh, ep.jedlo,
+          ...ep.lokacie.map(x => x.text),
+          ...ep.akcie.map(x => x.text),
+          ...ep.ludia.map(x => x.text),
+          ...ep.jedla.map(x => x.text)
+        ].join(" ").toLowerCase();
+        return dump.includes(q);
+      });
+
+      filtered.forEach(ep => {
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-stone-50/80 align-top border-b border-stone-200";
+
+        const tdCast = document.createElement("td");
+        tdCast.className = "p-2.5 border-r border-stone-200";
+        tdCast.innerHTML = `
+          <div class="flex items-start justify-between gap-1">
+            <div>
+              <span class="font-extrabold text-xs text-stone-900 block cursor-pointer hover:text-amber-700" onclick="selectEpisode(${ep.id})">${ep.cast}</span>
+              <span class="text-[10px] text-stone-500 block leading-tight mt-0.5">${ep.podtitul || ''}</span>
+              <span class="text-[10px] text-amber-800 font-semibold block mt-1">${ep.obdobie || ''}</span>
+            </div>
+          </div>
+        `;
+        tr.appendChild(tdCast);
+
+        ['lokacie', 'akcie', 'ludia', 'jedla'].forEach(cat => {
+          const td = document.createElement("td");
+          td.className = "p-2 border-r border-stone-200 last:border-r-0";
+
+          const wrap = document.createElement("div");
+          wrap.className = "flex flex-wrap items-center gap-1 min-h-[32px]";
+
+          ep[cat].forEach((itemObj, idx) => {
+            wrap.appendChild(createPillElement(itemObj, cat, idx, ep.id));
+          });
+
+          const addBtn = document.createElement("button");
+          addBtn.className = "add-btn-ignore w-6 h-6 rounded-md bg-stone-100 hover:bg-amber-100 text-stone-500 hover:text-amber-900 flex items-center justify-center text-[10px]";
+          addBtn.innerHTML = '<i class="fa-solid fa-plus"></i>';
+          addBtn.onclick = () => openItemModal(cat, -1, ep.id);
+          wrap.appendChild(addBtn);
+
+          td.appendChild(wrap);
+          tr.appendChild(td);
+          initSortableContainer(wrap, ep.id, cat);
+        });
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openItemModal(category, index, epId = currentEpisodeId) {
+      const ep = getEp(epId);
+      const isNew = (index === -1);
+      const item = isNew
+        ? { text: "", bg: VIOLET_BG }
+        : ep[category][index];
+
+      modalState = {
+        epId,
+        category,
+        index,
+        selectedBg: isNew ? VIOLET_BG : (item.bg || DEFAULT_CAT_COLOR[category])
+      };
+
+      const catLabels = { lokacie: 'Lokácie', akcie: 'Akcie', ludia: 'Ľudia', jedla: 'Jedlá' };
+      document.getElementById("itemModalTitle").textContent = isNew
+        ? `Pridať položku (${catLabels[category]})`
+        : `Upraviť položku (${catLabels[category]})`;
+
+      const input = document.getElementById("itemModalInput");
+      input.value = item.text;
+
+      document.getElementById("itemModalDeleteBtn").classList.toggle("hidden", isNew);
+      document.getElementById("itemModalMoveBox").classList.toggle("hidden", isNew);
+
+      renderColorPalette();
+      updateModalPreview();
+
+      const modal = document.getElementById("itemModal");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+      setTimeout(() => input.focus(), 50);
+    }
+
+    function renderColorPalette() {
+      const grid = document.getElementById("colorPaletteGrid");
+      grid.innerHTML = "";
+
+      const ep = getEp(modalState.epId);
+      const cellBaseBg = getCellBaseBg(ep, modalState.category);
+
+      const violetColor = COLOR_PALETTE.find(c => c.id === 'violet');
+      const cellColor = COLOR_PALETTE.find(c => c.bg.toLowerCase() === cellBaseBg.toLowerCase()) || {
+        id: 'cell_bg',
+        name: 'Farba bunky',
+        bg: cellBaseBg,
+        text: getTextColorForBg(cellBaseBg),
+        border: '#a8a29e'
+      };
+
+      const orderedColors = [
+        violetColor,
+        ...(cellColor.bg.toLowerCase() !== violetColor.bg.toLowerCase() ? [cellColor] : []),
+        ...COLOR_PALETTE.filter(c =>
+          c.bg.toLowerCase() !== violetColor.bg.toLowerCase() &&
+          c.bg.toLowerCase() !== cellColor.bg.toLowerCase()
+        )
+      ];
+
+      orderedColors.forEach(c => {
+        const isSelected = modalState.selectedBg.toLowerCase() === c.bg.toLowerCase();
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.title = c.name;
+        btn.className = `w-7 h-7 rounded-full border-2 transition flex items-center justify-center ${
+          isSelected ? "scale-110 ring-2 ring-amber-600 border-stone-900" : "border-stone-300 hover:scale-105"
+        }`;
+        btn.style.backgroundColor = c.bg;
+        btn.innerHTML = isSelected ? `<i class="fa-solid fa-check text-[10px]" style="color:${c.text}"></i>` : '';
+        btn.onclick = () => {
+          modalState.selectedBg = c.bg;
+          renderColorPalette();
+          updateModalPreview();
+        };
+        grid.appendChild(btn);
+      });
+
+      const customWrap = document.createElement("label");
+      customWrap.title = "Vlastná farba pozadia";
+      customWrap.className = "w-7 h-7 rounded-full border-2 border-dashed border-stone-400 flex items-center justify-center cursor-pointer hover:border-amber-600 relative overflow-hidden";
+      customWrap.innerHTML = `<i class="fa-solid fa-palette text-xs text-stone-600 pointer-events-none"></i>`;
+      const colorInp = document.createElement("input");
+      colorInp.type = "color";
+      colorInp.value = modalState.selectedBg;
+      colorInp.className = "opacity-0 absolute inset-0 cursor-pointer";
+      colorInp.oninput = (e) => {
+        modalState.selectedBg = e.target.value;
+        renderColorPalette();
+        updateModalPreview();
+      };
+      customWrap.appendChild(colorInp);
+      grid.appendChild(customWrap);
+    }
+
+    function updateModalPreview() {
+      const prev = document.getElementById("itemModalPreview");
+      const val = document.getElementById("itemModalInput").value.trim() || "Ukážka";
+      prev.textContent = val;
+      prev.style.backgroundColor = modalState.selectedBg;
+      prev.style.color = getTextColorForBg(modalState.selectedBg);
+    }
+
+    document.getElementById("itemModalInput").addEventListener("input", updateModalPreview);
+
+    function saveItemModal() {
+      const text = document.getElementById("itemModalInput").value.trim();
+      if (!text) return;
+      const ep = getEp(modalState.epId);
+      const newObj = { text, bg: modalState.selectedBg };
+
+      if (modalState.index === -1) {
+        ep[modalState.category].unshift(newObj);
+      } else {
+        ep[modalState.category][modalState.index] = newObj;
+      }
+
+      saveData();
+      closeItemModal();
+      renderCurrentView();
+    }
+
+    function deleteCurrentItem() {
+      if (modalState.index === -1) return;
+      const ep = getEp(modalState.epId);
+      ep[modalState.category].splice(modalState.index, 1);
+      saveData("Položka vymazaná");
+      closeItemModal();
+      renderCurrentView();
+    }
+
+    function moveCurrentItem(direction) {
+      if (modalState.index === -1) return;
+      const ep = getEp(modalState.epId);
+      const arr = ep[modalState.category];
+      const newIdx = modalState.index + direction;
+      if (newIdx < 0 || newIdx >= arr.length) return;
+
+      const temp = arr[modalState.index];
+      arr[modalState.index] = arr[newIdx];
+      arr[newIdx] = temp;
+      modalState.index = newIdx;
+
+      saveData("Poradie upravené");
+      renderCurrentView();
+    }
+
+    function closeItemModal() {
+      const modal = document.getElementById("itemModal");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }
+
+    function renderCurrentView() {
+      if (isTableView) renderMasterTable();
+      else renderSingleView();
+    }
+
+    function updateActiveView() {
+      document.getElementById("singleView").classList.toggle("hidden", isTableView);
+      document.getElementById("tableView").classList.toggle("hidden", !isTableView);
+      document.getElementById("viewToggleText").textContent = isTableView ? "Karta" : "Tabuľka";
+      renderNavigation();
+      renderCurrentView();
+    }
+
+    function openMobileSidebar() {
+      document.getElementById("sidebar").classList.remove("-translate-x-full");
+      document.getElementById("sidebarBackdrop").classList.remove("hidden");
+    }
+    function closeMobileSidebar() {
+      document.getElementById("sidebar").classList.add("-translate-x-full");
+      document.getElementById("sidebarBackdrop").classList.add("hidden");
+    }
+
+    document.getElementById("mobileMenuBtn").onclick = openMobileSidebar;
+    document.getElementById("sidebarBackdrop").onclick = closeMobileSidebar;
+
+    document.getElementById("viewToggleBtn").onclick = () => {
+      isTableView = !isTableView;
+      updateActiveView();
+    };
+    document.getElementById("btnSwitchToTable").onclick = () => {
+      isTableView = true;
+      updateActiveView();
+      closeMobileSidebar();
+    };
+
+    document.getElementById("toggleNarrativeBtn").onclick = () => {
+      isNarrativeOpen = !isNarrativeOpen;
+      document.getElementById("narrativeContainer").classList.toggle("hidden", !isNarrativeOpen);
+      document.getElementById("toggleNarrativeIcon").style.transform = isNarrativeOpen ? "rotate(0deg)" : "rotate(180deg)";
+    };
+
+    document.getElementById("prevEpBtn").onclick = () => {
+      if (currentEpisodeId > 1) { currentEpisodeId--; updateActiveView(); }
+    };
+    document.getElementById("nextEpBtn").onclick = () => {
+      if (currentEpisodeId < episodes.length) { currentEpisodeId++; updateActiveView(); }
+    };
+
+    document.getElementById("searchInput").oninput = (e) => {
+      searchQuery = e.target.value;
+      if (searchQuery.trim() !== "" && !isTableView) {
+        isTableView = true;
+        updateActiveView();
+      } else if (isTableView) {
+        renderMasterTable();
+      }
+    };
+
+    document.getElementById("infoModalBtn").onclick = () => {
+      const m = document.getElementById("infoModal");
+      m.classList.remove("hidden");
+      m.classList.add("flex");
+    };
+
+    const settingsBtn = document.getElementById("settingsBtn");
+    const settingsMenu = document.getElementById("settingsMenu");
+
+    settingsBtn.onclick = (e) => {
+      e.stopPropagation();
+      const ep = getEp();
+      document.getElementById("settingsCurrentEpLabel").textContent = ep.cast;
+      settingsMenu.classList.toggle("hidden");
+    };
+
+    document.addEventListener("click", (e) => {
+      if (!settingsMenu.contains(e.target) && e.target !== settingsBtn) {
+        settingsMenu.classList.add("hidden");
+      }
+    });
+
+    document.getElementById("itemModalInput").onkeydown = (e) => {
+      if (e.key === "Enter") saveItemModal();
+      if (e.key === "Escape") closeItemModal();
+    };
+
+    function downloadCsv(epList, filename) {
+      let csv = "\uFEFFČasť;Podtitul;Obdobie;Lokalita;Kľúčový prínos;Lokácie;Akcie;Ľudia;Jedlá\n";
+      epList.forEach(ep => {
+        csv += [
+          `"${(ep.cast || '').replace(/"/g, '""')}"`,
+          `"${(ep.podtitul || '').replace(/"/g, '""')}"`,
+          `"${(ep.obdobie || '').replace(/"/g, '""')}"`,
+          `"${(ep.lokalita || '').replace(/"/g, '""')}"`,
+          `"${(ep.prinos || '').replace(/"/g, '""')}"`,
+          `"${ep.lokacie.map(x=>x.text).join(", ").replace(/"/g, '""')}"`,
+          `"${ep.akcie.map(x=>x.text).join(", ").replace(/"/g, '""')}"`,
+          `"${ep.ludia.map(x=>x.text).join(", ").replace(/"/g, '""')}"`,
+          `"${ep.jedla.map(x=>x.text).join(", ").replace(/"/g, '""')}"`
+        ].join(";") + "\n";
+      });
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+      settingsMenu.classList.add("hidden");
+      showToast("CSV súbor stiahnutý");
+    }
+
+    document.getElementById("exportAllCsvBtn").onclick = () => {
+      downloadCsv(episodes, "Historia_Chuti_2_Cely_Projekt.csv");
+    };
+
+    document.getElementById("exportCurrentCsvBtn").onclick = () => {
+      const ep = getEp();
+      const safeName = ep.cast.replace(/[^a-zA-Z0-9]/g, "_");
+      downloadCsv([ep], `Historia_Chuti_2_${safeName}.csv`);
+    };
+
+    document.getElementById("copyAllTextBtn").onclick = () => {
+      let out = "HISTÓRIA CHUTÍ 2 — PREHĽAD\n\n";
+      episodes.forEach(ep => {
+        out += `${ep.cast} (${ep.podtitul}) | ${ep.obdobie}\n`;
+        out += `Lokácie: ${ep.lokacie.map(x=>x.text).join(", ")}\n`;
+        out += `Akcie: ${ep.akcie.map(x=>x.text).join(", ")}\n`;
+        out += `Ľudia: ${ep.ludia.map(x=>x.text).join(", ")}\n`;
+        out += `Jedlá: ${ep.jedla.map(x=>x.text).join(", ")}\n\n`;
+      });
+      navigator.clipboard.writeText(out).then(() => {
+        settingsMenu.classList.add("hidden");
+        showToast("Skopírované do schránky");
+      });
+    };
+
+    window.onload = () => {
+      updateActiveView();
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+      }
+    };
+  </script>
+</body>
+</html>

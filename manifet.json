@@ -1,0 +1,15 @@
+{
+  "name": "História Chutí 2",
+  "short_name": "HistóriaChutí",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f8f5f0",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3174/3174836.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
