@@ -58,7 +58,7 @@
     }
   </style>
 </head>
-<body class="bg-[#f8f5f0] text-stone-800 antialiased h-screen overflow-hidden flex flex-col">
+<body class="bg-[#f8f5f0] text-stone-800 antialiased min-h-screen flex flex-col">
 
   <header class="bg-stone-900 text-amber-50 sticky top-0 z-30 shadow-md border-b border-stone-800">
     <div class="px-3 py-2.5 flex items-center justify-between gap-2 max-w-7xl mx-auto">
@@ -173,9 +173,9 @@
     </div>
   </header>
 
-  <div class="flex-1 flex overflow-hidden relative max-w-7xl w-full mx-auto">
+  <div class="flex-1 flex relative max-w-7xl w-full mx-auto items-start">
 
-    <aside id="sidebar" class="fixed inset-y-0 left-0 top-[53px] z-30 w-72 bg-white border-r border-stone-200 shadow-2xl lg:shadow-none lg:static flex flex-col transition-transform duration-200 -translate-x-full lg:translate-x-0">
+    <aside id="sidebar" class="hidden lg:flex lg:sticky lg:top-[53px] lg:h-[calc(100vh-53px)] z-20 w-72 bg-white border-r border-stone-200 flex-col shrink-0">
       <div class="p-3 border-b border-stone-200 bg-stone-50 flex items-center justify-between">
         <span class="text-xs font-bold uppercase tracking-wider text-stone-700">Epizódy (15)</span>
         <button id="btnSwitchToTable" class="text-xs text-amber-700 hover:text-amber-900 font-semibold flex items-center gap-1">
@@ -1718,16 +1718,13 @@
       currentEpisodeId = id;
       if (isTableView) {
         renderNavigation();
+        const anchor = document.getElementById(`ep-anchor-${id}`);
         const row = document.getElementById(`ep-row-${id}`);
-        const mainEl = document.querySelector('main');
-        if (row && mainEl) {
-          const mainRect = mainEl.getBoundingClientRect();
-          const rowRect = row.getBoundingClientRect();
-          const targetTop = mainEl.scrollTop + (rowRect.top - mainRect.top);
-          mainEl.scrollTo({
-            top: Math.max(0, targetTop),
-            behavior: 'smooth'
-          });
+        const headerEl = document.querySelector('header');
+        if (anchor && row) {
+          const headerBottom = headerEl ? headerEl.getBoundingClientRect().bottom : 0;
+          anchor.style.scrollMarginTop = `${headerBottom}px`;
+          anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
           row.classList.add('bg-amber-100/90');
           setTimeout(() => row.classList.remove('bg-amber-100/90'), 1400);
         }
@@ -1925,8 +1922,9 @@
         tr.className = "hover:bg-stone-50/80 align-top border-b border-stone-200 transition-colors duration-500";
 
         const tdCast = document.createElement("td");
-        tdCast.className = "p-2.5 border-r border-stone-200";
+        tdCast.className = "p-2.5 border-r border-stone-200 relative";
         tdCast.innerHTML = `
+          <div id="ep-anchor-${ep.id}" class="absolute -top-[1px] left-0 w-full h-0 pointer-events-none"></div>
           <div class="flex items-start justify-between gap-1">
             <div>
               <span class="font-extrabold text-xs text-stone-900 block cursor-pointer hover:text-amber-700" onclick="selectEpisode(${ep.id})">${ep.cast}</span>
