@@ -13,6 +13,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
     body {
@@ -62,28 +63,21 @@
 
   <header class="bg-stone-900 text-amber-50 sticky top-0 z-30 shadow-md border-b border-stone-800">
     <div class="px-3 py-2.5 flex items-center justify-between gap-2 max-w-7xl mx-auto">
-      <div class="flex items-center gap-2.5">
-        
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-lg bg-amber-600 flex items-center justify-center text-white shadow-sm shrink-0">
-            <i class="fa-solid fa-utensils text-sm"></i>
-          </div>
-          <div>
-            <h1 class="font-serif-title text-sm sm:text-base font-bold text-amber-200 tracking-wide leading-none">
-              HCH2
-            </h1>
-            <p class="text-[10px] text-stone-400 hidden sm:block">Námet</p>
-          </div>
+      <div class="flex items-center gap-2">
+        <div>
+          <h1 class="font-serif-title text-sm sm:text-base font-bold text-amber-200 tracking-wide leading-none">
+            HCH2
+          </h1>
+          <p class="text-[10px] text-stone-400 hidden sm:block">Námet</p>
+        </div>
+        <div class="relative flex items-center">
+          <i class="fa-solid fa-magnifying-glass absolute left-2.5 text-amber-200 text-xs pointer-events-none"></i>
+          <input type="text" id="searchInput" placeholder="Hľadať..." 
+                 class="w-8 focus:w-36 sm:w-44 sm:focus:w-56 h-8 bg-amber-600 focus:bg-stone-800 sm:bg-stone-800 text-stone-100 placeholder-transparent focus:placeholder-stone-400 sm:placeholder-stone-400 text-xs rounded-lg pl-7 pr-2 border border-amber-500 sm:border-stone-700 focus:outline-none focus:border-amber-400 transition-all duration-200 cursor-pointer focus:cursor-text shadow-sm" />
         </div>
       </div>
 
       <div class="flex items-center gap-1.5 sm:gap-2">
-        <div class="relative flex items-center">
-          <i class="fa-solid fa-magnifying-glass absolute left-2.5 text-stone-400 text-xs pointer-events-none"></i>
-          <input type="text" id="searchInput" placeholder="Hľadať..." 
-                 class="w-8 focus:w-36 sm:w-44 sm:focus:w-52 h-8 bg-stone-800 text-stone-100 placeholder-transparent focus:placeholder-stone-400 sm:placeholder-stone-400 text-xs rounded-lg pl-7 pr-2 border border-stone-700 focus:outline-none focus:border-amber-400 transition-all duration-200 cursor-pointer focus:cursor-text" />
-        </div>
-
         <div class="flex items-center gap-1 shrink-0">
           <button id="undoBtn" type="button" onclick="performUndo()" title="Späť (Undo)" disabled
                   class="w-8 h-8 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-200 flex items-center justify-center text-xs border border-stone-700 transition opacity-35 cursor-not-allowed">
@@ -98,6 +92,12 @@
         <button id="viewToggleBtn" class="px-2.5 py-1.5 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shrink-0">
           <i class="fa-solid fa-table-cells"></i>
           <span id="viewToggleText" class="hidden sm:inline">Tabuľka</span>
+        </button>
+
+        <button id="docsModalBtn" type="button" onclick="openDocsModal()" title="Prílohy a Dokumenty (Harmonogram obhliadok, DOC, PDF, TXT)"
+                class="w-8 h-8 rounded-lg bg-stone-800 hover:bg-stone-700 text-amber-300 hover:text-amber-200 flex items-center justify-center border border-stone-700 shrink-0 transition relative">
+          <i class="fa-solid fa-paperclip text-xs"></i>
+          <span id="docsCountBadge" class="w-4 h-4 rounded-full bg-amber-600 text-white text-[9px] font-extrabold flex items-center justify-center absolute -top-1 -right-1 ring-2 ring-stone-900">1</span>
         </button>
 
         <div class="relative">
@@ -371,6 +371,14 @@
                class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-sm font-semibold focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20" />
       </div>
 
+      <div id="itemModalInspectionBox">
+        <label class="block text-[11px] font-bold uppercase tracking-wider text-amber-800 mb-1 flex items-center gap-1.5">
+          <i class="fa-solid fa-calendar-day text-amber-600"></i> Termín obhliadky (Deň a čas)
+        </label>
+        <input type="text" id="itemModalInspection" placeholder="napr. Streda 21. 10. | 15:00 – 16:30 (nechaj prázdne ak nie je)"
+               class="w-full bg-amber-50/70 border border-amber-300 rounded-xl px-3 py-1.5 text-xs font-bold text-stone-800 focus:outline-none focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20" />
+      </div>
+
       <div>
         <label class="block text-[11px] font-bold uppercase tracking-wider text-stone-600 mb-1">
           Kontakt / Produkčná poznámka
@@ -550,6 +558,47 @@
         <button type="button" id="btnSaveDriveSettings" class="px-4 py-1.5 bg-stone-900 hover:bg-stone-800 text-white rounded-xl text-xs font-bold">
           Hotovo
         </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="docsModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden items-center justify-center p-2 sm:p-4">
+    <div class="bg-white rounded-2xl max-w-4xl w-full h-[88vh] flex flex-col shadow-2xl border border-stone-200 overflow-hidden">
+      <div class="p-3.5 sm:p-4 bg-stone-900 text-amber-100 flex items-center justify-between gap-2 shrink-0">
+        <div class="flex items-center gap-2 min-w-0">
+          <i class="fa-solid fa-paperclip text-amber-400"></i>
+          <h3 class="font-serif-title font-bold text-xs sm:text-base truncate">Prílohy & Čítačka dokumentov</h3>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <label class="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold cursor-pointer flex items-center gap-1.5 transition shadow-xs">
+            <i class="fa-solid fa-plus"></i>
+            <span>Pridať súbor</span>
+            <input type="file" id="docFileInput" accept=".doc,.docx,.pdf,.txt,.md,.html,.csv,.jpg,.jpeg,.png,.webp" multiple class="hidden" onchange="handleUploadDocs(event)" />
+          </label>
+          <button type="button" onclick="closeDocsModal()" class="w-8 h-8 rounded-lg bg-stone-800 text-stone-300 hover:text-white flex items-center justify-center">
+            <i class="fa-solid fa-xmark text-base"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex-1 flex flex-col sm:flex-row overflow-hidden">
+        <div class="w-full sm:w-64 bg-stone-50 border-b sm:border-b-0 sm:border-r border-stone-200 flex flex-col shrink-0 max-h-40 sm:max-h-none">
+          <div class="px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-stone-400 border-b border-stone-200/80 flex items-center justify-between">
+            <span>Uložené dokumenty</span>
+            <span id="docsListCount" class="text-stone-500">1</span>
+          </div>
+          <div id="docsListContainer" class="flex-1 overflow-y-auto p-2 space-y-1 text-xs"></div>
+        </div>
+
+        <div class="flex-1 flex flex-col bg-white overflow-hidden">
+          <div id="docViewerHeader" class="px-4 py-2.5 bg-stone-100 border-b border-stone-200 flex items-center justify-between gap-2 shrink-0">
+            <div class="font-bold text-xs text-stone-800 truncate" id="docViewerTitle">Harmonogram obhliadok – História chutí</div>
+            <button type="button" id="docDeleteBtn" onclick="deleteActiveDoc()" class="text-rose-600 hover:bg-rose-50 px-2 py-1 rounded-lg text-[11px] font-semibold flex items-center gap-1 hidden">
+              <i class="fa-solid fa-trash-can"></i> Odstrániť
+            </button>
+          </div>
+          <div id="docViewerBody" class="flex-1 overflow-y-auto p-4 sm:p-6 text-xs sm:text-sm leading-relaxed text-stone-800"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -1581,6 +1630,61 @@
 
     const STORAGE_KEY = "historia_chuti_2_mobile_v5_prodplan";
 
+    const INSPECTION_RULES = [
+      { match: ["partizánske", "partizanske"], short: "Ut 20.10.", full: "Utorok 20. 10. | 9:00 – 10:00 | Partizánske" },
+      { match: ["kremnic", "štôlňa bartolomej", "stolna bartolomej"], short: "Ut 20.10.", full: "Utorok 20. 10. | 11:30 – 14:00 | Kremnica – Mestský hrad, štôlňa, múzeum, námestie" },
+      { match: ["zvolenský zámok", "zvolensky zamok", "zvolenský hrad"], short: "Ut 20.10.", full: "Utorok 20. 10. | 15:30 – 16:30 | Zvolenský hrad / zámok" },
+      { match: ["vagačov dom", "vagacov dom"], short: "St 21.10.", full: "Streda 21. 10. | 8:00 – 9:00 | Vagačov dom (Detva)" },
+      { match: ["podpolianske múzeum", "podpolianske muzeum"], short: "St 21.10.", full: "Streda 21. 10. | 9:30 – 10:30 | Podpolianske múzeum v Detve" },
+      { match: ["zámok halič", "zamok halic", "galicia nueva"], short: "St 21.10.", full: "Streda 21. 10. | 11:00 – 12:00 | Zámok Halič (12:00 – 13:00 Obed v Haliči)" },
+      { match: ["lučenec", "lucenec"], short: "St 21.10.", full: "Streda 21. 10. | 13:15 – 14:30 | Lučenec – radnica a Novohradské múzeum" },
+      { match: ["fiľakovský hrad", "filakovsky hrad", "hradné múzeum vo fiľakove", "koháryho kúria"], short: "St 21.10.", full: "Streda 21. 10. | 15:00 – 16:30 | Fiľakovský hrad" },
+      { match: ["dóm sv. alžbety", "hlavná ulica košice"], short: "Št 22.10.", full: "Štvrtok 22. 10. | 8:30 – 9:15 | Košice – Dóm sv. Alžbety (exteriér) a Hlavná ulica" },
+      { match: ["breh rieky bodrog", "bodrog"], short: "Št 22.10.", full: "Štvrtok 22. 10. | 10:30 – 11:00 | Breh rieky Bodrog – Streda nad Bodrogom" },
+      { match: ["kaštieľ borša", "kastiel borsa"], short: "Št 22.10.", full: "Štvrtok 22. 10. | 11:15 – 12:15 | Kaštieľ Borša" },
+      { match: ["zbojnícky hrad", "zbojnicky hrad"], short: "Št 22.10.", full: "Štvrtok 22. 10. | 14:45 – 15:15 | Zbojnícky hrad – Ruská Nová Ves" },
+      { match: ["múzeum rusínskej kultúry", "muzeum rusinskej kultury"], short: "Št 22.10.", full: "Štvrtok 22. 10. | 15:45 – 16:45 | Múzeum rusínskej kultúry v Prešove" },
+      { match: ["skanzen svidník", "skanzen svidnik"], short: "Št 22.10.", full: "Štvrtok 22. 10. | 17:45 – 18:30 | Skanzen Svidník" },
+      { match: ["hrad ľubovňa", "skanzen stará ľubovňa", "ľubovniansky hrad"], short: "Pi 23.10.", full: "Piatok 23. 10. | 9:00 – 11:00 | Ľubovniansky hrad a skanzen" },
+      { match: ["podolínec", "podolinec"], short: "Pi 23.10.", full: "Piatok 23. 10. | 11:30 – 12:00 | Podolínec" },
+      { match: ["múzeum červený kláštor", "červený kláštor"], short: "Pi 23.10.", full: "Piatok 23. 10. | 13:15 – 14:15 | Červený Kláštor (14:30 – 15:00 Prístav pltí)" },
+      { match: ["plte na dunajci"], short: "Pi 23.10.", full: "Piatok 23. 10. | 14:30 – 15:00 | Prístav pltí (13:15 – 14:15 Červený Kláštor)" },
+      { match: ["goralský dvor", "goralsky dvor"], short: "Pi 23.10.", full: "Piatok 23. 10. | 15:15 – 15:45 | Goralský dvor" },
+      { match: ["múzeum židovskej kultúry", "žno bratislava", "ortodoxná synagóga"], short: "Po 26.10.", full: "Pondelok 26. 10. | 9:00 – 11:00 | Múzeum židovskej kultúry, Židovská ulica a synagóga na Heydukovej" },
+      { match: ["hrad devín", "devín ("], short: "Po 26.10.", full: "Pondelok 26. 10. | 11:30 – 12:15 | Hrad Devín" },
+      { match: ["múzeum kultúry chorvátov", "múzeum chorvátskej kultúry"], short: "Po 26.10.", full: "Pondelok 26. 10. | 12:30 – 13:15 | Múzeum chorvátskej kultúry (DNV)" },
+      { match: ["abeland"], short: "Po 26.10.", full: "Pondelok 26. 10. | 14:30 – 15:30 | Abeland" },
+      { match: ["veľké leváre", "velke levare"], short: "Po 26.10.", full: "Pondelok 26. 10. | 16:00 – 17:00 | Veľké Leváre" },
+      { match: ["hrad branč", "hrad branc"], short: "Ut 27.10.", full: "Utorok 27. 10. | 9:00 – 10:00 | Hrad Branč" },
+      { match: ["turá lúka", "tura luka"], short: "Ut 27.10.", full: "Utorok 27. 10. | 10:30 – 11:15 | Gazdovský dvor, Turá Lúka" },
+      { match: ["trnava (historický cukrovar", "trnava – cukrovar"], short: "Ut 27.10.", full: "Utorok 27. 10. | 12:15 – 12:45 | Trnava – cukrovar" },
+      { match: ["vinohradnícky dom", "malokarpatské vinohrady", "celestín"], short: "Ut 27.10.", full: "Utorok 27. 10. | 14:15 – 15:00 | Vinohradnícky domček Celestín" },
+      { match: ["slovenský grob", "husacinárska reštaurácia grob"], short: "Ut 27.10.", full: "Utorok 27. 10. | 15:15 – 16:00 | Slovenský Grob" }
+    ];
+
+    function detectInspectionForLocation(text) {
+      const lower = (text || "").toLowerCase();
+      for (const rule of INSPECTION_RULES) {
+        if (rule.match.some(m => lower.includes(m))) {
+          return rule.full;
+        }
+      }
+      return "";
+    }
+
+    function getShortInspectionBadge(inspectionStr) {
+      if (!inspectionStr) return null;
+      const dayMatch = inspectionStr.match(/^(Po|Ut|St|Št|Pi|So|Ne|Pondelok|Utorok|Streda|Štvrtok|Piatok|Sobota|Nedeľa)/i);
+      const dayPrefix = dayMatch ? dayMatch[1].slice(0, 2) : "";
+      const dateMatch = inspectionStr.match(/(\d{1,2}\.\s*\d{1,2}\.)/);
+      const datePart = dateMatch ? dateMatch[1].replace(/\s+/g, '') : "";
+      const timeMatch = inspectionStr.match(/(\d{1,2}:\d{2}(?:\s*–\s*\d{1,2}:\d{2})?)/);
+      const timePart = timeMatch ? timeMatch[1].replace(/\s+/g, '') : "";
+
+      const dateStr = (dayPrefix && datePart) ? `${dayPrefix} ${datePart}` : (datePart || "Obhliadka");
+      return { date: dateStr, time: timePart };
+    }
+
     function normalizeEpisodes(rawList) {
       return rawList.map((ep, idx) => {
         const rawFallback = RAW_EPISODES[idx] || {};
@@ -1594,12 +1698,17 @@
         ['lokacie', 'akcie', 'ludia', 'jedla'].forEach(cat => {
           copy[cat] = (copy[cat] || []).map(item => {
             if (typeof item === 'string') {
-              return { text: item, bg: DEFAULT_CAT_COLOR[cat], note: '' };
+              const autoInsp = (cat === 'lokacie') ? detectInspectionForLocation(item) : '';
+              return { text: item, bg: DEFAULT_CAT_COLOR[cat], note: '', inspection: autoInsp };
             }
+            const existingInsp = item.inspection !== undefined
+              ? item.inspection
+              : ((cat === 'lokacie') ? detectInspectionForLocation(item.text) : '');
             return {
               text: item.text || '',
               bg: item.bg || DEFAULT_CAT_COLOR[cat],
-              note: item.note || ''
+              note: item.note || '',
+              inspection: existingInsp
             };
           });
         });
@@ -1807,10 +1916,25 @@
       span.style.backgroundColor = itemObj.bg;
       span.style.color = getTextColorForBg(itemObj.bg);
       span.dataset.index = index;
-      if (itemObj.note) {
-        span.title = itemObj.note;
+
+      const tooltipParts = [];
+      if (itemObj.inspection) tooltipParts.push("📅 OBHLIADKA: " + itemObj.inspection);
+      if (itemObj.note) tooltipParts.push(itemObj.note);
+      if (tooltipParts.length > 0) span.title = tooltipParts.join("\n");
+
+      const textNode = document.createElement("span");
+      textNode.textContent = itemObj.text;
+      span.appendChild(textNode);
+
+      if (itemObj.inspection) {
+        const insp = getShortInspectionBadge(itemObj.inspection);
+        if (insp) {
+          const badge = document.createElement("span");
+          badge.className = "ml-1 px-1.5 py-0.5 rounded bg-stone-900 text-amber-300 text-[9px] font-extrabold tracking-tight shrink-0 flex flex-col items-center leading-tight shadow-2xs text-center";
+          badge.innerHTML = `<span class="flex items-center gap-0.5"><i class="fa-solid fa-eye text-[8px]"></i> ${insp.date}</span>${insp.time ? `<span class="text-[8px] text-amber-200/90 font-semibold tracking-normal">${insp.time}</span>` : ''}`;
+          span.appendChild(badge);
+        }
       }
-      span.textContent = itemObj.text;
 
       span.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -2053,8 +2177,12 @@
 
       const input = document.getElementById("itemModalInput");
       const noteInput = document.getElementById("itemModalNote");
+      const inspInput = document.getElementById("itemModalInspection");
+      const inspBox = document.getElementById("itemModalInspectionBox");
       input.value = item.text;
       noteInput.value = item.note || "";
+      if (inspInput) inspInput.value = item.inspection || "";
+      if (inspBox) inspBox.classList.toggle("hidden", category !== "lokacie");
 
       document.getElementById("itemModalDeleteBtn").classList.toggle("hidden", isNew);
       document.getElementById("itemModalMoveBox").classList.toggle("hidden", isNew);
@@ -2141,9 +2269,11 @@
     function saveItemModal() {
       const text = document.getElementById("itemModalInput").value.trim();
       const note = document.getElementById("itemModalNote").value.trim();
+      const inspEl = document.getElementById("itemModalInspection");
+      const inspection = (modalState.category === 'lokacie' && inspEl) ? inspEl.value.trim() : "";
       if (!text) return;
       const ep = getEp(modalState.epId);
-      const newObj = { text, bg: modalState.selectedBg, note };
+      const newObj = { text, bg: modalState.selectedBg, note, inspection };
 
       if (modalState.index === -1) {
         ep[modalState.category].unshift(newObj);
@@ -2154,6 +2284,290 @@
       saveData();
       closeItemModal();
       renderCurrentView();
+    }
+
+    const DOCS_STORAGE_KEY = "hch2_attached_docs_v1";
+    const DEFAULT_HARMONOGRAM_DOC = {
+      id: "default-harmonogram",
+      name: "Harmonogram obhliadok – História chutí.docx",
+      type: "html",
+      builtin: true,
+      content: `
+        <div class="space-y-4">
+          <h2 class="text-base sm:text-lg font-extrabold text-stone-900 border-b border-stone-200 pb-2">Harmonogram obhliadok – História chutí</h2>
+          <div>
+            <h3 class="font-bold text-amber-800 text-sm mb-1">Utorok 20. 10. – Partizánske, Kremnica, Zvolen, Detva</h3>
+            <ul class="list-disc pl-5 space-y-0.5 text-xs">
+              <li>Odchod z Bratislavy</li>
+              <li><strong>9:00 – 10:00</strong> | Partizánske</li>
+              <li><strong>11:30 – 14:00</strong> | Kremnica – Mestský hrad, štôlňa, múzeum, námestie</li>
+              <li><strong>14:00 – 15:00</strong> | Obed</li>
+              <li><strong>15:30 – 16:30</strong> | Zvolenský hrad</li>
+            </ul>
+            <p class="text-[11px] text-stone-500 mt-1 italic">Presun do Detvy a ubytovanie – Hotel Siroň</p>
+          </div>
+          <div>
+            <h3 class="font-bold text-amber-800 text-sm mb-1">Streda 21. 10. – Detva, Halič, Lučenec, Fiľakovo, Košice</h3>
+            <ul class="list-disc pl-5 space-y-0.5 text-xs">
+              <li><strong>8:00 – 9:00</strong> | Vagačov dom</li>
+              <li><strong>9:30 – 10:30</strong> | Podpolianske múzeum v Detve</li>
+              <li><strong>11:00 – 12:00</strong> | Zámok Halič</li>
+              <li><strong>12:00 – 13:00</strong> | Obed v Haliči</li>
+              <li><strong>13:15 – 14:30</strong> | Lučenec – radnica a Novohradské múzeum</li>
+              <li><strong>15:00 – 16:30</strong> | Fiľakovský hrad</li>
+            </ul>
+            <p class="text-[11px] text-stone-500 mt-1 italic">Presun do Košíc a ubytovanie – Hotel Yasmin</p>
+          </div>
+          <div>
+            <h3 class="font-bold text-amber-800 text-sm mb-1">Štvrtok 22. 10. – Košice, Zemplín, Prešov, Svidník, Stará Ľubovňa</h3>
+            <ul class="list-disc pl-5 space-y-0.5 text-xs">
+              <li><strong>8:30 – 9:15</strong> | Košice – Dóm sv. Alžbety (exteriér) a Hlavná ulica</li>
+              <li><strong>10:30 – 11:00</strong> | Breh rieky Bodrog – Streda nad Bodrogom</li>
+              <li><strong>11:15 – 12:15</strong> | Kaštieľ Borša</li>
+              <li><strong>12:15 – 13:15</strong> | Obed</li>
+              <li><strong>14:45 – 15:15</strong> | Zbojnícky hrad – Ruská Nová Ves</li>
+              <li><strong>15:45 – 16:45</strong> | Múzeum rusínskej kultúry v Prešove</li>
+              <li><strong>17:45 – 18:30</strong> | Skanzen Svidník</li>
+            </ul>
+            <p class="text-[11px] text-stone-500 mt-1 italic">Presun do Starej Ľubovne a ubytovanie – Penzión Kolkáreň</p>
+          </div>
+          <div>
+            <h3 class="font-bold text-amber-800 text-sm mb-1">Piatok 23. 10. – Stará Ľubovňa, Podolínec, Červený Kláštor</h3>
+            <ul class="list-disc pl-5 space-y-0.5 text-xs">
+              <li><strong>9:00 – 11:00</strong> | Ľubovniansky hrad a skanzen</li>
+              <li><strong>11:30 – 12:00</strong> | Podolínec</li>
+              <li><strong>12:00 – 12:45</strong> | Obed</li>
+              <li><strong>13:15 – 14:15</strong> | Červený Kláštor</li>
+              <li><strong>14:30 – 15:00</strong> | Prístav pltí</li>
+              <li><strong>15:15 – 15:45</strong> | Goralský dvor</li>
+            </ul>
+            <p class="text-[11px] text-stone-500 mt-1 italic">Následne cesta do Bratislavy – návrat vo večerných hodinách</p>
+          </div>
+          <div>
+            <h3 class="font-bold text-amber-800 text-sm mb-1">Pondelok 26. 10. – Bratislava a okolie</h3>
+            <ul class="list-disc pl-5 space-y-0.5 text-xs">
+              <li><strong>9:00 – 11:00</strong> | Múzeum židovskej kultúry, Židovská ulica a synagóga na Heydukovej ulici</li>
+              <li><strong>11:30 – 12:15</strong> | Hrad Devín</li>
+              <li><strong>12:30 – 13:15</strong> | Múzeum chorvátskej kultúry</li>
+              <li><strong>13:15 – 14:00</strong> | Obed</li>
+              <li><strong>14:30 – 15:30</strong> | Abeland</li>
+              <li><strong>16:00 – 17:00</strong> | Veľké Leváre</li>
+            </ul>
+            <p class="text-[11px] text-stone-500 mt-1 italic">Následne cesta do Bratislavy</p>
+          </div>
+          <div>
+            <h3 class="font-bold text-amber-800 text-sm mb-1">Utorok 27. 10. – Záhorie, Trnava a okolie Bratislavy</h3>
+            <ul class="list-disc pl-5 space-y-0.5 text-xs">
+              <li><strong>9:00 – 10:00</strong> | Hrad Branč</li>
+              <li><strong>10:30 – 11:15</strong> | Gazdovský dvor, Turá Lúka</li>
+              <li><strong>12:15 – 12:45</strong> | Trnava – cukrovar</li>
+              <li><strong>12:45 – 13:30</strong> | Obed</li>
+              <li><strong>14:15 – 15:00</strong> | Vinohradnícky domček Celestín</li>
+              <li><strong>15:15 – 16:00</strong> | Slovenský Grob</li>
+            </ul>
+            <p class="text-[11px] text-stone-500 mt-1 italic">Následne cesta do Bratislavy</p>
+          </div>
+        </div>
+      `
+    };
+
+    function loadAttachedDocs() {
+      try {
+        const raw = localStorage.getItem(DOCS_STORAGE_KEY);
+        const userDocs = raw ? JSON.parse(raw) : [];
+        return [DEFAULT_HARMONOGRAM_DOC, ...userDocs.filter(d => d.id !== "default-harmonogram")];
+      } catch (e) {
+        return [DEFAULT_HARMONOGRAM_DOC];
+      }
+    }
+
+    let attachedDocs = loadAttachedDocs();
+    let activeDocId = attachedDocs[0].id;
+
+    function saveAttachedDocs() {
+      const toSave = attachedDocs.filter(d => !d.builtin);
+      try {
+        localStorage.setItem(DOCS_STORAGE_KEY, JSON.stringify(toSave));
+      } catch (e) {
+        showToast("Súbor je príliš veľký pre lokálnu pamäť");
+      }
+      updateDocsBadge();
+    }
+
+    function updateDocsBadge() {
+      const b = document.getElementById("docsCountBadge");
+      const c = document.getElementById("docsListCount");
+      if (b) b.textContent = attachedDocs.length;
+      if (c) c.textContent = attachedDocs.length;
+    }
+
+    function openDocsModal() {
+      renderDocsList();
+      renderActiveDoc();
+      const m = document.getElementById("docsModal");
+      m.classList.remove("hidden");
+      m.classList.add("flex");
+    }
+
+    function closeDocsModal() {
+      const m = document.getElementById("docsModal");
+      m.classList.add("hidden");
+      m.classList.remove("flex");
+    }
+
+    function renderDocsList() {
+      const container = document.getElementById("docsListContainer");
+      if (!container) return;
+      container.innerHTML = "";
+      updateDocsBadge();
+
+      attachedDocs.forEach(doc => {
+        const isActive = doc.id === activeDocId;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `w-full text-left px-2.5 py-2 rounded-xl transition flex items-center gap-2 ${
+          isActive ? "bg-amber-600 text-white font-bold shadow-2xs" : "hover:bg-stone-200/70 text-stone-700"
+        }`;
+        const icon = doc.type === "pdf" ? "fa-file-pdf" : (doc.type === "html" ? "fa-file-word" : "fa-file-lines");
+        btn.innerHTML = `
+          <i class="fa-solid ${icon} text-xs shrink-0"></i>
+          <span class="truncate flex-1">${doc.name}</span>
+        `;
+        btn.onclick = () => {
+          activeDocId = doc.id;
+          renderDocsList();
+          renderActiveDoc();
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    function renderActiveDoc() {
+      const doc = attachedDocs.find(d => d.id === activeDocId) || attachedDocs[0];
+      const titleEl = document.getElementById("docViewerTitle");
+      const bodyEl = document.getElementById("docViewerBody");
+      const delBtn = document.getElementById("docDeleteBtn");
+      if (!doc || !bodyEl) return;
+
+      titleEl.textContent = doc.name;
+      delBtn.classList.toggle("hidden", !!doc.builtin);
+
+      if (doc.type === "html") {
+        bodyEl.innerHTML = doc.content;
+      } else if (doc.type === "pdf") {
+        bodyEl.innerHTML = `<iframe src="${doc.content}" class="w-full h-full min-h-[60vh] rounded-lg border border-stone-200"></iframe>`;
+      } else if (doc.type === "image") {
+        bodyEl.innerHTML = `<div class="flex items-center justify-center h-full bg-stone-900/5 rounded-xl p-2"><img src="${doc.content}" class="max-h-[65vh] object-contain rounded-lg shadow-md" /></div>`;
+      } else if (doc.type === "csv") {
+        const lines = doc.content.split(/\r?\n/).filter(l => l.trim().length > 0);
+        if (!lines.length) {
+          bodyEl.innerHTML = "<p class='text-stone-500'>Prázdny CSV súbor</p>";
+          return;
+        }
+        const sep = lines[0].includes(';') ? ';' : ',';
+        let html = '<div class="overflow-x-auto"><table class="w-full text-left border-collapse text-xs"><tbody>';
+        lines.forEach((line, rIdx) => {
+          const cells = line.split(sep).map(c => c.replace(/^["']|["']$/g, '').trim());
+          html += `<tr class="${rIdx === 0 ? 'bg-stone-900 text-stone-100 font-bold uppercase' : 'border-b border-stone-200 hover:bg-stone-50'}">`;
+          cells.forEach(cell => {
+            const tag = rIdx === 0 ? 'th' : 'td';
+            html += `<tag class="p-2 border-r border-stone-200 last:border-r-0 truncate max-w-xs">${cell}</tag>`.replace('tag', tag);
+          });
+          html += '</tr>';
+        });
+        html += '</tbody></table></div>';
+        bodyEl.innerHTML = html;
+      } else {
+        const pre = document.createElement("pre");
+        pre.className = "whitespace-pre-wrap font-sans text-xs sm:text-sm text-stone-800 leading-relaxed";
+        pre.textContent = doc.content;
+        bodyEl.innerHTML = "";
+        bodyEl.appendChild(pre);
+      }
+    }
+
+    function deleteActiveDoc() {
+      const doc = attachedDocs.find(d => d.id === activeDocId);
+      if (!doc || doc.builtin) return;
+      attachedDocs = attachedDocs.filter(d => d.id !== activeDocId);
+      activeDocId = attachedDocs[0].id;
+      saveAttachedDocs();
+      renderDocsList();
+      renderActiveDoc();
+      showToast("Dokument odstránený");
+    }
+
+    function handleUploadDocs(event) {
+      const files = Array.from(event.target.files || []);
+      if (!files.length) return;
+
+      files.forEach(file => {
+        const ext = (file.name.split(".").pop() || "").toLowerCase();
+        const id = "doc-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6);
+
+        if (ext === "docx" && typeof mammoth !== "undefined") {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            mammoth.convertToHtml({ arrayBuffer: e.target.result })
+              .then(result => {
+                attachedDocs.push({ id, name: file.name, type: "html", content: `<div class="space-y-2">${result.value}</div>` });
+                activeDocId = id;
+                saveAttachedDocs();
+                renderDocsList();
+                renderActiveDoc();
+                showToast("Dokument pridaný");
+              })
+              .catch(() => showToast("Nepodarilo sa prečítať .docx"));
+          };
+          reader.readAsArrayBuffer(file);
+        } else if (ext === "pdf") {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            attachedDocs.push({ id, name: file.name, type: "pdf", content: e.target.result });
+            activeDocId = id;
+            saveAttachedDocs();
+            renderDocsList();
+            renderActiveDoc();
+            showToast("PDF pridané");
+          };
+          reader.readAsDataURL(file);
+        } else if (ext === "csv") {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            attachedDocs.push({ id, name: file.name, type: "csv", content: e.target.result });
+            activeDocId = id;
+            saveAttachedDocs();
+            renderDocsList();
+            renderActiveDoc();
+            showToast("CSV tabuľka pridaná");
+          };
+          reader.readAsText(file);
+        } else if (["jpg", "jpeg", "png", "webp"].includes(ext)) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            attachedDocs.push({ id, name: file.name, type: "image", content: e.target.result });
+            activeDocId = id;
+            saveAttachedDocs();
+            renderDocsList();
+            renderActiveDoc();
+            showToast("Obrázok pridaný");
+          };
+          reader.readAsDataURL(file);
+        } else {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const isHtml = ext === "html" || ext === "htm";
+            attachedDocs.push({ id, name: file.name, type: isHtml ? "html" : "text", content: e.target.result });
+            activeDocId = id;
+            saveAttachedDocs();
+            renderDocsList();
+            renderActiveDoc();
+            showToast("Súbor pridaný");
+          };
+          reader.readAsText(file);
+        }
+      });
+      event.target.value = "";
     }
 
     function deleteCurrentItem() {
