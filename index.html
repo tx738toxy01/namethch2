@@ -1661,6 +1661,7 @@
         updateUndoRedoButtons();
       }
       localStorage.setItem(STORAGE_KEY, snap);
+      localStorage.setItem(STORAGE_KEY + "_ts", String(Date.now()));
       showToast(msg);
     }
 
@@ -2279,8 +2280,10 @@
       }
       if (!silent) setDriveStatusMsg("Odosielam dáta na Google Drive...");
       try {
+        const nowTs = Number(localStorage.getItem(STORAGE_KEY + "_ts")) || Date.now();
+        localStorage.setItem(STORAGE_KEY + "_ts", String(nowTs));
         const payload = {
-          updatedAt: Date.now(),
+          updatedAt: nowTs,
           episodes: episodes
         };
         const res = await fetch(url, {
@@ -2311,9 +2314,23 @@
         if (!res.ok) throw new Error("HTTP " + res.status);
         const data = await res.json();
         const remoteEpisodes = Array.isArray(data) ? data : data.episodes;
+        const remoteTs = Number(data && data.updatedAt) || 0;
+        const localTs = Number(localStorage.getItem(STORAGE_KEY + "_ts")) || 0;
+
         if (Array.isArray(remoteEpisodes) && remoteEpisodes.length > 0) {
+          if (silent && localTs > remoteTs && remoteTs > 0) {
+            pushToDrive(true);
+            return;
+          }
           episodes = normalizeEpisodes(remoteEpisodes);
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(episodes));
+          const snap = JSON.stringify(episodes);
+          localStorage.setItem(STORAGE_KEY, snap);
+          if (remoteTs > 0) localStorage.setItem(STORAGE_KEY + "_ts", String(remoteTs));
+          if (typeof historyStack !== "undefined") {
+            historyStack = [snap];
+            historyIndex = 0;
+            updateUndoRedoButtons();
+          }
           updateActiveView();
           if (!silent) {
             setDriveStatusMsg("Dáta z Google Drive boli úspešne načítané.");
@@ -2433,8 +2450,21 @@
         "  return ContentService.createTextOutput(text || '{}').setMimeType(ContentService.MimeType.JSON);",
         "}",
         "function doPost(e) {",
-        "  getFile().setContent(e.postData.contents);",
-        "  return ContentService.createTextOutput(JSON.stringify({ok:true})).setMimeType(ContentService.MimeType.JSON);",
+        "  const lock = LockService.getScriptLock();",
+        "  lock.waitLock(10000);",
+        "  try {",
+        "    const raw = e && e.postData && e.postData.contents;",
+        "    const parsed = JSON.parse(raw);",
+        "    if (!parsed || !Array.isArray(parsed.episodes) || parsed.episodes.length === 0) {",
+        "      throw new Error('Invalid payload');",
+        "    }",
+        "    getFile().setContent(raw);",
+        "    return ContentService.createTextOutput(JSON.stringify({ok:true, updatedAt: parsed.updatedAt})).setMimeType(ContentService.MimeType.JSON);",
+        "  } catch (err) {",
+        "    return ContentService.createTextOutput(JSON.stringify({ok:false, error: String(err)})).setMimeType(ContentService.MimeType.JSON);",
+        "  } finally {",
+        "    lock.releaseLock();",
+        "  }",
         "}"
       ].join("\n");
       navigator.clipboard.writeText(gasCode).then(() => {
