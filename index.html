@@ -78,10 +78,21 @@
       </div>
 
       <div class="flex items-center gap-1.5 sm:gap-2">
-        <div class="relative w-32 sm:w-48">
-          <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2 text-stone-400 text-[11px]"></i>
+        <div class="relative flex items-center">
+          <i class="fa-solid fa-magnifying-glass absolute left-2.5 text-stone-400 text-xs pointer-events-none"></i>
           <input type="text" id="searchInput" placeholder="Hľadať..." 
-                 class="w-full bg-stone-800 text-stone-100 placeholder-stone-400 text-xs rounded-lg pl-7 pr-2 py-1.5 border border-stone-700 focus:outline-none focus:border-amber-400" />
+                 class="w-8 focus:w-36 sm:w-44 sm:focus:w-52 h-8 bg-stone-800 text-stone-100 placeholder-transparent focus:placeholder-stone-400 sm:placeholder-stone-400 text-xs rounded-lg pl-7 pr-2 border border-stone-700 focus:outline-none focus:border-amber-400 transition-all duration-200 cursor-pointer focus:cursor-text" />
+        </div>
+
+        <div class="flex items-center gap-1 shrink-0">
+          <button id="undoBtn" type="button" onclick="performUndo()" title="Späť (Undo)" disabled
+                  class="w-8 h-8 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-200 flex items-center justify-center text-xs border border-stone-700 transition opacity-35 cursor-not-allowed">
+            <i class="fa-solid fa-rotate-left"></i>
+          </button>
+          <button id="redoBtn" type="button" onclick="performRedo()" title="Dopredu (Redo)" disabled
+                  class="w-8 h-8 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-200 flex items-center justify-center text-xs border border-stone-700 transition opacity-35 cursor-not-allowed">
+            <i class="fa-solid fa-rotate-right"></i>
+          </button>
         </div>
 
         <button id="viewToggleBtn" class="px-2.5 py-1.5 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shrink-0">
@@ -153,16 +164,6 @@
                 <div class="text-[10px] font-normal text-stone-400">Iba práve vybraná epizóda</div>
               </div>
             </button>
-            <div class="border-t border-stone-100 mt-1 pt-1">
-              <button id="copyAllTextBtn" class="w-full text-left px-3.5 py-2 hover:bg-stone-50 flex items-center gap-2.5 font-medium text-stone-600 transition">
-                <i class="fa-regular fa-copy text-stone-400 w-4 text-center"></i>
-                <span>Kopírovať text celého prehľadu</span>
-              </button>
-              <button id="resetDataBtn" class="w-full text-left px-3.5 py-2 hover:bg-rose-50 flex items-center gap-2.5 font-medium text-rose-600 transition">
-                <i class="fa-solid fa-rotate-left text-rose-500 w-4 text-center"></i>
-                <span>Obnoviť predvolené dáta</span>
-              </button>
-            </div>
           </div>
         </div>
       </div>
@@ -185,10 +186,6 @@
 
       <nav id="episodeList" class="flex-1 overflow-y-auto p-2 space-y-1 text-xs"></nav>
 
-      <div class="p-2.5 bg-stone-100 border-t border-stone-200 text-[11px] text-stone-500 flex items-center justify-between">
-        <span>Automatické ukladanie zapnuté</span>
-        <i class="fa-solid fa-cloud-arrow-up text-amber-600"></i>
-      </div>
     </aside>
 
     <main class="flex-1 overflow-y-auto p-2.5 sm:p-4 lg:p-5 w-full">
@@ -329,7 +326,7 @@
 
       </section>
 
-      <section id="tableView" class="hidden space-y-3">
+      <section id="tableView" class="hidden space-y-3 pb-[65vh]">
         <div class="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden">
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse text-xs">
@@ -1634,10 +1631,78 @@
       selectedBg: VIOLET_BG
     };
 
+    let historyStack = [JSON.stringify(episodes)];
+    let historyIndex = 0;
+
+    function updateUndoRedoButtons() {
+      const uBtn = document.getElementById("undoBtn");
+      const rBtn = document.getElementById("redoBtn");
+      if (uBtn) {
+        const canUndo = historyIndex > 0;
+        uBtn.disabled = !canUndo;
+        uBtn.classList.toggle("opacity-35", !canUndo);
+        uBtn.classList.toggle("cursor-not-allowed", !canUndo);
+      }
+      if (rBtn) {
+        const canRedo = historyIndex < historyStack.length - 1;
+        rBtn.disabled = !canRedo;
+        rBtn.classList.toggle("opacity-35", !canRedo);
+        rBtn.classList.toggle("cursor-not-allowed", !canRedo);
+      }
+    }
+
     function saveData(msg = "Uložené") {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(episodes));
+      const snap = JSON.stringify(episodes);
+      if (historyStack[historyIndex] !== snap) {
+        historyStack = historyStack.slice(0, historyIndex + 1);
+        historyStack.push(snap);
+        if (historyStack.length > 50) historyStack.shift();
+        else historyIndex++;
+        updateUndoRedoButtons();
+      }
+      localStorage.setItem(STORAGE_KEY, snap);
       showToast(msg);
     }
+
+    function performUndo() {
+      if (historyIndex <= 0) return;
+      historyIndex--;
+      episodes = JSON.parse(historyStack[historyIndex]);
+      localStorage.setItem(STORAGE_KEY, historyStack[historyIndex]);
+      updateUndoRedoButtons();
+      renderNavigation();
+      renderCurrentView();
+      showToast("Krok späť");
+      if (getDriveSyncUrl() && isAutoSyncEnabled()) {
+        clearTimeout(window._driveSyncTimer);
+        window._driveSyncTimer = setTimeout(() => pushToDrive(true), 600);
+      }
+    }
+
+    function performRedo() {
+      if (historyIndex >= historyStack.length - 1) return;
+      historyIndex++;
+      episodes = JSON.parse(historyStack[historyIndex]);
+      localStorage.setItem(STORAGE_KEY, historyStack[historyIndex]);
+      updateUndoRedoButtons();
+      renderNavigation();
+      renderCurrentView();
+      showToast("Krok dopredu");
+      if (getDriveSyncUrl() && isAutoSyncEnabled()) {
+        clearTimeout(window._driveSyncTimer);
+        window._driveSyncTimer = setTimeout(() => pushToDrive(true), 600);
+      }
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "z") {
+        const tag = (document.activeElement && document.activeElement.tagName) || "";
+        if (tag === "INPUT" || tag === "TEXTAREA" || document.activeElement?.isContentEditable) return;
+        e.preventDefault();
+        if (e.shiftKey) performRedo();
+        else performUndo();
+      }
+    });
 
     function showToast(msg) {
       const t = document.getElementById("toast");
@@ -1718,13 +1783,15 @@
       currentEpisodeId = id;
       if (isTableView) {
         renderNavigation();
-        const anchor = document.getElementById(`ep-anchor-${id}`);
         const row = document.getElementById(`ep-row-${id}`);
         const headerEl = document.querySelector('header');
-        if (anchor && row) {
-          const headerBottom = headerEl ? headerEl.getBoundingClientRect().bottom : 0;
-          anchor.style.scrollMarginTop = `${headerBottom}px`;
-          anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (row && headerEl) {
+          const headerBottom = headerEl.getBoundingClientRect().bottom;
+          const rowTop = row.getBoundingClientRect().top;
+          window.scrollBy({
+            top: rowTop - headerBottom,
+            behavior: 'smooth'
+          });
           row.classList.add('bg-amber-100/90');
           setTimeout(() => row.classList.remove('bg-amber-100/90'), 1400);
         }
@@ -2428,30 +2495,6 @@
       const ep = getEp();
       const safeName = ep.cast.replace(/[^a-zA-Z0-9]/g, "_");
       downloadCsv([ep], `hch2namet_${safeName}.csv`);
-    };
-
-    document.getElementById("copyAllTextBtn").onclick = () => {
-      let out = "HCH2namet — PREHĽAD\n\n";
-      episodes.forEach(ep => {
-        out += `${ep.cast} (${ep.podtitul}) | ${ep.obdobie}\n`;
-        out += `Lokácie: ${ep.lokacie.map(x=>x.text).join(", ")}\n`;
-        out += `Barbara lokácie: ${ep.barbaraInfo || ''}\n`;
-        out += `Akcie: ${ep.akcie.map(x=>x.text).join(", ")}\n`;
-        out += `Ľudia: ${ep.ludia.map(x=>x.text).join(", ")}\n`;
-        out += `Jedlá: ${ep.jedla.map(x=>x.text).join(", ")}\n\n`;
-      });
-      navigator.clipboard.writeText(out).then(() => {
-        settingsMenu.classList.add("hidden");
-        showToast("Skopírované do schránky");
-      });
-    };
-
-    document.getElementById("resetDataBtn").onclick = () => {
-      localStorage.removeItem(STORAGE_KEY);
-      episodes = normalizeEpisodes(JSON.parse(JSON.stringify(RAW_EPISODES)));
-      settingsMenu.classList.add("hidden");
-      updateActiveView();
-      showToast("Predvolené dáta obnovené");
     };
 
     document.addEventListener("visibilitychange", () => {
