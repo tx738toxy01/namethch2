@@ -2389,9 +2389,14 @@
       try {
         localStorage.setItem(DOCS_STORAGE_KEY, JSON.stringify(toSave));
       } catch (e) {
-        showToast("Súbor je príliš veľký pre lokálnu pamäť");
+        showToast("Súbor je príliš veľký pre pamäť");
       }
       updateDocsBadge();
+      localStorage.setItem(STORAGE_KEY + "_ts", String(Date.now()));
+      if (getDriveSyncUrl() && isAutoSyncEnabled()) {
+        clearTimeout(window._driveSyncTimer);
+        window._driveSyncTimer = setTimeout(() => pushToDrive(true), 600);
+      }
     }
 
     function updateDocsBadge() {
@@ -2696,9 +2701,11 @@
       try {
         const nowTs = Number(localStorage.getItem(STORAGE_KEY + "_ts")) || Date.now();
         localStorage.setItem(STORAGE_KEY + "_ts", String(nowTs));
+        const customDocs = attachedDocs.filter(d => !d.builtin);
         const payload = {
           updatedAt: nowTs,
-          episodes: episodes
+          episodes: episodes,
+          docs: customDocs
         };
         const res = await fetch(url, {
           method: "POST",
@@ -2728,6 +2735,7 @@
         if (!res.ok) throw new Error("HTTP " + res.status);
         const data = await res.json();
         const remoteEpisodes = Array.isArray(data) ? data : data.episodes;
+        const remoteDocs = data && Array.isArray(data.docs) ? data.docs : null;
         const remoteTs = Number(data && data.updatedAt) || 0;
         const localTs = Number(localStorage.getItem(STORAGE_KEY + "_ts")) || 0;
 
@@ -2745,6 +2753,20 @@
             historyIndex = 0;
             updateUndoRedoButtons();
           }
+
+          if (remoteDocs !== null) {
+            attachedDocs = [DEFAULT_HARMONOGRAM_DOC, ...remoteDocs.filter(d => d.id !== "default-harmonogram")];
+            try {
+              localStorage.setItem(DOCS_STORAGE_KEY, JSON.stringify(remoteDocs));
+            } catch (e) {}
+            updateDocsBadge();
+            if (!attachedDocs.some(d => d.id === activeDocId)) {
+              activeDocId = attachedDocs[0].id;
+            }
+            renderDocsList();
+            renderActiveDoc();
+          }
+
           updateActiveView();
           if (!silent) {
             setDriveStatusMsg("Dáta z Google Drive boli úspešne načítané.");
@@ -2822,7 +2844,8 @@
     };
 
     document.getElementById("btnExportJsonFile").onclick = () => {
-      const blob = new Blob([JSON.stringify({ updatedAt: Date.now(), episodes }, null, 2)], { type: "application/json" });
+      const customDocs = attachedDocs.filter(d => !d.builtin);
+      const blob = new Blob([JSON.stringify({ updatedAt: Date.now(), episodes, docs: customDocs }, null, 2)], { type: "application/json" });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
       a.download = "HCH2_Backup.json";
@@ -2840,6 +2863,16 @@
           const list = Array.isArray(parsed) ? parsed : parsed.episodes;
           if (Array.isArray(list) && list.length > 0) {
             episodes = normalizeEpisodes(list);
+            if (Array.isArray(parsed.docs)) {
+              attachedDocs = [DEFAULT_HARMONOGRAM_DOC, ...parsed.docs.filter(d => d.id !== "default-harmonogram")];
+              try {
+                localStorage.setItem(DOCS_STORAGE_KEY, JSON.stringify(parsed.docs));
+              } catch (e) {}
+              updateDocsBadge();
+              activeDocId = attachedDocs[0].id;
+              renderDocsList();
+              renderActiveDoc();
+            }
             saveData("Záloha načítaná");
             updateActiveView();
             setDriveStatusMsg("Záloha zo súboru bola úspešne načítaná.");
